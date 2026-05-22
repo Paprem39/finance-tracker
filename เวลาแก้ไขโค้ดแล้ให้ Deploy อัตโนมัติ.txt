@@ -1,0 +1,14 @@
+หลังจากนี้ workflow จะง่ายมาก
+
+ทุกครั้งที่แก้โค้ด:
+
+git add .
+git commit -m "update ui"
+git push
+
+Vercel จะ:
+
+deploy ใหม่อัตโนมัติ
+เว็บอัปเดตเอง
+
+โคตรสะดวก 🚀
