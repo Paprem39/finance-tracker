@@ -12,3 +12,11 @@ deploy ใหม่อัตโนมัติ
 เว็บอัปเดตเอง
 
 โคตรสะดวก 🚀
+
+✅ แบบดี (มืออาชีพใช้)
+ถ้าแก้ dashboard:
+git commit -m "add income tracker in dashboard"
+ถ้าแก้ home:
+git commit -m "improve landing page layout"
+ถ้าแก้หลายส่วน:
+git commit -m "update UI for home and dashboard"

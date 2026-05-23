@@ -21,7 +21,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-6 text-black">
       <h1 className="text-3xl font-bold mb-6">Dashboard 💰</h1>
 
       {/* Summary */}
