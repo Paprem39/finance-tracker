@@ -112,9 +112,9 @@ export default function Dashboard() {
           {/* Add Button */}
           <button
             onClick={addTransaction}
-            className="bg-blue-600 text-white rounded-xl font-semibold"
+            className="bg-blue-600 hover:bg-blue-700 active:scale-95 transition duration-200 text-white font-bold text-lg py-4 px-6 rounded-2xl shadow-lg md:w-auto w-full"
           >
-            เพิ่มรายการ
+            เพิ่มรายการ ➕
           </button>
         </div>
 
@@ -125,7 +125,7 @@ export default function Dashboard() {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="ระบุรายการ..."
-            className="border p-3 rounded-xl w-full mt-3"
+            className="border border-gray-300 p-4 rounded-2xl w-full mt-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         )}
       </div>
