@@ -17,6 +17,30 @@ deploy ใหม่อัตโนมัติ
 ถ้าแก้ dashboard:
 git commit -m "add income tracker in dashboard"
 ถ้าแก้ home:
-git commit -m "improve landing page layout"
+git commit -m "update landing page UI"
 ถ้าแก้หลายส่วน:
 git commit -m "update UI for home and dashboard"
+
+🔥 ทริคโปร (สำคัญมาก)
+
+ถ้าไม่แน่ใจว่าแก้อะไร:
+
+git status
+
+หรือดูรายละเอียด:
+
+git diff
+
+👉 จะเห็นเลยว่าแก้อะไรบ้าง
+
+💡 สรุปง่ายสุด
+
+ถ้าจำไม่ได้:
+
+👉 ใช้อันนี้ปลอดภัยสุด:
+
+git commit -m "update UI"
+
+แต่ถ้าอยากดูโปรขึ้น:
+
+git commit -m "update home and dashboard UI"
