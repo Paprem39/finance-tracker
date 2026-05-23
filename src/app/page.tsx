@@ -1,4 +1,9 @@
+"use client";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen bg-gray-100 text-black">
       {/* Navbar */}
@@ -33,7 +38,10 @@ export default function Home() {
           และติดตามรายรับของคุณแบบง่าย ๆ
         </p>
 
-        <button className="bg-blue-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold">
+        <button 
+          onClick={() => router.push("/dashboard")}
+          className="bg-blue-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold"
+          >
           เริ่มใช้งานฟรี
         </button>
       </section>
