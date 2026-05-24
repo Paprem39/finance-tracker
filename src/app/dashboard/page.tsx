@@ -71,9 +71,7 @@ export default function Dashboard() {
       </p>
     </div>
   </div>
-</div>
       
-
       {/* Summary */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white p-5 rounded-2xl shadow">
