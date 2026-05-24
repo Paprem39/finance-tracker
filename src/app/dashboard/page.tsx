@@ -83,7 +83,7 @@ export default function Dashboard() {
             })}
           </p>
         </div>
-        
+
 </div>
 
         {/* Header */}
@@ -93,11 +93,9 @@ export default function Dashboard() {
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-2">
           ภาพรวมการเงิน💰
-      </h1>
-
-        <p className="text-gray-500 mt-2 text-lg">
-          ยินดีต้อนรับ👋
-        </p>
+        </h1>
+    
+    
       </div>
 
         {/* Right Profile */}
