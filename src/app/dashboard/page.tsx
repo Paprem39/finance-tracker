@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 export default function Dashboard() {
   const [income, setIncome] = useState(0);
@@ -17,6 +18,47 @@ export default function Dashboard() {
 
   const [transactions, setTransactions] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const chartData = [
+    {
+      name: "รายรับ",
+      value: income,
+    },
+    {
+      name: "รายจ่าย",
+      value: expense,
+    },
+  ];
+  
+  const COLORS = ["#22c55e","#3b82f6","#f59e0b","#ef4444","#8b5cf6",];
+
+  const incomeTransactions = transactions.filter(
+    (item) => item.type === "income"
+  );
+  
+  const expenseTransactions = transactions.filter(
+    (item) => item.type === "expense"
+  );
+  
+  // รวมหมวดหมู่
+  const summarizeData = (data: any[]) => {
+    const summary: any = {};
+  
+    data.forEach((item) => {
+      if (summary[item.category]) {
+        summary[item.category] += item.amount;
+      } else {
+        summary[item.category] = item.amount;
+      }
+    });
+  
+    return Object.keys(summary).map((key) => ({
+      name: key,
+      value: summary[key],
+    }));
+  };
+  
+  const incomeChartData = summarizeData(incomeTransactions);
+  const expenseChartData = summarizeData(expenseTransactions);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -282,6 +324,94 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+              {/* Charts */}
+              <div className="grid md:grid-cols-2 gap-6 mt-6">
+
+              {/* Income Chart */}
+              <div className="bg-white p-5 rounded-2xl shadow">
+
+                <h2 className="text-2xl font-bold mb-4 text-center">
+                  แผนภูมิรายรับ
+                </h2>
+
+                  {incomeChartData.length === 0 ? (
+                    <p className="text-center text-gray-500">
+                      ยังไม่มีข้อมูลรายรับ
+                    </p>
+                  ) : (
+                    <div className="flex justify-center">
+
+                      <PieChart width={320} height={320}>
+                        <Pie
+                          data={incomeChartData}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={100}
+                          dataKey="value"
+                          label={({ percent }: any) =>
+                            `${(percent * 100).toFixed(0)}%`
+                          }
+                      >
+                        {incomeChartData.map((_, index) => (
+                          <Cell
+                          key={index}
+                          fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                </Pie>
+
+                <Tooltip />
+                <Legend />
+                </PieChart>
+
+                    </div>
+                  )}
+
+              </div>
+
+            {/* Expense Chart */}
+              <div className="bg-white p-5 rounded-2xl shadow">
+
+                <h2 className="text-2xl font-bold mb-4 text-center">
+                  แผนภูมิรายจ่าย
+                </h2>
+
+              {expenseChartData.length === 0 ? (
+                <p className="text-center text-gray-500">
+                  ยังไม่มีข้อมูลรายจ่าย
+                </p>
+              ) : (
+              <div className="flex justify-center">
+
+                <PieChart width={320} height={320}>
+                <Pie
+                data={expenseChartData}
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                dataKey="value"
+                label={({ percent }: any) =>
+                `${(percent * 100).toFixed(0)}%`
+                }
+              >
+                {expenseChartData.map((_, index) => (
+                  <Cell
+                  key={index}
+                  fill={COLORS[index % COLORS.length]}
+              />
+          ))}
+        </Pie>
+
+        <Tooltip />
+        <Legend />
+      </PieChart>
+
+    </div>
+  )}
+
+</div>
+
+</div>
     </div>
   );
 }
