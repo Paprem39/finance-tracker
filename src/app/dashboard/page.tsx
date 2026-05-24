@@ -11,6 +11,9 @@ export default function Dashboard() {
 
   const [category, setCategory] = useState("ค่าข้าว");
   const [note, setNote] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
   const [transactions, setTransactions] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -35,6 +38,7 @@ export default function Dashboard() {
       type,
       amount: value,
       category: finalCategory,
+      date: selectedDate,
     };
 
     setTransactions([newTransaction, ...transactions]);
@@ -146,7 +150,7 @@ export default function Dashboard() {
 
       {/* Form */}
       <div className="bg-white p-5 rounded-2xl shadow mb-6">
-        <div className="grid md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
           {/* Amount */}
           <input
             type="number"
@@ -178,6 +182,13 @@ export default function Dashboard() {
             <option>ค่าเดินทาง</option>
             <option>อื่นๆ</option>
           </select>
+
+          {/* Date */}
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="border border-gray-300 p-4 rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"/>
 
           {/* Add Button */}
           <button
@@ -225,7 +236,7 @@ export default function Dashboard() {
                   <p className="text-sm text-gray-500">
                     {item.type === "income"
                       ? "รายรับ"
-                      : "รายจ่าย"}
+                      : "รายจ่าย"} • {item.date}
                   </p>
                 </div>
 
