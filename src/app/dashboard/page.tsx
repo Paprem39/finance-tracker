@@ -81,39 +81,38 @@ export default function Dashboard() {
 
 </div>
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        
-      {/* Left */}
-       <div>
-       <h1 className="text-3xl font-bold">
-          ภาพรวมการเงิน 💰
-        </h1>
+        {/* Header */}
+    <div className="flex justify-between items-start mb-6">
+
+        {/* Left */}
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          ภาพรวมการเงิน💰
+      </h1>
 
         <p className="text-gray-500 mt-2 text-lg">
-          ยินดีต้อนรับ 👋
-        </p>
-       </div>
-
-       {/* Right Profile */}
-       <div className="flex items-center gap-3 self-start">
-
-      {/* Circle Profile */}
-        <div className=" w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-lg">
-      U
-    </div> 
-
-      {/* Username */}
-      <div>
-        <p className="font-semibold">
-          User
-        </p>
-
-        <p className="text-sm text-gray-500">
-          ผู้ใช้งานทั่วไป
+          ยินดีต้อนรับ👋
         </p>
       </div>
 
+        {/* Right Profile */}
+        <div className="flex flex-col items-center">
+  
+        {/* Circle */}
+        <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-xl">
+          U
+        </div>
+
+        {/* User Info */}
+        <div className="text-center mt-2">
+          <p className="font-semibold leading-none">
+            User
+          </p>
+
+          <p className="text-sm text-gray-500">
+            ผู้ใช้งานทั่วไป
+          </p>
+        </div>
       </div>
     </div>
       
