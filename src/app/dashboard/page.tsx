@@ -54,66 +54,67 @@ export default function Dashboard() {
 
       <div className="flex justify-between items-center mb-4">
 
-        {/* Date */}
-          <div>
+</div>
+
+        {/* Top-Header */}
+    <div className="mb-8">
+
+        {/* Title */}
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          ภาพรวมการเงิน💰
+        </h1>
+    
+        {/* Date + Time */}
+        <div className="flex justify-between items-end mb-6">
+
+            {/* Date */}
+            <div>
             <p className="text-gray-500 text-sm">
               วันนี้
             </p>
 
-            <h2 className="text-xl font-bold">
+            <p className="font-bold text-xl">
             {currentDate.toLocaleDateString("th-TH", {
               day: "numeric",
               month: "long",
               year: "numeric",
             })}
-            </h2>
+            </p>
           </div>
 
-        {/* Time */}
-        <div className="bg-white px-4 py-2 rounded-2xl shadow text-center min-w-[90px]">
+            {/* Time */}
+            <div className="bg-white/80 backdrop-blur px-4 py-3 rounded-2xl shadow-lg border border-gray-200 text-center min-w-[100px]">
 
             <p className="text-xs text-gray-500">
               🕒 เวลา
             </p>
 
-          <p className="text-lg font-bold text-blue-600">
-            {currentDate.toLocaleTimeString("th-TH", {
+            <p className="text-lg font-bold text-blue-600">
+              {currentDate.toLocaleTimeString("th-TH", {
               hour: "2-digit",
               minute: "2-digit",
             })}
           </p>
         </div>
 
-</div>
+        </div>
 
-        {/* Header */}
-    <div className="flex justify-between items-start mb-6">
-
-        {/* Left */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          ภาพรวมการเงิน💰
-        </h1>
-    
-    
-      </div>
-
-        {/* Right Profile */}
-        <div className="flex flex-col items-center">
+        {/* User */}
+        <div className="flex items-center gap-3">
   
-        {/* Circle */}
-        <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-xl">
+        {/* Profile */}
+        <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 font-bold text-2xl">
           U
         </div>
 
         {/* User Info */}
-        <div className="text-center mt-2">
-          <p className="font-semibold leading-none">
-            User
+        <div>
+          <p className="font-bold text-lg">
+            คุณ...
           </p>
 
           <p className="text-sm text-gray-500">
-            ผู้ใช้งานทั่วไป
+            สถานะ : ผู้ใช้งานทั่วไป
           </p>
         </div>
       </div>
