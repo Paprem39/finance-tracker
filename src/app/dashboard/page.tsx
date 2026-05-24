@@ -53,6 +53,22 @@ export default function Dashboard() {
     setNote("");
   };
 
+  const deleteTransaction = (indexToDelete: number) => {
+    const transaction = transactions[indexToDelete];
+  
+    // คืนค่าเงินกลับ
+    if (transaction.type === "income") {
+      setIncome(income - transaction.amount);
+    } else {
+      setExpense(expense - transaction.amount);
+    }
+  
+    // ลบรายการ
+    setTransactions(
+      transactions.filter((_, index) => index !== indexToDelete)
+    );
+  };
+  
   return (
     <div className="min-h-screen bg-gray-100 p-6 text-black">
 
@@ -240,16 +256,27 @@ export default function Dashboard() {
                   </p>
                 </div>
 
-                <p
-                  className={`font-bold ${
+                <div className="flex items-center gap-3">
+
+                  <p
+                    className={`font-bold ${
                     item.type === "income"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
+                    ? "text-green-600"
+                    : "text-red-600"
+                    }`}
+                  >
                   {item.type === "income" ? "+" : "-"}
-                  {item.amount} บาท
-                </p>
+                  {item.amount.toLocaleString()} บาท
+                  </p>
+
+              {/* Delete Button */}
+                <button
+                onClick={() => deleteTransaction(index)}
+                className="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1 rounded-xl transition">
+                  🗑
+                </button>
+
+                </div>
               </div>
             ))}
           </div>
