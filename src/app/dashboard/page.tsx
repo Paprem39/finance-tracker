@@ -42,10 +42,37 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 text-black">
-      {/* Title */}
-      <h1 className="text-3xl font-bold mb-6">
-        ภาพรวมการเงิน 💰
-      </h1>
+       <div>
+          {/* Title */}
+        <h1 className="text-3xl font-bold mb-6">
+          ภาพรวมการเงิน 💰
+        </h1>
+
+        <p className="text-gray-500 mt-2 text-lg">
+          ยินดีต้อนรับ 👋
+        </p>
+       </div>
+
+      {/* Profile */}
+      <div className="flex items-center gap-3">
+      {/* Circle Profile */}
+        <div className=" w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-lg">
+      U
+    </div> 
+
+      {/* Username */}
+        <div className="hidden md:block">
+        <p className="font-semibold">
+        User
+        </p>
+
+        <p className="text-sm text-gray-500">
+        ผู้ใช้งานทั่วไป
+      </p>
+    </div>
+  </div>
+</div>
+      
 
       {/* Summary */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">
