@@ -12,7 +12,7 @@ export default function Dashboard() {
   const [category, setCategory] = useState("ค่าข้าว");
   const [note, setNote] = useState("");
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date().toLocaleDateString("en-CA")
   );
 
   const [transactions, setTransactions] = useState<any[]>([]);
