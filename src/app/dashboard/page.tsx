@@ -104,7 +104,7 @@ export default function Dashboard() {
     </div> 
 
       {/* Username */}
-      <div className="hidden md:block">
+      <div>
         <p className="font-semibold">
           User
         </p>
