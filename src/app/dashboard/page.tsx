@@ -59,10 +59,7 @@ export default function Dashboard() {
         {/* Top-Header */}
     <div className="mb-8">
 
-        {/* Title */}
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          ภาพรวมการเงิน💰
-        </h1>
+
     
         {/* Date + Time */}
         <div className="flex justify-between items-end mb-6">
@@ -110,7 +107,7 @@ export default function Dashboard() {
         {/* User Info */}
         <div>
           <p className="font-bold text-lg">
-            คุณ...
+            ยินดีต้อนรับ : คุณ ทดลองใช้งาน
           </p>
 
           <p className="text-sm text-gray-500">
