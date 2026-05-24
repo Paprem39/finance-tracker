@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const [income, setIncome] = useState(0);
@@ -13,6 +13,15 @@ export default function Dashboard() {
   const [note, setNote] = useState("");
 
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+        setCurrentDate(new Date());
+    }, 1000);
+
+  return () => clearInterval(timer);
+}, []);
 
   const addTransaction = () => {
     const value = Number(amount);
@@ -42,6 +51,35 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 text-black">
+
+      <div className="flex justify-between items-center mb-4">
+
+        {/* Date */}
+          <div>
+            <p className="text-gray-500 text-sm">
+              วันนี้
+            </p>
+
+            <h2 className="text-xl font-bold">
+            {currentDate.toLocaleDateString("th-TH", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+            </h2>
+          </div>
+
+{/* Time */}
+<div className="bg-white px-4 py-2 rounded-2xl shadow">
+  <p className="text-lg font-bold text-blue-600">
+    {currentDate.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}
+  </p>
+</div>
+
+</div>
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
