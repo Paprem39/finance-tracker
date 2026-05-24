@@ -69,16 +69,21 @@ export default function Dashboard() {
             </h2>
           </div>
 
-{/* Time */}
-<div className="bg-white px-4 py-2 rounded-2xl shadow">
-  <p className="text-lg font-bold text-blue-600">
-    {currentDate.toLocaleTimeString("th-TH", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}
-  </p>
-</div>
+        {/* Time */}
+        <div className="bg-white px-4 py-2 rounded-2xl shadow text-center min-w-[90px]">
 
+            <p className="text-xs text-gray-500">
+              🕒 เวลา
+            </p>
+
+          <p className="text-lg font-bold text-blue-600">
+            {currentDate.toLocaleTimeString("th-TH", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        </div>
+        
 </div>
 
         {/* Header */}
