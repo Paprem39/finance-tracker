@@ -18,7 +18,8 @@ export default function Home() {
               Login
             </button>
 
-            <button className="px-4 py-2 rounded-xl bg-blue-600 text-white">
+            <button onClick={() => router.push("/register")}
+            className="px-4 py-2 rounded-xl bg-blue-600 text-white">
               Register
             </button>
           </div>
@@ -40,8 +41,7 @@ export default function Home() {
 
         <button 
           onClick={() => router.push("/dashboard")}
-          className="bg-blue-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold"
-          >
+          className="bg-blue-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold">
           เริ่มใช้งานฟรี
         </button>
       </section>
