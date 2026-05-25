@@ -25,6 +25,11 @@ export default function LoginPage() {
   
     if (response.ok) {
       alert("Login สำเร็จ 🎉");
+
+      localStorage.setItem(
+        "nickname",
+        data.user.nickname
+      );
   
       router.push("/menu");
     } else {

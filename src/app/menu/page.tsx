@@ -1,9 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function MenuPage() {
   const router = useRouter();
+  const [nickname, setNickname] = useState("");
+
+  useEffect(() => {
+    const savedNickname =
+      localStorage.getItem("nickname");
+  
+    if (savedNickname) {
+      setNickname(savedNickname);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 p-6">
@@ -84,7 +95,7 @@ export default function MenuPage() {
 
         {/* Button 1 */}
         <button
-          onClick={() => router.push("/dashboard")}
+
           className="
             group
             bg-white/80
@@ -159,7 +170,7 @@ export default function MenuPage() {
           </div>
 
           <h2 className="text-3xl font-black text-gray-800 mb-3">
-            รายการทางบัญชีคุณ
+            รายงานทางบัญชีคุณ
           </h2>
 
           <p className="text-gray-500 text-lg">
