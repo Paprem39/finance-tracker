@@ -33,6 +33,19 @@ export default function RegisterPage() {
     alert("สมัครสมาชิกสำเร็จ (demo)");
   };
 
+  const isPasswordMatch =
+  password === confirmPassword;
+
+    const isFormValid =
+  nickname &&
+  firstname &&
+  lastname &&
+  email &&
+  username &&
+  password &&
+  confirmPassword &&
+  isPasswordMatch;
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
 
@@ -140,39 +153,48 @@ export default function RegisterPage() {
         </div>
 
         {/* Confirm Password */}
-        <div className="mb-6">
-          <label className="block text-black font-medium mb-2">
-            Confirm Password
-          </label>
+            <div className="mb-6">
+            <label className="block text-black font-medium mb-2">
+                Confirm Password
+            </label>
 
-          <input
-            type="password"
-            placeholder="ยืนยัน Password"
-            value={confirmPassword}
-            onChange={(e) =>
-              setConfirmPassword(e.target.value)
-            }
-            className="w-full border border-gray-300 p-4 rounded-2xl text-black focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+        <input
+        type="password"
+        placeholder="ยืนยัน Password"
+        value={confirmPassword}
+        onChange={(e) =>
+            setConfirmPassword(e.target.value)
+        }
+        className={`w-full border p-4 rounded-2xl text-black focus:outline-none focus:ring-2
+      ${
+        confirmPassword && !isPasswordMatch
+          ? "border-red-500 focus:ring-red-400"
+          : "border-gray-300 focus:ring-blue-400"
+      }
+    `}
+  />
+
+        {/* Error Message */}
+        {confirmPassword && !isPasswordMatch && (
+        <p className="text-red-500 text-sm mt-2">
+            รหัสผ่านไม่ตรงกัน
+        </p>
+  )}
+</div>
 
         {/* Register Button */}
-        <button
-          onClick={handleRegister}
-          className="
-            w-full
-            bg-blue-600
-            hover:bg-blue-700
-            transition
-            text-white
-            font-bold
-            text-lg
-            py-4
-            rounded-2xl
-            shadow-lg
-          "
+            <button
+            onClick={handleRegister}
+            disabled={!isFormValid}
+            className={`w-full font-bold text-lg py-4 rounded-2xl shadow-lg transition
+        ${
+            isFormValid
+            ? "bg-blue-600 hover:bg-blue-700 text-white"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        }
+            `}
         >
-          สมัครสมาชิก
+            สมัครสมาชิก
         </button>
 
       </div>
