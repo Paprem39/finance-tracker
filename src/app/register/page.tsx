@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [nickname, setNickname] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -40,7 +42,15 @@ export default function RegisterPage() {
           }
       
           alert("สมัครสมาชิกสำเร็จ 🎉");
-      
+          setNickname("");
+          setFirstname("");
+          setLastname("");
+          setEmail("");
+          setUsername("");
+          setPassword("");
+          setConfirmPassword("");
+          
+          router.push("/");
           console.log(data);
       
         } catch (error) {
