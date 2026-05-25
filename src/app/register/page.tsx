@@ -15,23 +15,40 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] =
     useState("");
 
-  const handleRegister = () => {
-    if (password !== confirmPassword) {
-      alert("รหัสผ่านไม่ตรงกัน");
-      return;
-    }
-
-    console.log({
-      nickname,
-      firstname,
-      lastname,
-      email,
-      username,
-      password,
-    });
-
-    alert("สมัครสมาชิกสำเร็จ (demo)");
-  };
+    const handleRegister = async () => {
+        try {
+          const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nickname,
+              firstname,
+              lastname,
+              email,
+              username,
+              password,
+            }),
+          });
+      
+          const data = await response.json();
+      
+          if (!response.ok) {
+            alert(data.error);
+            return;
+          }
+      
+          alert("สมัครสมาชิกสำเร็จ 🎉");
+      
+          console.log(data);
+      
+        } catch (error) {
+          console.log(error);
+      
+          alert("เกิดข้อผิดพลาด");
+        }
+      };
 
   const isPasswordMatch =
   password === confirmPassword;
@@ -125,7 +142,7 @@ export default function RegisterPage() {
         {/* Username */}
         <div className="mb-4">
           <label className="block text-black font-medium mb-2">
-            Username
+            Username (ใข้สำหรับเข้าสู่ระบบ)
           </label>
 
           <input
