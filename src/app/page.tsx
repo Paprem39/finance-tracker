@@ -14,7 +14,8 @@ export default function Home() {
           </h1>
 
           <div className="space-x-4">
-            <button className="px-4 py-2 rounded-xl border">
+            <button onClick={() => router.push("/login")}
+            className="px-4 py-2 rounded-xl border">
               Login
             </button>
 
