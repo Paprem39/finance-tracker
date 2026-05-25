@@ -48,7 +48,7 @@ export default function MenuPage() {
           <div>
 
             <h2 className="text-xl font-bold text-gray-800">
-              ยินดีต้อนรับคุณ : Paprem
+              ยินดีต้อนรับคุณ : {nickname}
             </h2>
 
             <p className="text-gray-500">
