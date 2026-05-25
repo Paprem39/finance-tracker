@@ -2,6 +2,9 @@
 
 ทุกครั้งที่แก้โค้ด:
 
+npm run dev      ( เช็ก logic เบื้องต้น )
+npm run build    ( จำลอง production จริง )
+
 git add .
 git commit -m "update ui"
 git push
