@@ -50,7 +50,7 @@ export default function RegisterPage() {
           setPassword("");
           setConfirmPassword("");
           
-          router.push("/");
+          router.push("/login");
           console.log(data);
       
         } catch (error) {

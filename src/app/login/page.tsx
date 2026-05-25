@@ -9,9 +9,27 @@ export default function LoginPage() {
   const [loginInput, setLoginInput] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // ไว้เชื่อม database ทีหลัง
-    router.push("/menu");
+  const handleLogin = async () => {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        loginInput,
+        password,
+      }),
+    });
+  
+    const data = await response.json();
+  
+    if (response.ok) {
+      alert("Login สำเร็จ 🎉");
+  
+      router.push("/menu");
+    } else {
+      alert(data.message);
+    }
   };
 
   const handleSignup = () => {
@@ -36,21 +54,19 @@ export default function LoginPage() {
           เข้าสู่ระบบ
         </h1>
 
-        <p className="text-center text-gray-500 mt-2 mb-8">
-          ยินดีต้อนรับกลับ 👋
-        </p>
+        
 
         {/* Username */}
         <div className="mb-4">
           <label className="text-sm font-semibold text-gray-700 block mb-2">
-            Username หรือ Email
+            Username 
           </label>
 
           <input
             type="text"
             value={loginInput}
             onChange={(e) => setLoginInput(e.target.value)}
-            placeholder="กรอก Username หรือ Email"
+            placeholder="กรอก Username"
             className="
               w-full
               p-4
