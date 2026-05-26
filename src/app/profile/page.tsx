@@ -37,7 +37,7 @@ export default function ProfilePage() {
           </h1>
 
           <p className="text-gray-600 mt-3 text-lg">
-            โปรไฟล์ และข้อมูลบัญชีของคุณ
+            โปรไฟล์ และข้อมูลส่วนตัวของคุณ
           </p>
         </div>
 

@@ -95,6 +95,7 @@ export default function MenuPage() {
 
         {/* Button 1 */}
         <button
+          onClick={() => router.push("/transaction")}
 
           className="
             group
