@@ -124,6 +124,7 @@ export default function MenuPage() {
 
         {/* Button 2 */}
         <button
+          onClick={() => router.push("/profile")}
           className="
             group
             bg-white/80

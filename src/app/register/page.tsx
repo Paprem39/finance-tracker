@@ -152,7 +152,7 @@ export default function RegisterPage() {
         {/* Username */}
         <div className="mb-4">
           <label className="block text-black font-medium mb-2">
-            Username (ใข้สำหรับเข้าสู่ระบบ)
+            Username (ใช้สำหรับเข้าสู่ระบบ)
           </label>
 
           <input
