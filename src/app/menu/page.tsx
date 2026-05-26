@@ -93,7 +93,7 @@ export default function MenuPage() {
         mx-auto
       ">
 
-        {/* Button 1 */}
+        {/* Button Transaction */}
         <button
           onClick={() => router.push("/transaction")}
 
@@ -123,7 +123,7 @@ export default function MenuPage() {
           </p>
         </button>
 
-        {/* Button 2 */}
+        {/* Button profile */}
         <button
           onClick={() => router.push("/profile")}
           className="
@@ -152,8 +152,9 @@ export default function MenuPage() {
           </p>
         </button>
 
-        {/* Button 3 */}
+        {/* Button reports */}
         <button
+        onClick={() => router.push("/reports")}
           className="
             group
             bg-white/80
@@ -180,7 +181,7 @@ export default function MenuPage() {
           </p>
         </button>
 
-        {/* Button 4 */}
+        {/* Button 4 creditor debtor*/}
         <button
           className="
             group
