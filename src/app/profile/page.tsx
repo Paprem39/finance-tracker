@@ -198,11 +198,11 @@ export default function ProfilePage() {
               transition
             ">
               <p className="text-gray-500 mb-3">
-                Email
+                ชื่อเล่น
               </p>
 
               <h3 className="text-xl font-black text-gray-800 break-all">
-                {email || "-"}
+                {nickname || "-"}
               </h3>
             </div>
 
@@ -218,11 +218,11 @@ export default function ProfilePage() {
               transition
             ">
               <p className="text-gray-500 mb-3">
-                Username
+                อีเมลล์
               </p>
 
               <h3 className="text-2xl font-black text-gray-800">
-                {username || "-"}
+                {email || "-"}
               </h3>
             </div>
 
