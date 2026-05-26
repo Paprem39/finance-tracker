@@ -130,10 +130,12 @@ export default function ReportsPage() {
     {
       name: "รายรับ",
       amount: totalIncome,
+      fill: "#22c55e",
     },
     {
       name: "รายจ่าย",
       amount: totalExpense,
+      fill: "#ef4444",
     },
   ];
 
@@ -163,7 +165,7 @@ export default function ReportsPage() {
   });
 
   const lineData =
-    Object.values(groupedLineData);
+    Object.values(groupedLineData).reverse();
 
   // Export CSV
   const exportCSV = () => {
@@ -217,11 +219,11 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="mb-8">
 
-        <h1 className="text-5xl font-black text-gray-800 mb-2">
+        <h1 className="text-3xl md:text-4xl font-black text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
           📊 รายงานทางบัญชีคุณ
         </h1>
 
-        <p className="text-gray-500 text-lg">
+        <p className="text-gray-500 text-base md:text-lg">
           วิเคราะห์ข้อมูลรายรับ รายจ่าย ของคุณ
         </p>
 
@@ -344,44 +346,6 @@ export default function ReportsPage() {
             "
           />
 
-          {/* Export CSV */}
-          <button
-            onClick={exportCSV}
-            className="
-              px-6
-              py-4
-              rounded-2xl
-              bg-green-600
-              hover:bg-green-700
-              text-white
-              font-bold
-              shadow-lg
-              transition
-              active:scale-95
-            "
-          >
-            Export CSV
-          </button>
-
-          {/* Export PDF */}
-          <button
-            onClick={exportPDF}
-            className="
-              px-6
-              py-4
-              rounded-2xl
-              bg-red-600
-              hover:bg-red-700
-              text-white
-              font-bold
-              shadow-lg
-              transition
-              active:scale-95
-            "
-          >
-            Export PDF
-          </button>
-
         </div>
 
       </div>
@@ -430,131 +394,8 @@ export default function ReportsPage() {
 
       </div>
 
-      {/* Charts */}
-      <div className="grid xl:grid-cols-3 gap-6 mb-8">
-
-        {/* Pie Chart */}
-        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
-
-          <h2 className="text-2xl font-black mb-4">
-            📌 สัดส่วนรายรับ / รายจ่าย
-          </h2>
-
-          <div className="h-[320px]">
-
-            <ResponsiveContainer>
-
-              <PieChart>
-
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  outerRadius={100}
-                  label={({ percent }: any) =>
-                    `${(percent * 100).toFixed(0)}%`
-                  }
-                >
-
-                  {pieData.map((_, index) => (
-
-                    <Cell
-                      key={index}
-                      fill={
-                        COLORS[index % COLORS.length]
-                      }
-                    />
-
-                  ))}
-
-                </Pie>
-
-                <Tooltip />
-                <Legend />
-
-              </PieChart>
-
-            </ResponsiveContainer>
-
-          </div>
-
-        </div>
-
-        {/* Bar Chart */}
-        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
-
-          <h2 className="text-2xl font-black mb-4">
-            📊 เปรียบเทียบรายรับ/รายจ่าย
-          </h2>
-
-          <div className="h-[320px]">
-
-            <ResponsiveContainer>
-
-              <BarChart data={barData}>
-
-                <CartesianGrid strokeDasharray="3 3" />
-
-                <XAxis dataKey="name" />
-
-                <YAxis />
-
-                <Tooltip />
-
-                <Bar dataKey="amount" />
-
-              </BarChart>
-
-            </ResponsiveContainer>
-
-          </div>
-
-        </div>
-
-        {/* Line Chart */}
-        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
-
-          <h2 className="text-2xl font-black mb-4">
-            📈 เส้นทางการเงิน
-          </h2>
-
-          <div className="h-[320px]">
-
-            <ResponsiveContainer>
-
-              <LineChart data={lineData}>
-
-                <CartesianGrid strokeDasharray="3 3" />
-
-                <XAxis dataKey="date" />
-
-                <YAxis />
-
-                <Tooltip />
-
-                <Legend />
-
-                <Line
-                  type="monotone"
-                  dataKey="income"
-                />
-
-                <Line
-                  type="monotone"
-                  dataKey="expense"
-                />
-
-              </LineChart>
-
-            </ResponsiveContainer>
-
-          </div>
-
-        </div>
-
-      </div>
-
       {/* Table */}
-      <div className="bg-white rounded-[32px] shadow-2xl overflow-hidden">
+      <div className="bg-white rounded-[32px] shadow-2xl overflow-hidden mb-8">
 
         <div className="p-6 border-b">
 
@@ -684,6 +525,185 @@ export default function ReportsPage() {
           </table>
 
         </div>
+
+      </div>
+
+      {/* Charts */}
+      <div className="grid xl:grid-cols-3 gap-6 mb-10">
+
+        {/* Pie Chart */}
+        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
+
+          <h2 className="text-2xl font-black mb-4">
+            📌 สัดส่วนรายรับ / รายจ่าย
+          </h2>
+
+          <div className="h-[320px]">
+
+            <ResponsiveContainer>
+
+              <PieChart>
+
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  outerRadius={100}
+                  label={({ percent }: any) =>
+                    `${(percent * 100).toFixed(0)}%`
+                  }
+                >
+
+                  {pieData.map((_, index) => (
+
+                    <Cell
+                      key={index}
+                      fill={
+                        COLORS[index % COLORS.length]
+                      }
+                    />
+
+                  ))}
+
+                </Pie>
+
+                <Tooltip />
+                <Legend />
+
+              </PieChart>
+
+            </ResponsiveContainer>
+
+          </div>
+
+        </div>
+
+        {/* Bar Chart */}
+        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
+
+          <h2 className="text-2xl font-black mb-4">
+            📊 เปรียบเทียบรายรับ/รายจ่าย
+          </h2>
+
+          <div className="h-[320px]">
+
+            <ResponsiveContainer>
+
+              <BarChart data={barData}>
+
+                <CartesianGrid strokeDasharray="3 3" />
+
+                <XAxis dataKey="name" />
+
+                <YAxis />
+
+                <Tooltip />
+
+                <Bar
+                  dataKey="amount"
+                >
+                  {barData.map((entry, index) => (
+                    <Cell
+                      key={index}
+                      fill={entry.fill}
+                    />
+                  ))}
+                </Bar>
+
+              </BarChart>
+
+            </ResponsiveContainer>
+
+          </div>
+
+        </div>
+
+        {/* Line Chart */}
+        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
+
+          <h2 className="text-2xl font-black mb-4">
+            📈 เส้นทางการเงิน
+          </h2>
+
+          <div className="h-[320px]">
+
+            <ResponsiveContainer>
+
+              <LineChart data={lineData}>
+
+                <CartesianGrid strokeDasharray="3 3" />
+
+                <XAxis dataKey="date" />
+
+                <YAxis />
+
+                <Tooltip />
+
+                <Legend />
+
+                <Line
+                  type="monotone"
+                  dataKey="income"
+                  stroke="#22c55e"
+                  strokeWidth={4}
+                />
+
+                <Line
+                  type="monotone"
+                  dataKey="expense"
+                  stroke="#ef4444"
+                  strokeWidth={4}
+                />
+
+              </LineChart>
+
+            </ResponsiveContainer>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Export Buttons */}
+      <div className="flex flex-col md:flex-row gap-4 justify-end">
+
+        {/* Export CSV */}
+        <button
+          onClick={exportCSV}
+          className="
+            px-8
+            py-4
+            rounded-2xl
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            font-bold
+            shadow-xl
+            transition
+            active:scale-95
+          "
+        >
+          Export CSV
+        </button>
+
+        {/* Export PDF */}
+        <button
+          onClick={exportPDF}
+          className="
+            px-8
+            py-4
+            rounded-2xl
+            bg-red-600
+            hover:bg-red-700
+            text-white
+            font-bold
+            shadow-xl
+            transition
+            active:scale-95
+          "
+        >
+          Export PDF
+        </button>
 
       </div>
 
