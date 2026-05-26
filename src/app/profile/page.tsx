@@ -32,7 +32,7 @@ export default function ProfilePage() {
       <div className="relative z-10 flex items-center justify-between mb-10">
 
         <div>
-          <h1 className="text-5xl font-black text-gray-800 drop-shadow-sm">
+        <h1 className="text-3xl md:text-5xl font-black text-gray-800 drop-shadow-sm">
             ข้อมูลส่วนตัว
           </h1>
 
@@ -48,13 +48,15 @@ export default function ProfilePage() {
             bg-white/70
             backdrop-blur-xl
             border border-white/40
-            px-6 py-3
+            px-4 py-2
+            md:px-6 md:py-3
             rounded-2xl
             shadow-lg
             hover:scale-105
             transition
             text-gray-700
             font-bold
+            text-sm md:text-base
           "
         >
           ← กลับเมนู
