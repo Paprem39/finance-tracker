@@ -88,8 +88,7 @@ export default function DebtPage() {
   const [installTotal, setInstallTotal] =
     useState("");
 
-  const [installPaid, setInstallPaid] =
-    useState("");
+
 
   // =========================
   // Load LocalStorage
@@ -263,41 +262,33 @@ export default function DebtPage() {
   // =========================
   const addInstallment = () => {
 
-    if (
-      !installName ||
-      !installTotal ||
-      !installPaid
-    )
-      return;
+  if (
+    !installName ||
+    !installTotal
+  )
+    return;
 
-    const total =
-      Number(installTotal);
+  const total =
+    Number(installTotal);
 
-    const paid =
-      Number(installPaid);
+  const newData = [
+    ...installments,
+    {
+      id: Date.now(),
+      name: installName,
+      total,
+      paid: 0,
+      remain: total,
+    },
+  ];
 
-    const remain =
-      total - paid;
+  saveInstallments(newData);
 
-    const newData = [
-      ...installments,
-      {
-        id: Date.now(),
-        name: installName,
-        total,
-        paid,
-        remain,
-      },
-    ];
+  setInstallName("");
+  setInstallTotal("");
 
-    saveInstallments(newData);
-
-    setInstallName("");
-    setInstallTotal("");
-    setInstallPaid("");
-
-    setShowInstallPopup(false);
-  };
+  setShowInstallPopup(false);
+};
 
   // =========================
   // Toggle Bill Paid
@@ -331,6 +322,118 @@ export default function DebtPage() {
       );
 
     saveBills(filtered);
+  };
+
+  // =========================
+// Delete Creditor
+// =========================
+const deleteCreditor = (id: number) => {
+
+    const filtered =
+      creditors.filter(
+        (item) => item.id !== id
+      );
+  
+    saveCreditors(filtered);
+  };
+  
+  // =========================
+  // Delete Debtor
+  // =========================
+  const deleteDebtor = (id: number) => {
+  
+    const filtered =
+      debtors.filter(
+        (item) => item.id !== id
+      );
+  
+    saveDebtors(filtered);
+  };
+  
+  // =========================
+  // Edit Creditor
+  // =========================
+  const editCreditor = (
+    id: number
+  ) => {
+  
+    const amount =
+      prompt("เพิ่มยอดหนี้อีกเท่าไหร่ ?");
+  
+    if (!amount) return;
+  
+    const updated = creditors.map((item) => {
+  
+      if (item.id === id) {
+  
+        return {
+          ...item,
+          amount:
+            item.amount + Number(amount),
+        };
+      }
+  
+      return item;
+    });
+  
+    saveCreditors(updated);
+  };
+  
+  // =========================
+  // Edit Debtor
+  // =========================
+  const editDebtor = (
+    id: number
+  ) => {
+  
+    const amount =
+      prompt("ลูกหนี้ยืมเพิ่มอีกเท่าไหร่ ?");
+  
+    if (!amount) return;
+  
+    const updated = debtors.map((item) => {
+  
+      if (item.id === id) {
+  
+        return {
+          ...item,
+          amount:
+            item.amount + Number(amount),
+        };
+      }
+  
+      return item;
+    });
+  
+    saveDebtors(updated);
+  };
+  
+  // =========================
+  // Edit Bill
+  // =========================
+  const editBill = (
+    id: number
+  ) => {
+  
+    const amount =
+      prompt("แก้ไขยอดใหม่ ?");
+  
+    if (!amount) return;
+  
+    const updated = bills.map((item) => {
+  
+      if (item.id === id) {
+  
+        return {
+          ...item,
+          amount: Number(amount),
+        };
+      }
+  
+      return item;
+    });
+  
+    saveBills(updated);
   };
 
   // =========================
@@ -378,16 +481,16 @@ export default function DebtPage() {
 
     const amount =
       prompt("ได้รับเงินคืนเท่าไหร่ ?");
-
+  
     if (!amount) return;
-
+  
     const updated = debtors.map((item) => {
-
+  
       if (item.id === id) {
-
+  
         const payAmount =
           Number(amount);
-
+  
         return {
           ...item,
           paid:
@@ -402,12 +505,13 @@ export default function DebtPage() {
           ],
         };
       }
-
+  
       return item;
     });
-
+  
     saveDebtors(updated);
   };
+
 
   return (
 
@@ -491,40 +595,77 @@ export default function DebtPage() {
                   "
                 >
 
-                  <div className="flex justify-between items-center">
+<div className="flex justify-between items-center flex-wrap gap-4">
 
-                    <div>
+  <div>
 
-                      <h3 className="text-2xl font-black">
-                        {item.name}
-                      </h3>
+    <h3 className="text-2xl font-black">
+      {item.name}
+    </h3>
 
-                      <p className="text-gray-500 mt-1">
-                        ยอดคงเหลือ :
-                        {" "}
-                        {remain.toLocaleString()}
-                        {" "}฿
-                      </p>
+    <p className="text-gray-500 mt-1">
+      ยอดคงเหลือ :
+      {" "}
+      {remain.toLocaleString()}
+      {" "}฿
+    </p>
 
-                    </div>
+  </div>
 
-                    <button
-                      onClick={() =>
-                        payCreditor(item.id)
-                      }
-                      className="
-                        bg-green-600
-                        hover:bg-green-700
-                        text-white
-                        px-4 py-2
-                        rounded-xl
-                        font-bold
-                      "
-                    >
-                      ชำระหนี้
-                    </button>
+  <div className="flex gap-2 flex-wrap">
 
-                  </div>
+    <button
+      onClick={() =>
+        editCreditor(item.id)
+      }
+      className="
+        bg-yellow-500
+        hover:bg-yellow-600
+        text-white
+        px-4 py-2
+        rounded-xl
+        font-bold
+      "
+    >
+      แก้ไข
+    </button>
+
+    <button
+      onClick={() =>
+        payCreditor(item.id)
+      }
+      className="
+        bg-green-600
+        hover:bg-green-700
+        text-white
+        px-4 py-2
+        rounded-xl
+        font-bold
+      "
+    >
+      ชำระหนี้
+    </button>
+
+    <button
+      onClick={() =>
+        deleteCreditor(item.id)
+      }
+      className="
+        bg-red-500
+        hover:bg-red-600
+        text-white
+        px-4 py-2
+        rounded-xl
+        font-bold
+      "
+    >
+      Delete
+    </button>
+
+  </div>
+
+</div>
+                  
 
                   {/* History */}
                   {item.history.length > 0 && (
@@ -573,38 +714,38 @@ export default function DebtPage() {
         {/* Debtor */}
         <div className="bg-white rounded-[32px] shadow-2xl p-6">
 
-          <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6">
 
-            <div>
+<div>
 
-              <h2 className="text-3xl font-black">
-                💸 ลูกหนี้
-              </h2>
+  <h2 className="text-3xl font-black">
+    💸 ลูกหนี้
+  </h2>
 
-              <p className="text-gray-500 mt-2">
-                รายการที่มีคนยืมเงินคุณ
-              </p>
+  <p className="text-gray-500 mt-2">
+    รายการที่มีคนยืมเงินคุณ
+  </p>
 
-            </div>
+</div>
 
-            <button
-              onClick={() =>
-                setShowDebtorPopup(true)
-              }
-              className="
-                bg-indigo-600
-                hover:bg-indigo-700
-                text-white
-                px-5 py-3
-                rounded-2xl
-                font-bold
-                shadow-lg
-              "
-            >
-              + Add
-            </button>
+<button
+  onClick={() =>
+    setShowDebtorPopup(true)
+  }
+  className="
+    bg-indigo-600
+    hover:bg-indigo-700
+    text-white
+    px-5 py-3
+    rounded-2xl
+    font-bold
+    shadow-lg
+  "
+>
+  + Add
+</button>
 
-          </div>
+</div>
 
           <div className="space-y-4">
 
@@ -632,40 +773,76 @@ export default function DebtPage() {
                   "
                 >
 
-                  <div className="flex justify-between items-center">
+<div className="flex justify-between items-center flex-wrap gap-4">
 
-                    <div>
+<div>
 
-                      <h3 className="text-2xl font-black">
-                        {item.name}
-                      </h3>
+  <h3 className="text-2xl font-black">
+    {item.name}
+  </h3>
 
-                      <p className="text-gray-500 mt-1">
-                        ยอดค้าง :
-                        {" "}
-                        {remain.toLocaleString()}
-                        {" "}฿
-                      </p>
+  <p className="text-gray-500 mt-1">
+    ยอดค้าง :
+    {" "}
+    {remain.toLocaleString()}
+    {" "}฿
+  </p>
 
-                    </div>
+</div>
 
-                    <button
-                      onClick={() =>
-                        payDebtor(item.id)
-                      }
-                      className="
-                        bg-green-600
-                        hover:bg-green-700
-                        text-white
-                        px-4 py-2
-                        rounded-xl
-                        font-bold
-                      "
-                    >
-                      ได้รับเงิน
-                    </button>
+<div className="flex gap-2 flex-wrap">
 
-                  </div>
+  <button
+    onClick={() =>
+      editDebtor(item.id)
+    }
+    className="
+      bg-yellow-500
+      hover:bg-yellow-600
+      text-white
+      px-4 py-2
+      rounded-xl
+      font-bold
+    "
+  >
+    แก้ไข
+  </button>
+
+  <button
+    onClick={() =>
+      payDebtor(item.id)
+    }
+    className="
+      bg-green-600
+      hover:bg-green-700
+      text-white
+      px-4 py-2
+      rounded-xl
+      font-bold
+    "
+  >
+    ได้รับเงิน
+  </button>
+
+  <button
+    onClick={() =>
+      deleteDebtor(item.id)
+    }
+    className="
+      bg-red-500
+      hover:bg-red-600
+      text-white
+      px-4 py-2
+      rounded-xl
+      font-bold
+    "
+  >
+    Delete
+  </button>
+
+</div>
+
+</div>
 
                   {/* History */}
                   {item.history.length > 0 && (
@@ -810,6 +987,22 @@ export default function DebtPage() {
                     ? "ชำระแล้ว"
                     : "ยังไม่ชำระ"}
                 </button>
+
+                <button
+  onClick={() =>
+    editBill(item.id)
+  }
+  className="
+    bg-yellow-500
+    hover:bg-yellow-600
+    text-white
+    px-4 py-2
+    rounded-xl
+    font-bold
+  "
+>
+  แก้ไข
+</button>
 
                 <button
                   onClick={() =>
@@ -1269,22 +1462,7 @@ export default function DebtPage() {
                 "
               />
 
-              <input
-                type="number"
-                placeholder="จ่ายไปแล้ว"
-                value={installPaid}
-                onChange={(e) =>
-                  setInstallPaid(
-                    e.target.value
-                  )
-                }
-                className="
-                  w-full
-                  border
-                  rounded-2xl
-                  p-4
-                "
-              />
+
 
             </div>
 
