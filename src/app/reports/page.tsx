@@ -696,14 +696,14 @@ const filteredTransactions = useMemo(() => {
 
                 <Line
                   type="monotone"
-                  dataKey="income"
+                  dataKey="รายรับ"
                   stroke="#22c55e"
                   strokeWidth={4}
                 />
 
                 <Line
                   type="monotone"
-                  dataKey="expense"
+                  dataKey="รายจ่าย"
                   stroke="#ef4444"
                   strokeWidth={4}
                 />
@@ -737,7 +737,7 @@ const filteredTransactions = useMemo(() => {
             active:scale-95
           "
         >
-          Export CSV
+          ดาวน์โหลด CSV
         </button>
 
         {/* Export PDF */}
@@ -756,7 +756,7 @@ const filteredTransactions = useMemo(() => {
             active:scale-95
           "
         >
-          Export PDF
+          ดาวน์โหลด PDF
         </button>
 
       </div>
