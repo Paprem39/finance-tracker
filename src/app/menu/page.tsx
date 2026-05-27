@@ -244,6 +244,7 @@ export default function MenuPage() {
 
         {/* Button creditor debtor */}
         <button
+          onClick={() => router.push("/debts")}
           className="
             group
             bg-white/80
