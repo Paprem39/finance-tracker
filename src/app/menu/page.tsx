@@ -36,27 +36,7 @@ export default function MenuPage() {
       {/* Header */}
 <div className="flex justify-between items-start mb-10">
 
-{/* Logout */}
-<button
-  onClick={handleLogout}
-  className="
-    bg-white/70
-    backdrop-blur-xl
-    border border-white/40
-    px-5 py-3
-    rounded-2xl
-    shadow-lg
-    hover:bg-red-50
-    hover:scale-105
-    transition
-    text-red-500
-    font-bold
-    text-sm
-    active:scale-95
-  "
->
-  ออกจากระบบ
-</button>
+
 
 {/* Profile Card */}
 <div
@@ -290,6 +270,28 @@ export default function MenuPage() {
             จัดการข้อมูลเจ้าหนี้ และลูกหนี้ของคุณ
           </p>
 
+        </button>
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="
+          bg-white/70
+          backdrop-blur-xl
+          border border-white/40
+          px-5 py-3
+          rounded-2xl
+          shadow-lg
+          hover:bg-red-50
+          hover:scale-105
+          transition
+          text-red-500
+          font-bold
+          text-sm
+          active:scale-95
+          "
+          >
+            ออกจากระบบ
         </button>
 
       </div>
