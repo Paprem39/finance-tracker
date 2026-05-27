@@ -9,6 +9,13 @@ export default function MenuPage() {
 
   const [nickname, setNickname] = useState("");
 
+  const handleLogout = () => {
+
+    localStorage.removeItem("token");
+  
+    router.push("/login");
+  };
+
   useEffect(() => {
 
     const savedNickname =
@@ -21,66 +28,90 @@ export default function MenuPage() {
 
   }, []);
 
+
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 p-6">
 
       {/* Header */}
-      <div className="flex justify-end mb-10">
+<div className="flex justify-between items-start mb-10">
 
-        <div
-          className="
-          bg-white/80
-          backdrop-blur-xl
-          border border-white/40
-          shadow-2xl
-          rounded-3xl
-          p-5
-          flex items-center gap-4
-        "
-        >
+{/* Logout */}
+<button
+  onClick={handleLogout}
+  className="
+    bg-white/70
+    backdrop-blur-xl
+    border border-white/40
+    px-5 py-3
+    rounded-2xl
+    shadow-lg
+    hover:bg-red-50
+    hover:scale-105
+    transition
+    text-red-500
+    font-bold
+    text-sm
+    active:scale-95
+  "
+>
+  ออกจากระบบ
+</button>
 
-          {/* Profile Circle */}
-          <div
-            className="
-            w-16 h-16
-            rounded-full
-            bg-gradient-to-br from-blue-500 to-indigo-600
-            flex items-center justify-center
-            text-white text-2xl font-bold
-            shadow-lg
-          "
-          >
-            U
-          </div>
+{/* Profile Card */}
+<div
+  className="
+    bg-white/80
+    backdrop-blur-xl
+    border border-white/40
+    shadow-2xl
+    rounded-3xl
+    p-5
+    flex items-center gap-4
+  "
+>
 
-          {/* User Info */}
-          <div>
+  {/* Profile Circle */}
+  <div
+    className="
+      w-16 h-16
+      rounded-full
+      bg-gradient-to-br from-blue-500 to-indigo-600
+      flex items-center justify-center
+      text-white text-2xl font-bold
+      shadow-lg
+    "
+  >
+    U
+  </div>
 
-            <h2 className="text-xl font-bold text-gray-800">
-              ยินดีต้อนรับคุณ : {nickname}
-            </h2>
+  {/* User Info */}
+  <div>
 
-            <p className="text-gray-500">
-              สถานะ : ผู้ใช้งานทั่วไป
-            </p>
+    <h2 className="text-xl font-bold text-gray-800">
+      ยินดีต้อนรับคุณ : {nickname}
+    </h2>
 
-            {/* Online */}
-            <div className="flex items-center gap-2 mt-1">
+    <p className="text-gray-500">
+      สถานะ : ผู้ใช้งานทั่วไป
+    </p>
 
-              <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+    {/* Online */}
+    <div className="flex items-center gap-2 mt-1">
 
-              <p className="text-green-600 font-semibold">
-                Online
-              </p>
+      <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
 
-            </div>
+      <p className="text-green-600 font-semibold">
+        Online
+      </p>
 
-          </div>
+    </div>
 
-        </div>
+  </div>
 
-      </div>
+</div>
+
+</div>
 
       {/* Title */}
       <div className="text-center mb-12">
