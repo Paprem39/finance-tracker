@@ -320,7 +320,7 @@ export default function ProfilePage() {
                 วันที่สมัครใช้งาน
               </p>
 
-              <h3 className="text-2xl font-black text-blue-700">
+              <h3 className="text-xl font-black text-gray-800 break-all">
                 {registerDate || "-"}
               </h3>
 
