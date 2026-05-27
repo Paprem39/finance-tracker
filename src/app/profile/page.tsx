@@ -1,26 +1,67 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
-  const router = useRouter();
 
   const [nickname, setNickname] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [registerDate, setRegisterDate] = useState("");
 
   useEffect(() => {
-    setNickname(localStorage.getItem("nickname") || "");
-    setFirstname(localStorage.getItem("firstname") || "");
-    setLastname(localStorage.getItem("lastname") || "");
-    setEmail(localStorage.getItem("email") || "");
-    setUsername(localStorage.getItem("username") || "");
+
+    setNickname(
+      localStorage.getItem("nickname") || ""
+    );
+
+    setFirstname(
+      localStorage.getItem("firstname") || ""
+    );
+
+    setLastname(
+      localStorage.getItem("lastname") || ""
+    );
+
+    setEmail(
+      localStorage.getItem("email") || ""
+    );
+
+    setUsername(
+      localStorage.getItem("username") || ""
+    );
+
+    // สมัครเมื่อไหร่
+    let savedDate =
+      localStorage.getItem("registerDate");
+
+    // ถ้ายังไม่มี ให้สร้างวันสมัครครั้งแรก
+    if (!savedDate) {
+
+      savedDate =
+        new Date().toLocaleDateString(
+          "th-TH",
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }
+        );
+
+      localStorage.setItem(
+        "registerDate",
+        savedDate
+      );
+    }
+
+    setRegisterDate(savedDate);
+
   }, []);
 
   return (
+
     <div className="min-h-screen overflow-hidden relative bg-gradient-to-br from-indigo-200 via-blue-100 to-cyan-100 p-6">
 
       {/* Glow Background */}
@@ -29,43 +70,25 @@ export default function ProfilePage() {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/30 blur-3xl rounded-full"></div>
 
       {/* Header */}
-      <div className="relative z-10 flex items-center justify-between mb-10">
+      <div className="relative z-10 mb-10">
 
         <div>
-        <h1 className="text-3xl md:text-5xl font-black text-gray-800 drop-shadow-sm">
+
+          <h1 className="text-3xl md:text-5xl font-black text-gray-800 drop-shadow-sm">
             ข้อมูลส่วนตัว
           </h1>
 
           <p className="text-gray-600 mt-3 text-lg">
             โปรไฟล์ และข้อมูลส่วนตัวของคุณ
           </p>
-        </div>
 
-        {/* Back */}
-        <button
-          onClick={() => router.push("/menu")}
-          className="
-            bg-white/70
-            backdrop-blur-xl
-            border border-white/40
-            px-4 py-2
-            md:px-6 md:py-3
-            rounded-2xl
-            shadow-lg
-            hover:scale-105
-            transition
-            text-gray-700
-            font-bold
-            text-sm md:text-base
-          "
-        >
-          ← กลับเมนู
-        </button>
+        </div>
 
       </div>
 
       {/* Main Card */}
-      <div className="
+      <div
+        className="
         relative z-10
         max-w-5xl
         mx-auto
@@ -75,17 +98,20 @@ export default function ProfilePage() {
         rounded-[40px]
         shadow-2xl
         overflow-hidden
-      ">
+      "
+      >
 
         {/* Top Banner */}
-        <div className="
+        <div
+          className="
           h-52
           bg-gradient-to-r
           from-blue-600
           via-indigo-600
           to-cyan-500
           relative
-        ">
+        "
+        >
 
           {/* Glow */}
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
@@ -96,17 +122,49 @@ export default function ProfilePage() {
         <div className="relative px-8 pb-10">
 
           {/* Profile Circle */}
-          <div className="
-            -mt-20
-            w-40 h-40
-            rounded-full
-            bg-gradient-to-br from-white to-blue-100
-            border-[6px] border-white
-            shadow-2xl
-            flex items-center justify-center
-            text-6xl font-black text-blue-700
-          ">
-            U
+          <div className="relative w-fit">
+
+            <div
+              className="
+              -mt-20
+              w-40 h-40
+              rounded-full
+              bg-gradient-to-br from-white to-blue-100
+              border-[6px] border-white
+              shadow-2xl
+              flex items-center justify-center
+              text-6xl font-black text-blue-700
+              overflow-hidden
+            "
+            >
+              U
+            </div>
+
+            {/* Camera Button */}
+            <button
+              className="
+                absolute
+                bottom-2
+                right-2
+                w-12
+                h-12
+                rounded-full
+                bg-blue-600
+                hover:bg-blue-700
+                text-white
+                flex
+                items-center
+                justify-center
+                shadow-xl
+                border-4
+                border-white
+                transition
+                active:scale-95
+              "
+            >
+              📷
+            </button>
+
           </div>
 
           {/* Name */}
@@ -123,13 +181,15 @@ export default function ProfilePage() {
             {/* Online */}
             <div className="flex items-center gap-3 mt-4">
 
-              <div className="
+              <div
+                className="
                 w-4 h-4
                 rounded-full
                 bg-green-500
                 animate-pulse
                 shadow-lg shadow-green-400
-              "></div>
+              "
+              ></div>
 
               <p className="text-green-600 font-bold text-lg">
                 Online
@@ -140,16 +200,19 @@ export default function ProfilePage() {
           </div>
 
           {/* Info Grid */}
-          <div className="
+          <div
+            className="
             grid
             grid-cols-1
             md:grid-cols-2
             gap-6
             mt-12
-          ">
+          "
+          >
 
-            {/* Card */}
-            <div className="
+            {/* Firstname */}
+            <div
+              className="
               bg-white/70
               backdrop-blur-xl
               rounded-3xl
@@ -158,7 +221,8 @@ export default function ProfilePage() {
               border border-white/40
               hover:scale-[1.02]
               transition
-            ">
+            "
+            >
               <p className="text-gray-500 mb-3">
                 ชื่อจริง
               </p>
@@ -166,10 +230,12 @@ export default function ProfilePage() {
               <h3 className="text-2xl font-black text-gray-800">
                 {firstname || "-"}
               </h3>
+
             </div>
 
-            {/* Card */}
-            <div className="
+            {/* Lastname */}
+            <div
+              className="
               bg-white/70
               backdrop-blur-xl
               rounded-3xl
@@ -178,7 +244,8 @@ export default function ProfilePage() {
               border border-white/40
               hover:scale-[1.02]
               transition
-            ">
+            "
+            >
               <p className="text-gray-500 mb-3">
                 นามสกุล
               </p>
@@ -186,10 +253,12 @@ export default function ProfilePage() {
               <h3 className="text-2xl font-black text-gray-800">
                 {lastname || "-"}
               </h3>
+
             </div>
 
-            {/* Card */}
-            <div className="
+            {/* Nickname */}
+            <div
+              className="
               bg-white/70
               backdrop-blur-xl
               rounded-3xl
@@ -198,7 +267,8 @@ export default function ProfilePage() {
               border border-white/40
               hover:scale-[1.02]
               transition
-            ">
+            "
+            >
               <p className="text-gray-500 mb-3">
                 ชื่อเล่น
               </p>
@@ -206,10 +276,12 @@ export default function ProfilePage() {
               <h3 className="text-xl font-black text-gray-800 break-all">
                 {nickname || "-"}
               </h3>
+
             </div>
 
-            {/* Card */}
-            <div className="
+            {/* Email */}
+            <div
+              className="
               bg-white/70
               backdrop-blur-xl
               rounded-3xl
@@ -218,14 +290,40 @@ export default function ProfilePage() {
               border border-white/40
               hover:scale-[1.02]
               transition
-            ">
+            "
+            >
               <p className="text-gray-500 mb-3">
                 อีเมลล์
               </p>
 
-              <h3 className="text-2xl font-black text-gray-800">
+              <h3 className="text-xl font-black text-gray-800 break-all">
                 {email || "-"}
               </h3>
+
+            </div>
+
+            {/* Register Date */}
+            <div
+              className="
+              bg-white/70
+              backdrop-blur-xl
+              rounded-3xl
+              p-6
+              shadow-lg
+              border border-white/40
+              hover:scale-[1.02]
+              transition
+              md:col-span-2
+            "
+            >
+              <p className="text-gray-500 mb-3">
+                วันที่สมัครใช้งาน
+              </p>
+
+              <h3 className="text-2xl font-black text-blue-700">
+                {registerDate || "-"}
+              </h3>
+
             </div>
 
           </div>
