@@ -2,12 +2,39 @@
 
 import { useEffect, useState } from "react";
 
+type DebtItem = {
+    id: number;
+    name: string;
+    amount: number;
+    paid: number;
+    history: {
+      amount: number;
+      date: string;
+    }[];
+  };
+  
+  type BillItem = {
+    id: number;
+    name: string;
+    amount: number;
+    paid: boolean;
+  };
+  
+  type InstallmentItem = {
+    id: number;
+    name: string;
+    total: number;
+    paid: number;
+    remain: number;
+  };
+
 export default function DebtPage() {
 
   // =========================
   // Creditor
   // =========================
-  const [creditors, setCreditors] = useState<any[]>([]);
+  const [creditors, setCreditors] =
+  useState<DebtItem[]>([]);
   const [showCreditorPopup, setShowCreditorPopup] =
     useState(false);
 
@@ -20,7 +47,8 @@ export default function DebtPage() {
   // =========================
   // Debtor
   // =========================
-  const [debtors, setDebtors] = useState<any[]>([]);
+  const [debtors, setDebtors] =
+  useState<DebtItem[]>([]);
   const [showDebtorPopup, setShowDebtorPopup] =
     useState(false);
 
@@ -33,7 +61,8 @@ export default function DebtPage() {
   // =========================
   // Monthly Bills
   // =========================
-  const [bills, setBills] = useState<any[]>([]);
+  const [bills, setBills] =
+  useState<BillItem[]>([]);
 
   const [showBillPopup, setShowBillPopup] =
     useState(false);
@@ -48,7 +77,7 @@ export default function DebtPage() {
   // Installments
   // =========================
   const [installments, setInstallments] =
-    useState<any[]>([]);
+  useState<InstallmentItem[]>([]);
 
   const [showInstallPopup, setShowInstallPopup] =
     useState(false);
@@ -102,7 +131,9 @@ export default function DebtPage() {
   // =========================
   // Save Functions
   // =========================
-  const saveCreditors = (data: any[]) => {
+  const saveCreditors = (
+    data: DebtItem[]
+  ) => {
 
     setCreditors(data);
 
@@ -112,7 +143,9 @@ export default function DebtPage() {
     );
   };
 
-  const saveDebtors = (data: any[]) => {
+  const saveDebtors = (
+    data: DebtItem[]
+  ) => {
 
     setDebtors(data);
 
@@ -122,8 +155,9 @@ export default function DebtPage() {
     );
   };
 
-  const saveBills = (data: any[]) => {
-
+  const saveBills = (
+    data: BillItem[]
+  ) => {
     setBills(data);
 
     localStorage.setItem(
@@ -132,7 +166,9 @@ export default function DebtPage() {
     );
   };
 
-  const saveInstallments = (data: any[]) => {
+  const saveInstallments = (
+    data: InstallmentItem[]
+  ) => {
 
     setInstallments(data);
 
@@ -497,9 +533,12 @@ export default function DebtPage() {
 
                       {item.history.map(
                         (
-                          h: any,
-                          index: number
-                        ) => (
+                            h: {
+                              amount: number;
+                              date: string;
+                            },
+                            index: number
+                          ) => (
 
                           <div
                             key={index}
@@ -633,11 +672,14 @@ export default function DebtPage() {
 
                     <div className="mt-4 space-y-2">
 
-                      {item.history.map(
+                    {item.history.map(
                         (
-                          h: any,
-                          index: number
-                        ) => (
+                            h: {
+                                amount: number;
+                                date: string;
+                            },
+                                index: number
+                            ) => (
 
                           <div
                             key={index}
