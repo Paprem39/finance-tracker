@@ -696,14 +696,14 @@ const filteredTransactions = useMemo(() => {
 
                 <Line
                   type="monotone"
-                  dataKey="รายรับ"
+                  dataKey="income"
                   stroke="#22c55e"
                   strokeWidth={4}
                 />
 
                 <Line
                   type="monotone"
-                  dataKey="รายจ่าย"
+                  dataKey="expense"
                   stroke="#ef4444"
                   strokeWidth={4}
                 />
