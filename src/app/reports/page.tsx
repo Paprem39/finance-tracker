@@ -24,9 +24,7 @@ export default function ReportsPage() {
 
   const [filterType, setFilterType] = useState("all");
 
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toLocaleDateString("en-CA")
-  );
+
 
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7)
@@ -37,6 +35,9 @@ export default function ReportsPage() {
   );
 
   const [search, setSearch] = useState("");
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const COLORS = [
     "#22c55e",
@@ -63,42 +64,67 @@ export default function ReportsPage() {
   }, []);
 
   // Filter Data
-  const filteredTransactions = useMemo(() => {
+const filteredTransactions = useMemo(() => {
 
     return transactions.filter((item) => {
-
-      const itemDate = item.date;
-
+  
+      const itemDate = new Date(item.date);
+  
+      // Search
       const matchSearch =
         item.category
           .toLowerCase()
           .includes(search.toLowerCase());
-
+  
       if (!matchSearch) return false;
+  
+      // Daily Range
+      if (filterType === "daily") {
 
-      if (filterType === "day") {
-
-        return itemDate === selectedDate;
+        if (startDate && !endDate) {
+          return item.date === startDate;
+        }
+      
+        if (!startDate || !endDate) {
+          return true;
+        }
+      
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+      
+        return (
+          itemDate >= start &&
+          itemDate <= end
+        );
       }
-
-      if (filterType === "month") {
-
-        return itemDate.startsWith(selectedMonth);
+  
+      // Monthly
+      if (filterType === "monthly") {
+  
+        const itemMonth =
+          item.date.slice(0, 7);
+  
+        return itemMonth === selectedMonth;
       }
-
-      if (filterType === "year") {
-
-        return itemDate.startsWith(selectedYear);
+  
+      // Yearly
+      if (filterType === "yearly") {
+  
+        const itemYear =
+          item.date.slice(0, 4);
+  
+        return itemYear === selectedYear;
       }
-
+  
       return true;
-
+  
     });
-
+  
   }, [
     transactions,
     filterType,
-    selectedDate,
+    startDate,
+    endDate,
     selectedMonth,
     selectedYear,
     search,
@@ -164,8 +190,11 @@ export default function ReportsPage() {
 
   });
 
-  const lineData =
-    Object.values(groupedLineData).reverse();
+  const lineData = Object.values(groupedLineData).sort(
+    (a: any, b: any) =>
+      new Date(a.date).getTime() -
+      new Date(b.date).getTime()
+  );
 
   // Export CSV
   const exportCSV = () => {
@@ -253,42 +282,67 @@ export default function ReportsPage() {
               ทั้งหมด
             </option>
 
-            <option value="day">
+            <option value="daily">
               รายวัน
             </option>
 
-            <option value="month">
+            <option value="monthly">
               รายเดือน
             </option>
 
-            <option value="year">
+            <option value="yearly">
               รายปี
             </option>
 
           </select>
 
-          {/* Date */}
-          {filterType === "day" && (
+          {/* Daily Range */}
+{filterType === "daily" && (
 
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) =>
-                setSelectedDate(e.target.value)
-              }
-              className="
-                p-4
-                rounded-2xl
-                border
-                border-gray-300
-                bg-white
-              "
-            />
+<div className="flex flex-col md:flex-row gap-3">
 
-          )}
+  {/* Start */}
+  <input
+    type="date"
+    value={startDate}
+    onChange={(e) =>
+      setStartDate(e.target.value)
+    }
+    className="
+      border
+      border-gray-300
+      rounded-2xl
+      px-4
+      py-3
+      bg-white
+    "
+  />
+
+  {/* End */}
+  <input
+    type="date"
+    value={endDate}
+    onChange={(e) =>
+      setEndDate(e.target.value)
+    }
+    className="
+      border
+      border-gray-300
+      rounded-2xl
+      px-4
+      py-3
+      bg-white
+    "
+  />
+
+</div>
+
+)}
+
+          
 
           {/* Month */}
-          {filterType === "month" && (
+          {filterType === "monthly" && (
 
             <input
               type="month"
@@ -308,7 +362,7 @@ export default function ReportsPage() {
           )}
 
           {/* Year */}
-          {filterType === "year" && (
+          {filterType === "yearly" && (
 
             <input
               type="number"
@@ -580,9 +634,9 @@ export default function ReportsPage() {
         {/* Bar Chart */}
         <div className="bg-white rounded-[32px] p-6 shadow-2xl">
 
-          <h2 className="text-2xl font-black mb-4">
-            📊 เปรียบเทียบรายรับ/รายจ่าย
-          </h2>
+        <h2 className="text-xl font-black mb-4 whitespace-nowrap overflow-hidden text-ellipsis">
+  📊       เปรียบเทียบรายรับ/รายจ่าย
+        </h2>
 
           <div className="h-[320px]">
 
