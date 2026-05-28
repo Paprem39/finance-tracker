@@ -399,10 +399,6 @@ export default function DebtPage() {
               <h2 className="text-3xl font-black">
                 📌 เจ้าหนี้
               </h2>
-
-              <p className="text-gray-500 mt-2">
-                รายการที่คุณยืมเงินมา
-              </p>
             </div>
 
             <button
@@ -515,10 +511,6 @@ export default function DebtPage() {
               <h2 className="text-3xl font-black">
                 💸 ลูกหนี้
               </h2>
-
-              <p className="text-gray-500 mt-2">
-                รายการที่มีคนยืมเงินคุณ
-              </p>
             </div>
 
             <button
@@ -626,177 +618,328 @@ export default function DebtPage() {
       </div>
 
       {/* Bills */}
-      <div className="bg-white rounded-[32px] shadow-2xl p-6 mt-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-3xl font-black">
-              🧾 ค่าใช้จ่ายรายเดือน
-            </h2>
+<div className="bg-white rounded-[32px] shadow-2xl p-6 mt-8">
 
-            <p className="text-gray-500 mt-2">
-              ค่าห้อง ค่าน้ำ ค่าไฟ บัตรเครดิต ฯลฯ
-            </p>
-          </div>
+<div className="flex items-center justify-between mb-6">
 
-          <button
-            onClick={() =>
-              setShowBillPopup(true)
-            }
-            className="
-              bg-orange-500
-              hover:bg-orange-600
-              text-white
-              px-5 py-3
-              rounded-2xl
-              font-bold
-              shadow-lg
-            "
+  <div>
+
+    <h2 className="text-3xl font-black">
+      🧾 ค่าใช้จ่ายรายเดือน
+    </h2>
+
+    <p className="text-gray-500 mt-2">
+      ค่าห้อง ค่าน้ำ ค่าไฟ บัตรเครดิต ฯลฯ
+    </p>
+
+  </div>
+
+  <button
+    onClick={() => setShowBillPopup(true)}
+    className="
+      bg-orange-500
+      hover:bg-orange-600
+      text-white
+      px-5 py-3
+      rounded-2xl
+      font-bold
+      shadow-lg
+    "
+  >
+    + Add
+  </button>
+
+</div>
+
+<div className="overflow-x-auto">
+
+  <table className="w-full">
+
+    <thead>
+
+      <tr className="border-b text-gray-500 text-sm">
+
+        <th className="text-left py-3">
+          รายการ
+        </th>
+
+        <th className="text-left py-3">
+          จำนวนเงิน
+        </th>
+
+        <th className="text-right py-3">
+          จัดการ
+        </th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {bills.length === 0 && (
+
+        <tr>
+
+          <td
+            colSpan={3}
+            className="py-6 text-gray-400"
           >
-            + Add
-          </button>
-        </div>
+            ยังไม่มีรายการ
+          </td>
 
-        <div className="space-y-4">
-          {bills.length === 0 && (
-            <p className="text-gray-400">
-              ยังไม่มีรายการ
-            </p>
-          )}
+        </tr>
 
-          {bills.map((item) => (
-            <div
-              key={item.id}
-              className="
-                flex
-                items-center
-                justify-between
-                border
-                border-gray-200
-                rounded-3xl
-                p-5
-                bg-gray-50
-              "
-            >
-              <div>
-                <h3 className="text-2xl font-black">
-                  {item.name}
-                </h3>
+      )}
 
-                <p className="text-gray-500 mt-1">
-                  {item.amount.toLocaleString()} ฿
-                </p>
-              </div>
+      {bills.map((item) => (
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() =>
-                    editBill(item.id)
-                  }
-                  className="
-                    p-2
-                    rounded-lg
-                    hover:bg-yellow-100
-                  "
-                >
-                  <Pencil
-                    size={18}
-                    className="text-yellow-600"
-                  />
-                </button>
+        <tr
+          key={item.id}
+          className="border-b last:border-0"
+        >
 
-                <button
-                  onClick={() =>
-                    deleteBill(item.id)
-                  }
-                  className="
-                    p-2
-                    rounded-lg
-                    hover:bg-red-100
-                  "
-                >
-                  <Trash2
-                    size={18}
-                    className="text-red-500"
-                  />
-                </button>
-              </div>
+          <td className="py-4 font-semibold">
+            {item.name}
+          </td>
+
+          <td className="py-4">
+            {item.amount.toLocaleString()} ฿
+          </td>
+
+          <td className="py-4">
+
+            <div className="flex justify-end gap-3">
+
+              <button
+                onClick={() =>
+                  editBill(item.id)
+                }
+                className="
+                  p-2
+                  rounded-lg
+                  hover:bg-yellow-100
+                "
+              >
+                <Pencil
+                  size={18}
+                  className="text-yellow-600"
+                />
+              </button>
+
+              <button
+                onClick={() =>
+                  deleteBill(item.id)
+                }
+                className="
+                  p-2
+                  rounded-lg
+                  hover:bg-red-100
+                "
+              >
+                <Trash2
+                  size={18}
+                  className="text-red-500"
+                />
+              </button>
+
             </div>
-          ))}
-        </div>
-      </div>
+
+          </td>
+
+        </tr>
+
+      ))}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+</div>
 
       {/* Installments */}
-      <div className="bg-white rounded-[32px] shadow-2xl p-6 mt-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-3xl font-black">
-              🚗 ค่างวด / ผ่อนชำระ
-            </h2>
+<div className="bg-white rounded-[32px] shadow-2xl p-6 mt-8">
 
-            <p className="text-gray-500 mt-2">
-              ติดตามยอดคงเหลือ
-            </p>
-          </div>
+<div className="flex items-center justify-between mb-6">
 
-          <button
-            onClick={() =>
-              setShowInstallPopup(true)
-            }
-            className="
-              bg-purple-600
-              hover:bg-purple-700
-              text-white
-              px-5 py-3
-              rounded-2xl
-              font-bold
-              shadow-lg
-            "
+  <div>
+
+    <h2 className="text-3xl font-black">
+      🚗 ค่างวด / ผ่อนชำระ
+    </h2>
+
+    <p className="text-gray-500 mt-2">
+      ติดตามยอดคงเหลือของคุณ
+    </p>
+
+  </div>
+
+  <button
+    onClick={() =>
+      setShowInstallPopup(true)
+    }
+    className="
+      bg-purple-600
+      hover:bg-purple-700
+      text-white
+      px-5 py-3
+      rounded-2xl
+      font-bold
+      shadow-lg
+    "
+  >
+    + Add
+  </button>
+
+</div>
+
+<div className="overflow-x-auto">
+
+  <table className="w-full">
+
+    <thead>
+
+      <tr className="border-b text-gray-500 text-sm">
+
+        <th className="text-left py-3">
+          รายการ
+        </th>
+
+        <th className="text-left py-3">
+          ยอดทั้งหมด
+        </th>
+
+        <th className="text-left py-3">
+          คงเหลือ
+        </th>
+
+        <th className="text-right py-3">
+          จัดการ
+        </th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {installments.length === 0 && (
+
+        <tr>
+
+          <td
+            colSpan={4}
+            className="py-6 text-gray-400"
           >
-            + Add
-          </button>
-        </div>
+            ยังไม่มีข้อมูล
+          </td>
 
-        <div className="space-y-5">
-          {installments.length === 0 && (
-            <p className="text-gray-400">
-              ยังไม่มีข้อมูล
-            </p>
-          )}
+        </tr>
 
-          {installments.map((item) => (
-            <div
-              key={item.id}
-              className="
-                border
-                border-gray-200
-                rounded-3xl
-                p-5
-                bg-gray-50
-              "
-            >
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="text-2xl font-black">
-                    {item.name}
-                  </h3>
+      )}
 
-                  <p className="text-gray-500 mt-1">
-                    ทั้งหมด{" "}
-                    {item.total.toLocaleString()} ฿
-                  </p>
-                </div>
+      {installments.map((item) => (
 
-                <div className="text-right">
-                  <p className="text-red-500 font-black text-xl">
-                    เหลือ{" "}
-                    {item.remain.toLocaleString()} ฿
-                  </p>
-                </div>
-              </div>
+        <tr
+          key={item.id}
+          className="border-b last:border-0"
+        >
+
+          <td className="py-4 font-semibold">
+            {item.name}
+          </td>
+
+          <td className="py-4">
+            {item.total.toLocaleString()} ฿
+          </td>
+
+          <td className="py-4 text-purple-600 font-bold">
+            {item.remain.toLocaleString()} ฿
+          </td>
+
+          <td className="py-4">
+
+            <div className="flex justify-end gap-3">
+
+              <button
+                onClick={() => {
+
+                  const amount =
+                    prompt("แก้ไขยอดใหม่ ?");
+
+                  if (!amount) return;
+
+                  const updated =
+                    installments.map((i) => {
+
+                      if (i.id === item.id) {
+
+                        return {
+                          ...i,
+                          total: Number(amount),
+                          remain:
+                            Number(amount) -
+                            i.paid,
+                        };
+                      }
+
+                      return i;
+                    });
+
+                  saveInstallments(updated);
+                }}
+                className="
+                  p-2
+                  rounded-lg
+                  hover:bg-yellow-100
+                "
+              >
+                <Pencil
+                  size={18}
+                  className="text-yellow-600"
+                />
+              </button>
+
+              <button
+                onClick={() => {
+
+                  const filtered =
+                    installments.filter(
+                      (i) =>
+                        i.id !== item.id
+                    );
+
+                  saveInstallments(filtered);
+                }}
+                className="
+                  p-2
+                  rounded-lg
+                  hover:bg-red-100
+                "
+              >
+                <Trash2
+                  size={18}
+                  className="text-red-500"
+                />
+              </button>
+
             </div>
-          ))}
-        </div>
-      </div>
+
+          </td>
+
+        </tr>
+
+      ))}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+</div>
 
       {/* Creditor Popup */}
       {showCreditorPopup && (
