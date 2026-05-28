@@ -196,7 +196,7 @@ export default function DebtPage() {
 
     setShowBillPopup(false);
   };
-  
+
   // =========================
 // Toggle Bill Paid
 // =========================
@@ -453,6 +453,24 @@ const toggleBillPaid = (id: number) => {
           </div>
         </div>
 
+        <div className="mt-4 flex justify-end">
+          <div className="bg-blue-50 px-5 py-3 rounded-2xl">
+            <p className="text-sm text-gray-500">
+              ยอดรวมทั้งหมด
+            </p>
+
+        <h3 className="text-2xl font-black text-blue-700">
+          {creditors
+          .reduce(
+            (sum, item) => sum + item.amount,
+          0
+          )
+            .toLocaleString()}{" "}
+          ฿
+        </h3>
+          </div>
+        </div>
+
         {/* Debtor */}
         <div className="bg-white rounded-[32px] shadow-2xl p-6">
           <div className="flex items-center justify-between mb-6">
@@ -570,6 +588,24 @@ const toggleBillPaid = (id: number) => {
           </div>
         </div>
       </div>
+
+      <div className="mt-4 flex justify-end">
+        <div className="bg-indigo-50 px-5 py-3 rounded-2xl">
+          <p className="text-sm text-gray-500">
+            ยอดรวมทั้งหมด
+          </p>
+
+      <h3 className="text-2xl font-black text-indigo-700">
+      {debtors
+        .reduce(
+          (sum, item) => sum + item.amount,
+          0
+        )
+        .toLocaleString()}{" "}
+      ฿
+      </h3>
+    </div>
+  </div>
 
       {/* Bills */}
 <div className="bg-white rounded-[32px] shadow-2xl p-6 mt-8">
@@ -736,6 +772,24 @@ const toggleBillPaid = (id: number) => {
 </div>
 
 </div>
+
+          <div className="mt-4 flex justify-end">
+            <div className="bg-orange-50 px-5 py-3 rounded-2xl">
+              <p className="text-sm text-gray-500">
+                ยอดรวมทั้งหมด
+              </p>
+
+          <h3 className="text-2xl font-black text-orange-600">
+            {bills
+              .reduce(
+                (sum, item) => sum + item.amount,
+                0
+              )
+              .toLocaleString()}{" "}
+                ฿
+          </h3>
+        </div>
+      </div>
 
 
       {/* Creditor Popup */}
