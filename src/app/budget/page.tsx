@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useState,useMemo,} from "react";
 import {
   Pencil,
   Trash2,
@@ -179,6 +179,70 @@ const totalSpent = budgets.reduce(
   0
 );
 
+// =========================
+// Filter
+// =========================
+const [filterType, setFilterType] =
+  useState("monthly");
+
+const [selectedMonth, setSelectedMonth] =
+  useState(
+    new Date()
+      .toISOString()
+      .slice(0, 7)
+  );
+
+const [selectedYear, setSelectedYear] =
+  useState(
+    new Date()
+      .getFullYear()
+      .toString()
+  );
+
+const [startDate, setStartDate] =
+  useState("");
+
+const [endDate, setEndDate] =
+  useState("");
+
+const [search, setSearch] =
+  useState("");
+
+  // =========================
+// Filtered Budgets
+// =========================
+const filteredBudgets = useMemo(() => {
+
+  return budgets.filter((item) => {
+
+    // Search
+    const matchSearch =
+      item.category
+        .toLowerCase()
+        .includes(
+          search.toLowerCase()
+        );
+
+    if (!matchSearch)
+      return false;
+
+    // ตอนนี้ยัง mock อยู่
+    // ยังไม่ได้ filter date จริง
+
+    return true;
+
+  });
+
+}, [
+  budgets,
+  search,
+  filterType,
+  selectedMonth,
+  selectedYear,
+  startDate,
+  endDate,
+]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-cyan-100 p-6 text-black">
       {/* Header */}
@@ -192,6 +256,172 @@ const totalSpent = budgets.reduce(
           และควบคุมรายจ่ายของคุณ
         </p>
       </div>
+
+      {/* Filters */}
+<div
+  className="
+    bg-white/80
+    backdrop-blur-xl
+    border
+    border-white/40
+    rounded-[32px]
+    shadow-2xl
+    p-6
+    mb-8
+  "
+>
+
+  <div className="flex flex-col xl:flex-row gap-4">
+
+    {/* Filter Type */}
+    <select
+      value={filterType}
+      onChange={(e) =>
+        setFilterType(
+          e.target.value
+        )
+      }
+      className="
+        p-4
+        rounded-2xl
+        border
+        border-gray-300
+        bg-white
+        font-semibold
+      "
+    >
+
+      <option value="all">
+        ทั้งหมด
+      </option>
+
+      <option value="daily">
+        รายวัน
+      </option>
+
+      <option value="monthly">
+        รายเดือน
+      </option>
+
+      <option value="yearly">
+        รายปี
+      </option>
+
+    </select>
+
+    {/* Daily */}
+    {filterType === "daily" && (
+
+      <div className="flex flex-col md:flex-row gap-3">
+
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) =>
+            setStartDate(
+              e.target.value
+            )
+          }
+          className="
+            border
+            border-gray-300
+            rounded-2xl
+            px-4
+            py-3
+            bg-white
+          "
+        />
+
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) =>
+            setEndDate(
+              e.target.value
+            )
+          }
+          className="
+            border
+            border-gray-300
+            rounded-2xl
+            px-4
+            py-3
+            bg-white
+          "
+        />
+
+      </div>
+
+    )}
+
+    {/* Monthly */}
+    {filterType === "monthly" && (
+
+      <input
+        type="month"
+        value={selectedMonth}
+        onChange={(e) =>
+          setSelectedMonth(
+            e.target.value
+          )
+        }
+        className="
+          p-4
+          rounded-2xl
+          border
+          border-gray-300
+          bg-white
+        "
+      />
+
+    )}
+
+    {/* Yearly */}
+    {filterType === "yearly" && (
+
+      <input
+        type="number"
+        value={selectedYear}
+        onChange={(e) =>
+          setSelectedYear(
+            e.target.value
+          )
+        }
+        placeholder="2026"
+        className="
+          p-4
+          rounded-2xl
+          border
+          border-gray-300
+          bg-white
+        "
+      />
+
+    )}
+
+    {/* Search */}
+    <input
+      type="text"
+      value={search}
+      onChange={(e) =>
+        setSearch(
+          e.target.value
+        )
+      }
+      placeholder="ค้นหาหมวด..."
+      className="
+        flex-1
+        p-4
+        rounded-2xl
+        border
+        border-gray-300
+        bg-white
+      "
+    />
+
+  </div>
+
+</div>
 
       {/* Budget Table */}
       <div className="bg-white rounded-[32px] shadow-2xl p-6">
@@ -255,7 +485,7 @@ const totalSpent = budgets.reduce(
             </thead>
 
             <tbody>
-              {budgets.map((item) => (
+            {filteredBudgets.map((item) => (
                 <tr
                   key={item.id}
                   className="
@@ -373,6 +603,10 @@ const totalSpent = budgets.reduce(
 </div>
       </div>
 
+      
+
+      
+
       {/* Progress Section */}
       <div className="mt-8 bg-white rounded-[32px] shadow-2xl p-6">
         <div className="mb-6">
@@ -387,7 +621,7 @@ const totalSpent = budgets.reduce(
         </div>
 
         <div className="space-y-6">
-          {budgets.map((item) => {
+        {filteredBudgets.map((item) => {
             const percent =
               getPercent(
                 item.used,
