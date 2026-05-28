@@ -316,32 +316,7 @@ const totalSpent = budgets.reduce(
           </table>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 mt-6">
-
-  {/* Total Budget */}
-  <div
-    className="
-      bg-cyan-50
-      border border-cyan-200
-      rounded-3xl
-      p-6
-    "
-  >
-    <p className="text-gray-500 text-lg">
-      Budget รวมทั้งหมด
-    </p>
-
-    <h2
-      className="
-        text-4xl
-        font-black
-        text-cyan-700
-        mt-2
-      "
-    >
-      {totalBudget.toLocaleString()} ฿
-    </h2>
-  </div>
+        <div className="grid grid-cols-2 gap-4 mt-6">
 
   {/* Total Spent */}
   <div
@@ -349,22 +324,49 @@ const totalSpent = budgets.reduce(
       bg-orange-50
       border border-orange-200
       rounded-3xl
-      p-6
+      p-4
     "
   >
-    <p className="text-gray-500 text-lg">
+    <p className="text-gray-500 text-sm">
       ใช้ไปทั้งหมด
     </p>
 
     <h2
       className="
-        text-4xl
+        text-2xl
+        md:text-3xl
         font-black
         text-orange-600
-        mt-2
+        mt-1
       "
     >
       {totalSpent.toLocaleString()} ฿
+    </h2>
+  </div>
+
+  {/* Total Budget */}
+  <div
+    className="
+      bg-cyan-50
+      border border-cyan-200
+      rounded-3xl
+      p-4
+    "
+  >
+    <p className="text-gray-500 text-sm">
+      Budget รวมทั้งหมด
+    </p>
+
+    <h2
+      className="
+        text-2xl
+        md:text-3xl
+        font-black
+        text-cyan-700
+        mt-1
+      "
+    >
+      {totalBudget.toLocaleString()} ฿
     </h2>
   </div>
 
