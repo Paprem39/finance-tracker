@@ -408,7 +408,6 @@ const filteredBudgets = useMemo(() => {
         
             setCategory("");
             setLimit("");
-            setUsed("");
         
             setShowPopup(true);
           }}
