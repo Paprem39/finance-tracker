@@ -188,7 +188,7 @@ const editBudget = (
         {/* Top */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-3xl font-black">
+            <h2 className="text-3xl font-black whitespace-nowrap">
               📊 งบประมาณทั้งหมด
             </h2>
 
