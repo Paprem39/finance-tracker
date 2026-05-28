@@ -399,6 +399,9 @@ export default function DebtPage() {
               <h2 className="text-3xl font-black">
                 📌 เจ้าหนี้
               </h2>
+              <p className="text-gray-500 mt-2">
+                รายการเจ้าหนี้ของคุณ
+             </p>
             </div>
 
             <button
@@ -511,6 +514,11 @@ export default function DebtPage() {
               <h2 className="text-3xl font-black">
                 💸 ลูกหนี้
               </h2>
+
+              <p className="text-gray-500 mt-2">
+                รายการลูกหนี้ติดค้าง
+             </p>
+
             </div>
 
             <button
@@ -629,7 +637,7 @@ export default function DebtPage() {
     </h2>
 
     <p className="text-gray-500 mt-2">
-      ค่าห้อง ค่าน้ำ ค่าไฟ บัตรเครดิต ฯลฯ
+      ผ่อนรถ ห้องเช่า บัตรเครดิต ฯลฯ
     </p>
 
   </div>
