@@ -364,7 +364,7 @@ const toggleBillPaid = (id: number) => {
                 shadow-lg
               "
             >
-              + Add
+              + เพิ่ม
             </button>
           </div>
 
@@ -499,7 +499,7 @@ const toggleBillPaid = (id: number) => {
                 shadow-lg
               "
             >
-              + Add
+              + เพิ่ม
             </button>
           </div>
 
@@ -636,7 +636,7 @@ const toggleBillPaid = (id: number) => {
       shadow-lg
     "
   >
-    + Add
+    + เพิ่ม
   </button>
 
 </div>

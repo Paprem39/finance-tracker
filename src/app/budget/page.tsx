@@ -421,7 +421,7 @@ const filteredBudgets = useMemo(() => {
               shadow-lg
             "
           >
-            + Add
+            + เพิ่ม
           </button>
         </div>
 
@@ -745,7 +745,7 @@ const filteredBudgets = useMemo(() => {
           p-4
         "
       />
-      
+
     </div>
 
     <div className="
