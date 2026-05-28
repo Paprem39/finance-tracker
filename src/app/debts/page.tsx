@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import {Pencil,Trash2,CheckCircle,} from "lucide-react";
 
 type DebtItem = {
   id: number;
@@ -272,6 +272,27 @@ export default function DebtPage() {
     setShowInstallPopup(false);
   };
 
+  // =========================
+// Toggle Bill Paid
+// =========================
+const toggleBillPaid = (id: number) => {
+
+    const updated = bills.map((item) => {
+  
+      if (item.id === id) {
+  
+        return {
+          ...item,
+          paid: !item.paid,
+        };
+      }
+  
+      return item;
+    });
+  
+    saveBills(updated);
+  };
+  
   // =========================
   // Delete
   // =========================
@@ -718,6 +739,30 @@ export default function DebtPage() {
           <td className="py-4">
 
             <div className="flex justify-end gap-3">
+
+                <button
+                    onClick={() =>
+                    toggleBillPaid(item.id)
+                    }
+                    className={`
+                        p-2
+                        rounded-lg
+                    ${
+                    item.paid
+                        ? "bg-green-100"
+                        : "hover:bg-gray-200"
+                    }
+                    `}
+                    >
+                    <CheckCircle
+                        size={18}
+                        className={
+                        item.paid
+                        ? "text-green-600"
+                        : "text-gray-400"
+                    }
+                />
+        </button>
 
               <button
                 onClick={() =>
