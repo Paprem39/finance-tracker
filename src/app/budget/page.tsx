@@ -745,24 +745,7 @@ const filteredBudgets = useMemo(() => {
           p-4
         "
       />
-
-      <input
-        type="number"
-        placeholder="ใช้ไป"
-        value={used}
-        onChange={(e) =>
-          setUsed(
-            e.target.value
-          )
-        }
-        className="
-          w-full
-          border
-          rounded-2xl
-          p-4
-        "
-      />
-
+      
     </div>
 
     <div className="
