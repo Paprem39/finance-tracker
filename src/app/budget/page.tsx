@@ -169,6 +169,16 @@ const editBudget = (
   setShowPopup(true);
 };
 
+const totalBudget = budgets.reduce(
+  (sum, item) => sum + item.limit,
+  0
+);
+
+const totalSpent = budgets.reduce(
+  (sum, item) => sum + item.used,
+  0
+);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-cyan-100 p-6 text-black">
       {/* Header */}
@@ -306,29 +316,59 @@ const editBudget = (
           </table>
         </div>
 
-        {/* Total */}
-        <div className="mt-6 flex justify-end">
-          <div className="bg-cyan-50 px-6 py-4 rounded-3xl">
-            <p className="text-sm text-gray-500">
-              Budget รวมทั้งหมด
-            </p>
+        <div className="grid md:grid-cols-2 gap-4 mt-6">
 
-            <h3 className="text-3xl font-black text-cyan-700">
-              {budgets
-                .reduce(
-                  (
-                    sum,
-                    item
-                  ) =>
-                    sum +
-                    item.limit,
-                  0
-                )
-                .toLocaleString()}{" "}
-              ฿
-            </h3>
-          </div>
-        </div>
+  {/* Total Budget */}
+  <div
+    className="
+      bg-cyan-50
+      border border-cyan-200
+      rounded-3xl
+      p-6
+    "
+  >
+    <p className="text-gray-500 text-lg">
+      Budget รวมทั้งหมด
+    </p>
+
+    <h2
+      className="
+        text-4xl
+        font-black
+        text-cyan-700
+        mt-2
+      "
+    >
+      {totalBudget.toLocaleString()} ฿
+    </h2>
+  </div>
+
+  {/* Total Spent */}
+  <div
+    className="
+      bg-orange-50
+      border border-orange-200
+      rounded-3xl
+      p-6
+    "
+  >
+    <p className="text-gray-500 text-lg">
+      ใช้ไปทั้งหมด
+    </p>
+
+    <h2
+      className="
+        text-4xl
+        font-black
+        text-orange-600
+        mt-2
+      "
+    >
+      {totalSpent.toLocaleString()} ฿
+    </h2>
+  </div>
+
+</div>
       </div>
 
       {/* Progress Section */}
