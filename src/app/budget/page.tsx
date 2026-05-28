@@ -205,26 +205,12 @@ const [startDate, setStartDate] =
 const [endDate, setEndDate] =
   useState("");
 
-const [search, setSearch] =
-  useState("");
-
   // =========================
 // Filtered Budgets
 // =========================
 const filteredBudgets = useMemo(() => {
 
   return budgets.filter((item) => {
-
-    // Search
-    const matchSearch =
-      item.category
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        );
-
-    if (!matchSearch)
-      return false;
 
     // ตอนนี้ยัง mock อยู่
     // ยังไม่ได้ filter date จริง
@@ -235,7 +221,6 @@ const filteredBudgets = useMemo(() => {
 
 }, [
   budgets,
-  search,
   filterType,
   selectedMonth,
   selectedYear,
@@ -398,26 +383,6 @@ const filteredBudgets = useMemo(() => {
       />
 
     )}
-
-    {/* Search */}
-    <input
-      type="text"
-      value={search}
-      onChange={(e) =>
-        setSearch(
-          e.target.value
-        )
-      }
-      placeholder="ค้นหาหมวด..."
-      className="
-        flex-1
-        p-4
-        rounded-2xl
-        border
-        border-gray-300
-        bg-white
-      "
-    />
 
   </div>
 
