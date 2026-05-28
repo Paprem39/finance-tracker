@@ -624,7 +624,7 @@ export default function DebtPage() {
 
   <div>
 
-    <h2 className="text-3xl font-black">
+    <h2 className="text-2xl font-black whitespace-nowrap">
       🧾 ค่าใช้จ่ายรายเดือน
     </h2>
 
@@ -766,7 +766,7 @@ export default function DebtPage() {
 
   <div>
 
-    <h2 className="text-3xl font-black">
+    <h2 className="text-2xl font-black whitespace-nowrap">
       🚗 ค่างวด / ผ่อนชำระ
     </h2>
 
