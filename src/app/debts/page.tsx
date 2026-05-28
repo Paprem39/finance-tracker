@@ -782,7 +782,10 @@ const toggleBillPaid = (id: number) => {
           <h3 className="text-2xl font-black text-orange-600">
             {bills
               .reduce(
-                (sum, item) => sum + item.amount,
+                (sum, item) =>
+                  item.paid
+                    ? sum
+                    : sum + item.amount,
                 0
               )
               .toLocaleString()}{" "}
