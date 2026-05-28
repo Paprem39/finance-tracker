@@ -16,14 +16,6 @@ type BillItem = {
   paid: boolean;
 };
 
-type InstallmentItem = {
-  id: number;
-  name: string;
-  total: number;
-  paid: number;
-  remain: number;
-};
-
 export default function DebtPage() {
   // =========================
   // Creditor
@@ -71,21 +63,6 @@ export default function DebtPage() {
     useState("");
 
   // =========================
-  // Installments
-  // =========================
-  const [installments, setInstallments] =
-    useState<InstallmentItem[]>([]);
-
-  const [showInstallPopup, setShowInstallPopup] =
-    useState(false);
-
-  const [installName, setInstallName] =
-    useState("");
-
-  const [installTotal, setInstallTotal] =
-    useState("");
-
-  // =========================
   // Load LocalStorage
   // =========================
   useEffect(() => {
@@ -98,9 +75,6 @@ export default function DebtPage() {
     const savedBills =
       localStorage.getItem("monthlyBills");
 
-    const savedInstallments =
-      localStorage.getItem("installments");
-
     if (savedCreditors) {
       setCreditors(JSON.parse(savedCreditors));
     }
@@ -111,12 +85,6 @@ export default function DebtPage() {
 
     if (savedBills) {
       setBills(JSON.parse(savedBills));
-    }
-
-    if (savedInstallments) {
-      setInstallments(
-        JSON.parse(savedInstallments)
-      );
     }
   }, []);
 
@@ -152,17 +120,6 @@ export default function DebtPage() {
 
     localStorage.setItem(
       "monthlyBills",
-      JSON.stringify(data)
-    );
-  };
-
-  const saveInstallments = (
-    data: InstallmentItem[]
-  ) => {
-    setInstallments(data);
-
-    localStorage.setItem(
-      "installments",
       JSON.stringify(data)
     );
   };
@@ -239,39 +196,7 @@ export default function DebtPage() {
 
     setShowBillPopup(false);
   };
-
-  // =========================
-  // Add Installment
-  // =========================
-  const addInstallment = () => {
-    if (
-      !installName ||
-      !installTotal
-    )
-      return;
-
-    const total =
-      Number(installTotal);
-
-    const newData = [
-      ...installments,
-      {
-        id: Date.now(),
-        name: installName,
-        total,
-        paid: 0,
-        remain: total,
-      },
-    ];
-
-    saveInstallments(newData);
-
-    setInstallName("");
-    setInstallTotal("");
-
-    setShowInstallPopup(false);
-  };
-
+  
   // =========================
 // Toggle Bill Paid
 // =========================
@@ -812,187 +737,6 @@ const toggleBillPaid = (id: number) => {
 
 </div>
 
-      {/* Installments */}
-<div className="bg-white rounded-[32px] shadow-2xl p-6 mt-8">
-
-<div className="flex items-center justify-between mb-6">
-
-  <div>
-
-    <h2 className="text-2xl font-black whitespace-nowrap">
-      🚗 ค่างวด / ผ่อนชำระ
-    </h2>
-
-    <p className="text-gray-500 mt-2">
-      ติดตามยอดคงเหลือของคุณ
-    </p>
-
-  </div>
-
-  <button
-    onClick={() =>
-      setShowInstallPopup(true)
-    }
-    className="
-      bg-purple-600
-      hover:bg-purple-700
-      text-white
-      px-5 py-3
-      rounded-2xl
-      font-bold
-      shadow-lg
-    "
-  >
-    + Add
-  </button>
-
-</div>
-
-<div className="overflow-x-auto">
-
-  <table className="w-full">
-
-    <thead>
-
-      <tr className="border-b text-gray-500 text-sm">
-
-        <th className="text-left py-3">
-          รายการ
-        </th>
-
-        <th className="text-left py-3">
-          ยอดทั้งหมด
-        </th>
-
-        <th className="text-left py-3">
-          คงเหลือ
-        </th>
-
-        <th className="text-right py-3">
-          จัดการ
-        </th>
-
-      </tr>
-
-    </thead>
-
-    <tbody>
-
-      {installments.length === 0 && (
-
-        <tr>
-
-          <td
-            colSpan={4}
-            className="py-6 text-gray-400"
-          >
-            ยังไม่มีข้อมูล
-          </td>
-
-        </tr>
-
-      )}
-
-      {installments.map((item) => (
-
-        <tr
-          key={item.id}
-          className="border-b last:border-0"
-        >
-
-          <td className="py-4 font-semibold">
-            {item.name}
-          </td>
-
-          <td className="py-4">
-            {item.total.toLocaleString()} ฿
-          </td>
-
-          <td className="py-4 text-purple-600 font-bold">
-            {item.remain.toLocaleString()} ฿
-          </td>
-
-          <td className="py-4">
-
-            <div className="flex justify-end gap-3">
-
-              <button
-                onClick={() => {
-
-                  const amount =
-                    prompt("แก้ไขยอดใหม่ ?");
-
-                  if (!amount) return;
-
-                  const updated =
-                    installments.map((i) => {
-
-                      if (i.id === item.id) {
-
-                        return {
-                          ...i,
-                          total: Number(amount),
-                          remain:
-                            Number(amount) -
-                            i.paid,
-                        };
-                      }
-
-                      return i;
-                    });
-
-                  saveInstallments(updated);
-                }}
-                className="
-                  p-2
-                  rounded-lg
-                  hover:bg-yellow-100
-                "
-              >
-                <Pencil
-                  size={18}
-                  className="text-yellow-600"
-                />
-              </button>
-
-              <button
-                onClick={() => {
-
-                  const filtered =
-                    installments.filter(
-                      (i) =>
-                        i.id !== item.id
-                    );
-
-                  saveInstallments(filtered);
-                }}
-                className="
-                  p-2
-                  rounded-lg
-                  hover:bg-red-100
-                "
-              >
-                <Trash2
-                  size={18}
-                  className="text-red-500"
-                />
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-
-      ))}
-
-    </tbody>
-
-  </table>
-
-</div>
-
-</div>
 
       {/* Creditor Popup */}
       {showCreditorPopup && (
@@ -1212,84 +956,6 @@ const toggleBillPaid = (id: number) => {
               <button
                 onClick={() =>
                   setShowBillPopup(false)
-                }
-                className="
-                  flex-1
-                  bg-gray-300
-                  py-3
-                  rounded-2xl
-                  font-bold
-                "
-              >
-                ยกเลิก
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Install Popup */}
-      {showInstallPopup && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-[32px] p-8 w-full max-w-md">
-            <h2 className="text-3xl font-black mb-6">
-              เพิ่มค่างวด
-            </h2>
-
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="ชื่อรายการ"
-                value={installName}
-                onChange={(e) =>
-                  setInstallName(
-                    e.target.value
-                  )
-                }
-                className="
-                  w-full
-                  border
-                  rounded-2xl
-                  p-4
-                "
-              />
-
-              <input
-                type="number"
-                placeholder="ยอดทั้งหมด"
-                value={installTotal}
-                onChange={(e) =>
-                  setInstallTotal(
-                    e.target.value
-                  )
-                }
-                className="
-                  w-full
-                  border
-                  rounded-2xl
-                  p-4
-                "
-              />
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={addInstallment}
-                className="
-                  flex-1
-                  bg-purple-600
-                  text-white
-                  py-3
-                  rounded-2xl
-                  font-bold
-                "
-              >
-                บันทึก
-              </button>
-
-              <button
-                onClick={() =>
-                  setShowInstallPopup(false)
                 }
                 className="
                   flex-1
