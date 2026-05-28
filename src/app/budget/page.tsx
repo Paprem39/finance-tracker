@@ -37,6 +37,21 @@ export default function BudgetPage() {
       },
     ]);
 
+    const [showPopup, setShowPopup] =
+    useState(false);
+
+    const [category, setCategory] =
+    useState("");
+
+    const [limit, setLimit] =
+    useState("");
+
+    const [used, setUsed] =
+    useState("");
+
+    const [editId, setEditId] =
+    useState<number | null>(null);
+
   const getPercent = (
     used: number,
     limit: number
@@ -59,11 +74,106 @@ export default function BudgetPage() {
     return "bg-green-500";
   };
 
+  // =========================
+// Add Budget
+// =========================
+const addBudget = () => {
+
+  if (
+    !category ||
+    !limit ||
+    !used
+  )
+    return;
+
+  // Edit Mode
+  if (editId) {
+
+    const updated =
+      budgets.map((item) => {
+
+        if (item.id === editId) {
+
+          return {
+            ...item,
+            category,
+            limit: Number(limit),
+            used: Number(used),
+          };
+        }
+
+        return item;
+      });
+
+    setBudgets(updated);
+
+    setEditId(null);
+
+  } else {
+
+    // Add Mode
+    const newData = [
+      ...budgets,
+      {
+        id: Date.now(),
+        category,
+        limit: Number(limit),
+        used: Number(used),
+      },
+    ];
+
+    setBudgets(newData);
+  }
+
+  setCategory("");
+  setLimit("");
+  setUsed("");
+
+  setShowPopup(false);
+};
+
+// =========================
+// Delete Budget
+// =========================
+const deleteBudget = (
+  id: number
+) => {
+
+  const filtered =
+    budgets.filter(
+      (item) => item.id !== id
+    );
+
+  setBudgets(filtered);
+};
+
+// =========================
+// Edit Budget
+// =========================
+const editBudget = (
+  item: BudgetItem
+) => {
+
+  setEditId(item.id);
+
+  setCategory(item.category);
+
+  setLimit(
+    item.limit.toString()
+  );
+
+  setUsed(
+    item.used.toString()
+  );
+
+  setShowPopup(true);
+};
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-cyan-100 p-6 text-black">
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-5xl font-black text-gray-800 mb-3">
+      <h1 className="text-4xl md:text-5xl font-black text-gray-800 mb-3 whitespace-nowrap">
           💰 Budget Planner
         </h1>
 
@@ -88,6 +198,15 @@ export default function BudgetPage() {
           </div>
 
           <button
+          onClick={() => {
+            setEditId(null);
+        
+            setCategory("");
+            setLimit("");
+            setUsed("");
+        
+            setShowPopup(true);
+          }}
             className="
               bg-cyan-600
               hover:bg-cyan-700
@@ -148,11 +267,14 @@ export default function BudgetPage() {
 
                   <td className="py-4">
                     <div className="flex justify-end gap-3">
-                      <button
+                    <button
+                      onClick={() =>
+                      editBudget(item)
+                      }
                         className="
-                          p-2
-                          rounded-lg
-                          hover:bg-yellow-100
+                        p-2
+                        rounded-lg
+                        hover:bg-yellow-100
                         "
                       >
                         <Pencil
@@ -162,7 +284,10 @@ export default function BudgetPage() {
                       </button>
 
                       <button
-                        className="
+                        onClick={() =>
+                        deleteBudget(item.id)
+                        }
+                          className="
                           p-2
                           rounded-lg
                           hover:bg-red-100
@@ -315,6 +440,130 @@ export default function BudgetPage() {
           })}
         </div>
       </div>
+      {/* Popup */}
+{showPopup && (
+
+<div className="
+  fixed inset-0
+  bg-black/40
+  flex
+  items-center
+  justify-center
+  z-50
+">
+
+  <div className="
+    bg-white
+    rounded-[32px]
+    p-8
+    w-full
+    max-w-md
+  ">
+
+    <h2 className="
+      text-3xl
+      font-black
+      mb-6
+    ">
+      {editId
+        ? "แก้ไข Budget"
+        : "เพิ่ม Budget"}
+    </h2>
+
+    <div className="space-y-4">
+
+      <input
+        type="text"
+        placeholder="หมวด"
+        value={category}
+        onChange={(e) =>
+          setCategory(
+            e.target.value
+          )
+        }
+        className="
+          w-full
+          border
+          rounded-2xl
+          p-4
+        "
+      />
+
+      <input
+        type="number"
+        placeholder="Budget"
+        value={limit}
+        onChange={(e) =>
+          setLimit(
+            e.target.value
+          )
+        }
+        className="
+          w-full
+          border
+          rounded-2xl
+          p-4
+        "
+      />
+
+      <input
+        type="number"
+        placeholder="ใช้ไป"
+        value={used}
+        onChange={(e) =>
+          setUsed(
+            e.target.value
+          )
+        }
+        className="
+          w-full
+          border
+          rounded-2xl
+          p-4
+        "
+      />
+
+    </div>
+
+    <div className="
+      flex gap-3 mt-6
+    ">
+
+      <button
+        onClick={addBudget}
+        className="
+          flex-1
+          bg-cyan-600
+          text-white
+          py-3
+          rounded-2xl
+          font-bold
+        "
+      >
+        บันทึก
+      </button>
+
+      <button
+        onClick={() =>
+          setShowPopup(false)
+        }
+        className="
+          flex-1
+          bg-gray-300
+          py-3
+          rounded-2xl
+          font-bold
+        "
+      >
+        ยกเลิก
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+)}
     </div>
   );
 }
