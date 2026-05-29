@@ -85,14 +85,6 @@ useEffect(() => {
   }
 }, [type]);
 
-useEffect(() => {
-  if (editType === "income") {
-    setEditCategory("เงินเดือน");
-  } else {
-    setEditCategory("ค่าอาหาร");
-  }
-}, [editType]);
-
   const addTransaction = () => {
     const value = Number(amount);
 
@@ -700,9 +692,18 @@ if (value <= 0) {
 
       <select
         value={editType}
-        onChange={(e) =>
-          setEditType(e.target.value as TransactionType)
-        }
+        onChange={(e) => {
+          const newType =
+            e.target.value as TransactionType;
+        
+          setEditType(newType);
+        
+          if (newType === "income") {
+            setEditCategory("เงินเดือน");
+          } else {
+            setEditCategory("ค่าอาหาร");
+          }
+        }}
         className="
           w-full
           border
