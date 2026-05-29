@@ -3,26 +3,36 @@
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
+type TransactionType = "income" | "expense";
+
+type Transaction = {
+  type: TransactionType;
+  amount: number;
+  category: string;
+  note: string;
+  date: string;
+};
+
 export default function Dashboard() {
-  const [nickname, setNickname] = useState("");
+  const [nickname] = useState("");
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
 
   const [amount, setAmount] = useState("");
-  const [type, setType] = useState("expense");
+  const [type, setType] = useState<TransactionType>("expense");
 
-  const [category, setCategory] = useState("ค่าข้าว");
+  const [category, setCategory] = useState("ค่าอาหาร");
   const [note, setNote] = useState("");
   const [selectedDate, setSelectedDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
 
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editAmount, setEditAmount] = useState("");
-  const [editType, setEditType] = useState("");
+  const [editType, setEditType] = useState<TransactionType>("expense");
   const [editCategory, setEditCategory] = useState("");
   const [editNote, setEditNote] = useState("");
   const [editDate, setEditDate] = useState("");
@@ -39,8 +49,8 @@ export default function Dashboard() {
   );
   
   // รวมหมวดหมู่
-  const summarizeData = (data: any[]) => {
-    const summary: any = {};
+  const summarizeData = (data: Transaction[]) => {
+    const summary: Record<string, number> = {};
   
     data.forEach((item) => {
       if (summary[item.category]) {
@@ -67,34 +77,66 @@ export default function Dashboard() {
   return () => clearInterval(timer);
 }, []);
 
+useEffect(() => {
+  if (type === "income") {
+    setCategory("เงินเดือน");
+  } else {
+    setCategory("ค่าอาหาร");
+  }
+}, [type]);
+
+useEffect(() => {
+  if (editType === "income") {
+    setEditCategory("เงินเดือน");
+  } else {
+    setEditCategory("ค่าอาหาร");
+  }
+}, [editType]);
+
   const addTransaction = () => {
     const value = Number(amount);
 
-    if (!value) return;
+if (value <= 0) {
+  alert("จำนวนเงินต้องมากกว่า 0");
+  return;
+}
+    if (category === "อื่นๆ" && !note.trim()) {
+      alert("กรุณาระบุรายละเอียด");
+      return;
+    }
 
     const finalCategory =
-      category === "อื่นๆ" ? note : category;
+    category === "อื่นๆ"
+    ? note
+    : category;
 
     const newTransaction = {
       type,
       amount: value,
       category: finalCategory,
+      note,
       date: selectedDate,
     };
 
-    setTransactions([newTransaction, ...transactions]);
+    setTransactions((prev) => [
+      newTransaction,
+      ...prev,
+    ]);
 
     if (type === "income") {
-      setIncome(income + value);
+      setIncome((prev) => prev + value);
     } else {
-      setExpense(expense + value);
+      setExpense((prev) => prev + value);
     }
 
     setAmount("");
     setNote("");
   };
   
-  const openEditModal = (item: any, index: number) => {
+  const openEditModal = (
+    item: Transaction,
+    index: number
+  ) => {
 
     setEditIndex(index);
   
@@ -103,13 +145,13 @@ export default function Dashboard() {
     setEditType(item.type);
   
     setEditCategory(
-      ["ค่าข้าว", "ค่าขนม", "ค่าน้ำมัน", "ค่าเดินทาง"].includes(item.category)
+      ["ค่าอาหาร", "ค่าช็อปปิ้ง", "ค่าน้ำมัน", "ค่าเดินทาง", "ค่าของใช้", "เงินเดือน", "รายได้พิเศษ"].includes(item.category)
         ? item.category
         : "อื่นๆ"
     );
   
     setEditNote(
-      ["ค่าข้าว", "ค่าขนม", "ค่าน้ำมัน", "ค่าเดินทาง"].includes(item.category)
+      ["ค่าอาหาร", "ค่าช็อปปิ้ง", "ค่าน้ำมัน", "ค่าเดินทาง", "ค่าของใช้", "เงินเดือน", "รายได้พิเศษ"].includes(item.category)
         ? ""
         : item.category
     );
@@ -127,42 +169,74 @@ export default function Dashboard() {
     }
   
     setIsSaving(true);
+    if (editCategory === "อื่นๆ" && !editNote.trim()) {
+      alert("กรุณาระบุรายละเอียด");
+      setIsSaving(false);
+      return;
+    }
   
     await new Promise((resolve) =>
       setTimeout(resolve, 1200)
     );
   
     const value = Number(editAmount);
+
+    if (value <= 0) {
+      alert("จำนวนเงินต้องมากกว่า 0");
+      setIsSaving(false);
+      return;
+    }
   
-    const finalCategory =
-      editCategory === "อื่นๆ"
-        ? editNote
-        : editCategory;
+    if (editIndex === null) {
+      setIsSaving(false);
+      return;
+    }
   
-    if (editIndex === null) return;
-  
-    const oldTransaction = transactions[editIndex];
+    const oldTransaction =
+      transactions[editIndex];
   
     // คืนค่าของเก่า
     if (oldTransaction.type === "income") {
-      setIncome((prev) => prev - oldTransaction.amount);
+  
+      setIncome((prev) =>
+        prev - oldTransaction.amount
+      );
+  
     } else {
-      setExpense((prev) => prev - oldTransaction.amount);
+  
+      setExpense((prev) =>
+        prev - oldTransaction.amount
+      );
     }
   
     // เพิ่มค่าใหม่
     if (editType === "income") {
-      setIncome((prev) => prev + value);
+  
+      setIncome((prev) =>
+        prev + value
+      );
+  
     } else {
-      setExpense((prev) => prev + value);
+  
+      setExpense((prev) =>
+        prev + value
+      );
     }
   
-    const updatedTransactions = [...transactions];
+    const updatedTransactions = [
+      ...transactions,
+    ];
   
+    const finalCategory =
+    editCategory === "อื่นๆ"
+    ? editNote
+    : editCategory;
+
     updatedTransactions[editIndex] = {
       type: editType,
       amount: value,
       category: finalCategory,
+      note: editNote,
       date: editDate,
     };
   
@@ -181,9 +255,13 @@ export default function Dashboard() {
   
     // คืนค่าเงินกลับ
     if (transaction.type === "income") {
-      setIncome(income - transaction.amount);
+      setIncome((prev) =>
+        prev - transaction.amount
+      );
     } else {
-      setExpense(expense - transaction.amount);
+      setExpense((prev) =>
+        prev - transaction.amount
+      );
     }
   
     // ลบรายการ
@@ -302,7 +380,9 @@ export default function Dashboard() {
           {/* Type */}
           <select
             value={type}
-            onChange={(e) => setType(e.target.value)}
+            onChange={(e) =>
+              setType(e.target.value as TransactionType)
+            }
             className="border p-3 rounded-xl"
           >
             <option value="income">รายรับ</option>
@@ -311,16 +391,48 @@ export default function Dashboard() {
 
           {/* Category */}
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="border p-3 rounded-xl"
-          >
-            <option>ค่าข้าว</option>
-            <option>ค่าขนม</option>
-            <option>ค่าน้ำมัน</option>
-            <option>ค่าเดินทาง</option>
-            <option>อื่นๆ</option>
-          </select>
+  value={category}
+  onChange={(e) => setCategory(e.target.value)}
+  className="border p-3 rounded-xl"
+>
+  {type === "income" ? (
+    <>
+      <option value="เงินเดือน">
+        💰 เงินเดือน
+      </option>
+
+      <option value="รายได้พิเศษ">
+        🎁 รายได้พิเศษ
+      </option>
+    </>
+  ) : (
+    <>
+      <option value="ค่าอาหาร">
+        🍜 ค่าอาหาร
+      </option>
+
+      <option value="ค่าช็อปปิ้ง">
+        🛍️ ค่าช็อปปิ้ง
+      </option>
+
+      <option value="ค่าน้ำมัน">
+        ⛽ ค่าน้ำมัน
+      </option>
+
+      <option value="ค่าเดินทาง">
+        🚌 ค่าเดินทาง
+      </option>
+
+      <option value="ค่าของใช้">
+        🧴 ค่าของใช้
+      </option>
+    </>
+  )}
+
+  <option value="อื่นๆ">
+    📦 อื่นๆ
+  </option>
+</select>
 
           {/* Date */}
           <input
@@ -332,12 +444,12 @@ export default function Dashboard() {
         {/* Note */}
         {category === "อื่นๆ" && (
           <input
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="ระบุรายการ..."
-            className="border border-gray-300 p-4 rounded-2xl w-full mt-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+          type="text"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="รายละเอียดเพิ่มเติม..."
+          className="border border-gray-300 p-4 rounded-2xl w-full"
+        />
         )}
 
           {/* Add Button */}
@@ -372,6 +484,13 @@ export default function Dashboard() {
                   <p className="font-semibold">
                     {item.category}
                   </p>
+
+                  {item.note &&
+                      item.note !== item.category && (
+                      <p className="text-sm text-gray-500">
+                        {item.note}
+                      </p>
+                  )}
 
                   <p className="text-sm text-gray-500">
                     {item.type === "income"
@@ -446,8 +565,8 @@ export default function Dashboard() {
                           cy="50%"
                           outerRadius={100}
                           dataKey="value"
-                          label={({ percent }: any) =>
-                            `${(percent * 100).toFixed(0)}%`
+                          label={({ percent }: { percent?: number }) =>
+                            `${((percent ?? 0) * 100).toFixed(0)}%`
                           }
                       >
                         {incomeChartData.map((_, index) => (
@@ -488,8 +607,8 @@ export default function Dashboard() {
                 cy="50%"
                 outerRadius={100}
                 dataKey="value"
-                label={({ percent }: any) =>
-                `${(percent * 100).toFixed(0)}%`
+                label={({ percent }: { percent?: number }) =>
+                  `${((percent ?? 0) * 100).toFixed(0)}%`
                 }
               >
                 {expenseChartData.map((_, index) => (
@@ -594,7 +713,7 @@ export default function Dashboard() {
       <select
         value={editType}
         onChange={(e) =>
-          setEditType(e.target.value)
+          setEditType(e.target.value as TransactionType)
         }
         className="
           w-full
@@ -624,24 +743,56 @@ export default function Dashboard() {
       </label>
 
       <select
-        value={editCategory}
-        onChange={(e) =>
-          setEditCategory(e.target.value)
-        }
-        className="
-          w-full
-          border
-          border-gray-300
-          p-4
-          rounded-2xl
-        "
-      >
-        <option>ค่าข้าว</option>
-        <option>ค่าขนม</option>
-        <option>ค่าน้ำมัน</option>
-        <option>ค่าเดินทาง</option>
-        <option>อื่นๆ</option>
-      </select>
+  value={editCategory}
+  onChange={(e) =>
+    setEditCategory(e.target.value)
+  }
+  className="
+    w-full
+    border
+    border-gray-300
+    p-4
+    rounded-2xl
+  "
+>
+  {editType === "income" ? (
+    <>
+      <option value="เงินเดือน">
+        💰 เงินเดือน
+      </option>
+
+      <option value="รายได้พิเศษ">
+        🎁 รายได้พิเศษ
+      </option>
+    </>
+  ) : (
+    <>
+      <option value="ค่าอาหาร">
+        🍜 ค่าอาหาร
+      </option>
+
+      <option value="ค่าช็อปปิ้ง">
+        🛍️ ค่าช็อปปิ้ง
+      </option>
+
+      <option value="ค่าน้ำมัน">
+        ⛽ ค่าน้ำมัน
+      </option>
+
+      <option value="ค่าเดินทาง">
+        🚌 ค่าเดินทาง
+      </option>
+
+      <option value="ค่าของใช้">
+        🧴 ค่าของใช้
+      </option>
+    </>
+  )}
+
+  <option value="อื่นๆ">
+    📦 อื่นๆ
+  </option>
+</select>
 
     </div>
 
