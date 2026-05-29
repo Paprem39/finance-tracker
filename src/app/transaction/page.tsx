@@ -105,10 +105,7 @@ if (value <= 0) {
       return;
     }
 
-    const finalCategory =
-    category === "อื่นๆ"
-    ? note
-    : category;
+    const finalCategory = category;
 
     const newTransaction = {
       type,
@@ -227,10 +224,7 @@ if (value <= 0) {
       ...transactions,
     ];
   
-    const finalCategory =
-    editCategory === "อื่นๆ"
-    ? editNote
-    : editCategory;
+    const finalCategory = category;
 
     updatedTransactions[editIndex] = {
       type: editType,
@@ -442,7 +436,6 @@ if (value <= 0) {
             className="border border-gray-300 p-4 rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"/>
 
         {/* Note */}
-        {category === "อื่นๆ" && (
           <input
           type="text"
           value={note}
@@ -450,7 +443,6 @@ if (value <= 0) {
           placeholder="รายละเอียดเพิ่มเติม..."
           className="border border-gray-300 p-4 rounded-2xl w-full"
         />
-        )}
 
           {/* Add Button */}
           <button
