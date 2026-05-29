@@ -33,7 +33,7 @@ export default function Dashboard() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editAmount, setEditAmount] = useState("");
   const [editType, setEditType] = useState<TransactionType>("expense");
-  const [editCategory, setEditCategory] = useState("");
+  const [editCategory, setEditCategory] = useState<string>("");
   const [editNote, setEditNote] = useState("");
   const [editDate, setEditDate] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -85,6 +85,26 @@ useEffect(() => {
   }
 }, [type]);
 
+const openEditModal = (
+  item: Transaction,
+  index: number
+) => {
+
+  setEditIndex(index);
+
+  setEditAmount(item.amount.toString());
+
+  setEditType(item.type);
+
+  setEditCategory(item.category);
+
+  setEditNote(item.note);
+
+  setEditDate(item.date);
+
+  setIsEditOpen(true);
+};
+
   const addTransaction = () => {
     const value = Number(amount);
 
@@ -120,30 +140,6 @@ if (value <= 0) {
 
     setAmount("");
     setNote("");
-  };
-  
-  const openEditModal = (
-    item: Transaction,
-    index: number
-  ) => {
-
-    setEditIndex(index);
-  
-    setEditAmount(item.amount.toString());
-  
-    setEditType(item.type);
-  
-    setEditCategory(
-      ["ค่าอาหาร", "ค่าช็อปปิ้ง", "ค่าน้ำมัน", "ค่าเดินทาง", "ค่าของใช้", "เงินเดือน", "รายได้พิเศษ"].includes(item.category)
-        ? item.category
-        : "อื่นๆ"
-    );
-  
-    setEditNote(item.note);
-  
-    setEditDate(item.date);
-  
-    setIsEditOpen(true);
   };
 
   const saveEditTransaction = async () => {
@@ -212,7 +208,7 @@ if (value <= 0) {
       ...transactions,
     ];
   
-    const finalCategory = category;
+    const finalCategory = editCategory;
 
     updatedTransactions[editIndex] = {
       type: editType,
