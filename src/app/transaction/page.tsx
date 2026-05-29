@@ -229,6 +229,14 @@ if (value <= 0) {
 
   const deleteTransaction = (indexToDelete: number) => {
 
+    const confirmDelete = window.confirm(
+      "คุณต้องการลบรายการนี้ใช่ไหม?"
+    );
+  
+    if (!confirmDelete) {
+      return;
+    }
+  
     const transaction = transactions[indexToDelete];
   
     // คืนค่าเงินกลับ
@@ -244,7 +252,9 @@ if (value <= 0) {
   
     // ลบรายการ
     setTransactions(
-      transactions.filter((_, index) => index !== indexToDelete)
+      transactions.filter(
+        (_, index) => index !== indexToDelete
+      )
     );
   };
   
