@@ -789,9 +789,11 @@ if (value <= 0) {
     </div>
 
     {/* Other Note */}
-    {editCategory === "อื่นๆ" && (
-
       <div className="mb-4">
+
+      <label className="font-semibold text-gray-700 block mb-2">
+        รายละเอียดเพิ่มเติม
+      </label>
 
         <input
           type="text"
@@ -811,7 +813,6 @@ if (value <= 0) {
 
       </div>
 
-    )}
 
     {/* Date */}
     <div className="mb-6">
