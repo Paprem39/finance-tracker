@@ -147,11 +147,7 @@ if (value <= 0) {
         : "อื่นๆ"
     );
   
-    setEditNote(
-      ["ค่าอาหาร", "ค่าช็อปปิ้ง", "ค่าน้ำมัน", "ค่าเดินทาง", "ค่าของใช้", "เงินเดือน", "รายได้พิเศษ"].includes(item.category)
-        ? ""
-        : item.category
-    );
+    setEditNote(item.note);
   
     setEditDate(item.date);
   
