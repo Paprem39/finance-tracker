@@ -32,7 +32,11 @@ export default function ReportsPage() {
     new Date().getFullYear().toString()
   );
 
-  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] =
+  useState("all");
+
+  const [search, setSearch] =
+  useState("");
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -44,6 +48,26 @@ export default function ReportsPage() {
     "#f59e0b",
     "#8b5cf6",
     "#ec4899",
+  ];
+
+  const categoryOptions = [
+
+    "🍜 ค่าอาหาร",
+  
+    "🛍️ ค่าช็อปปิ้ง",
+  
+    "⛽ ค่าน้ำมัน",
+  
+    "🚌 ค่าเดินทาง",
+  
+    "🧴 ค่าของใช้",
+  
+    "💰 เงินเดือน",
+  
+    "🎁 รายได้พิเศษ",
+
+    "📦 อื่นๆ"
+  
   ];
 
   // โหลด localStorage
@@ -69,17 +93,36 @@ const filteredTransactions = useMemo(() => {
       const itemDate = new Date(item.date);
   
       // Search
-      const matchSearch =
-        item.category
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
+      // Category Filter
+if (
+  selectedCategory !== "all" &&
+  item.category !== selectedCategory
+) {
+  return false;
+}
 
-      item.note
-        ?.toLowerCase()
-        .includes(search.toLowerCase());
-  
-      if (!matchSearch) return false;
-  
+// Search
+const keyword =
+  search.toLowerCase();
+
+  const matchSearch =
+
+  keyword === ""
+
+  ||
+
+  item.category
+    ?.toLowerCase()
+    .includes(keyword)
+
+  ||
+
+  item.note
+    ?.toLowerCase()
+    .includes(keyword);
+    
+if (!matchSearch) return false;
+
       // Daily Range
       if (filterType === "daily") {
 
@@ -130,6 +173,7 @@ const filteredTransactions = useMemo(() => {
     selectedMonth,
     selectedYear,
     search,
+    selectedCategory,
   ]);
 
   // Summary
@@ -382,23 +426,58 @@ const filteredTransactions = useMemo(() => {
 
           )}
 
-          {/* Search */}
-          <input
-            type="text"
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            placeholder="ค้นหาหมวดหมู่..."
-            className="
-              flex-1
-              p-4
-              rounded-2xl
-              border
-              border-gray-300
-              bg-white
-            "
-          />
+          {/* Category Filter */}
+<select
+  value={selectedCategory}
+  onChange={(e) =>
+    setSelectedCategory(
+      e.target.value
+    )
+  }
+  className="
+    p-4
+    rounded-2xl
+    border
+    border-gray-300
+    bg-white
+    font-semibold
+  "
+>
+
+  <option value="all">
+    ทุกหมวดหมู่
+  </option>
+
+  {categoryOptions.map((item) => (
+
+    <option
+      key={item}
+      value={item}
+    >
+      {item}
+    </option>
+
+  ))}
+
+</select>
+
+{/* Search */}
+<input
+  type="text"
+  value={search}
+  onChange={(e) =>
+    setSearch(e.target.value)
+  }
+  placeholder="ค้นหาโน้ต หรือคำค้น..."
+  className="
+    flex-1
+    p-4
+    rounded-2xl
+    border
+    border-gray-300
+    bg-white
+  "
+/>
 
         </div>
 
