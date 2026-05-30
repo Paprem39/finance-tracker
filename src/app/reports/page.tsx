@@ -120,7 +120,7 @@ const keyword =
   item.note
     ?.toLowerCase()
     .includes(keyword);
-    
+
 if (!matchSearch) return false;
 
       // Daily Range
@@ -280,6 +280,29 @@ if (!matchSearch) return false;
 
     link.click();
   };
+
+  // Delete Transaction
+const deleteTransaction = (indexToDelete: number) => {
+
+  const confirmDelete = confirm(
+    "คุณต้องการลบรายการนี้ใช่ไหม?"
+  );
+
+  if (!confirmDelete) return;
+
+  const updatedTransactions =
+    transactions.filter(
+      (_, index) =>
+        index !== indexToDelete
+    );
+
+  setTransactions(updatedTransactions);
+
+  localStorage.setItem(
+    "transactions",
+    JSON.stringify(updatedTransactions)
+  );
+};
 
   // Export PDF
   const exportPDF = () => {
@@ -562,6 +585,10 @@ if (!matchSearch) return false;
                   จำนวน
                 </th>
 
+                <th className="text-center p-4">
+                  จัดการ
+                </th>
+
               </tr>
 
             </thead>
@@ -573,7 +600,7 @@ if (!matchSearch) return false;
                 <tr>
 
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="
                       text-center
                       p-10
@@ -659,6 +686,28 @@ if (!matchSearch) return false;
                         : "-"}
 
                       {item.amount.toLocaleString()} ฿
+                    </td>
+                    <td className="p-4 text-center">
+
+                      <button
+                        onClick={() =>
+                        deleteTransaction(index)
+                        }
+                          className="
+                          w-10
+                          h-10
+                          rounded-xl
+                          bg-red-100
+                          hover:bg-red-200
+                          text-red-600
+                          transition
+                          active:scale-95
+                          text-lg
+                          "
+                          >
+                            🗑️
+                          </button>
+
                     </td>
 
                   </tr>
