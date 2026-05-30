@@ -7,6 +7,14 @@ import {
   Wallet,
 } from "lucide-react";
 
+const budgetCategories = [
+  "🍜 ค่าอาหาร",
+  "🛍️ ค่าช็อปปิ้ง",
+  "⛽ ค่าน้ำมัน",
+  "🚌 ค่าเดินทาง",
+  "🧴 ค่าของใช้",
+];
+
 type BudgetItem = {
   id: number;
   category: string;
@@ -41,7 +49,7 @@ export default function BudgetPage() {
     useState(false);
 
     const [category, setCategory] =
-    useState("");
+    useState("🍜 ค่าอาหาร");
 
     const [limit, setLimit] =
     useState("");
@@ -125,7 +133,7 @@ const addBudget = () => {
     setBudgets(newData);
   }
 
-  setCategory("");
+  setCategory("🍜 ค่าอาหาร");
   setLimit("");
   setUsed("");
 
@@ -716,22 +724,30 @@ const filteredBudgets = useMemo(() => {
 
     <div className="space-y-4">
 
-      <input
-        type="text"
-        placeholder="หมวด"
-        value={category}
-        onChange={(e) =>
-          setCategory(
-            e.target.value
-          )
-        }
-        className="
-          w-full
-          border
-          rounded-2xl
-          p-4
-        "
-      />
+    <select
+  value={category}
+  onChange={(e) =>
+    setCategory(
+      e.target.value
+    )
+  }
+  className="
+    w-full
+    border
+    rounded-2xl
+    p-4
+    bg-white
+  "
+>
+  {budgetCategories.map((item) => (
+    <option
+      key={item}
+      value={item}
+    >
+      {item}
+    </option>
+  ))}
+</select>
 
       <input
         type="number"
