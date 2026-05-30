@@ -461,7 +461,7 @@ const filteredTransactions = useMemo(() => {
 
         <div className="overflow-x-auto">
 
-          <table className="w-full">
+        <table className="w-full min-w-[700px]">
 
             <thead className="bg-gray-100">
 
@@ -548,18 +548,21 @@ const filteredTransactions = useMemo(() => {
 
                     <td className="p-4">
 
-                      <div className="font-semibold">
-                        {item.category}
+                      <div className="flex items-center gap-2 whitespace-nowrap">
+
+                        <span className="font-semibold">
+                          {item.category}
+                        </span>
+
                       </div>
 
-                        {item.note &&
-                        item.note !== item.category && (
-                          <div className="text-sm text-gray-500 mt-1">
+                        {item.note && (
+                          <p className="text-sm text-gray-400 mt-1">
                             {item.note}
-                          </div>
+                          </p>
                         )}
 
-                  </td>
+                    </td>
 
                     <td
                       className={`
