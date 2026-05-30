@@ -822,7 +822,7 @@ const deleteTransaction = (indexToDelete: number) => {
             📌 สัดส่วนรายรับ / รายจ่าย
           </h2>
 
-          <div className="h-[320px]">
+          <div className="h-[320px] mb-6">
 
             <ResponsiveContainer>
 
@@ -852,6 +852,12 @@ const deleteTransaction = (indexToDelete: number) => {
 
                 <Tooltip />
                 <Legend />
+
+                </PieChart>
+
+              </ResponsiveContainer>
+
+          </div>
 
                 {/* Expense Categories */}
 <div className="mt-6">
@@ -953,22 +959,16 @@ const deleteTransaction = (indexToDelete: number) => {
 
 </div>
 
-              </PieChart>
-
-            </ResponsiveContainer>
-
-          </div>
-
-        </div>
+</div>
 
         {/* Bar Chart */}
-        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
+        <div className="bg-white rounded-[32px] p-6 shadow-2xl h-fit">
 
         <h2 className="text-xl font-black mb-4 whitespace-nowrap overflow-hidden text-ellipsis">
   📊       เปรียบเทียบรายรับ/รายจ่าย
         </h2>
 
-          <div className="h-[320px]">
+        <div className="h-[320px] mb-6">
 
             <ResponsiveContainer>
 
@@ -1002,7 +1002,7 @@ const deleteTransaction = (indexToDelete: number) => {
         </div>
 
         {/* Line Chart */}
-        <div className="bg-white rounded-[32px] p-6 shadow-2xl">
+        <div className="bg-white rounded-[32px] p-6 shadow-2xl h-fit">
 
           <h2 className="text-2xl font-black mb-4">
             📈 เส้นทางการเงิน
