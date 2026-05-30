@@ -135,9 +135,13 @@ const addBudget = () => {
 // =========================
 // Delete Budget
 // =========================
-const deleteBudget = (
-  id: number
-) => {
+const deleteBudget = (id: number) => {
+
+  const confirmDelete = window.confirm(
+    "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
+  );
+
+  if (!confirmDelete) return;
 
   const filtered =
     budgets.filter(
