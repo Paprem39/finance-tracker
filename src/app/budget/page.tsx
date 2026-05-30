@@ -89,8 +89,7 @@ const addBudget = () => {
 
   if (
     !category ||
-    !limit ||
-    !used
+    !limit
   )
     return;
 
@@ -106,7 +105,7 @@ const addBudget = () => {
             ...item,
             category,
             limit: Number(limit),
-            used: Number(used),
+            used: 0,
           };
         }
 
