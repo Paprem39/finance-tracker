@@ -14,7 +14,7 @@ export default function MockDataPage() {
           "กาแฟ",
         ],
       },
-  
+
       {
         category: "🛍️ ค่าช็อปปิ้ง",
         notes: [
@@ -23,7 +23,7 @@ export default function MockDataPage() {
           "กระเป๋า",
         ],
       },
-  
+
       {
         category: "⛽ ค่าน้ำมัน",
         notes: [
@@ -31,7 +31,7 @@ export default function MockDataPage() {
           "แก๊ส",
         ],
       },
-  
+
       {
         category: "🚌 ค่าเดินทาง",
         notes: [
@@ -40,7 +40,7 @@ export default function MockDataPage() {
           "Grab",
         ],
       },
-  
+
       {
         category: "🧴 ค่าของใช้",
         notes: [
@@ -50,7 +50,7 @@ export default function MockDataPage() {
         ],
       },
     ];
-  
+
     const incomeCategories = [
       {
         category: "💰 เงินเดือน",
@@ -58,7 +58,7 @@ export default function MockDataPage() {
           "เงินเดือนประจำ",
         ],
       },
-  
+
       {
         category: "🎁 รายได้พิเศษ",
         notes: [
@@ -68,28 +68,28 @@ export default function MockDataPage() {
         ],
       },
     ];
-  
+
     const mockTransactions = [];
-  
+
     for (let i = 0; i < 200; i++) {
-  
+
       const randomType =
         Math.random() > 0.7
           ? "income"
           : "expense";
-  
+
       const source =
         randomType === "income"
           ? incomeCategories
           : expenseCategories;
-  
+
       const randomCategory =
         source[
           Math.floor(
             Math.random() * source.length
           )
         ];
-  
+
       const randomNote =
         randomCategory.notes[
           Math.floor(
@@ -97,18 +97,17 @@ export default function MockDataPage() {
             randomCategory.notes.length
           )
         ];
-  
+
       const randomAmount =
         Math.floor(Math.random() * 5000) + 100;
-  
-      // สุ่มย้อนหลัง 1 ปี
+
       const randomDate = new Date();
-  
+
       randomDate.setDate(
         randomDate.getDate() -
         Math.floor(Math.random() * 365)
       );
-  
+
       mockTransactions.push({
         type: randomType,
         amount: randomAmount,
@@ -118,12 +117,37 @@ export default function MockDataPage() {
           .toLocaleDateString("en-CA"),
       });
     }
-  
+
     localStorage.setItem(
       "transactions",
       JSON.stringify(mockTransactions)
     );
-  
+
     alert("สร้าง Mock Data สำเร็จ 🚀");
   };
-};
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+
+      <button
+        onClick={generateMockData}
+        className="
+          px-8
+          py-5
+          bg-blue-600
+          hover:bg-blue-700
+          text-white
+          rounded-3xl
+          text-2xl
+          font-bold
+          shadow-2xl
+          active:scale-95
+          transition
+        "
+      >
+        สร้าง Mock Transactions 🚀
+      </button>
+
+    </div>
+  );
+}
