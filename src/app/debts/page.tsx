@@ -222,6 +222,13 @@ const toggleBillPaid = (id: number) => {
   // Delete
   // =========================
   const deleteCreditor = (id: number) => {
+
+    const confirmDelete = window.confirm(
+      "คุณต้องการลบเจ้าหนี้รายการนี้ใช่ไหม ?"
+    );
+  
+    if (!confirmDelete) return;
+
     const filtered =
       creditors.filter(
         (item) => item.id !== id
@@ -231,6 +238,13 @@ const toggleBillPaid = (id: number) => {
   };
 
   const deleteDebtor = (id: number) => {
+
+    const confirmDelete = window.confirm(
+      "คุณต้องการลบลูกหนี้รายการนี้ใช่ไหม ?"
+    );
+
+    if (!confirmDelete) return;
+
     const filtered =
       debtors.filter(
         (item) => item.id !== id
@@ -240,6 +254,13 @@ const toggleBillPaid = (id: number) => {
   };
 
   const deleteBill = (id: number) => {
+    
+    const confirmDelete = window.confirm(
+      "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
+    );
+  
+    if (!confirmDelete) return;
+
     const filtered =
       bills.filter(
         (item) => item.id !== id

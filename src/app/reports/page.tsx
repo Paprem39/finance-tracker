@@ -24,8 +24,6 @@ export default function ReportsPage() {
 
   const [filterType, setFilterType] = useState("all");
 
-
-
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7)
   );
@@ -338,8 +336,6 @@ const filteredTransactions = useMemo(() => {
 </div>
 
 )}
-
-          
 
           {/* Month */}
           {filterType === "monthly" && (
