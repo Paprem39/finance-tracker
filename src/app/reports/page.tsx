@@ -71,8 +71,12 @@ const filteredTransactions = useMemo(() => {
       // Search
       const matchSearch =
         item.category
-          .toLowerCase()
-          .includes(search.toLowerCase());
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      item.note
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
   
       if (!matchSearch) return false;
   
@@ -542,9 +546,20 @@ const filteredTransactions = useMemo(() => {
 
                     </td>
 
-                    <td className="p-4 font-semibold">
-                      {item.category}
-                    </td>
+                    <td className="p-4">
+
+                      <div className="font-semibold">
+                        {item.category}
+                      </div>
+
+                        {item.note &&
+                        item.note !== item.category && (
+                          <div className="text-sm text-gray-500 mt-1">
+                            {item.note}
+                          </div>
+                        )}
+
+                  </td>
 
                     <td
                       className={`
