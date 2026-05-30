@@ -4,81 +4,126 @@ export default function MockDataPage() {
 
   const generateMockData = () => {
 
-    const categories = [
-      "ค่าข้าว",
-      "ค่าขนม",
-      "ค่าน้ำมัน",
-      "ค่าเดินทาง",
-      "ค่าห้อง",
-      "ค่าไฟ",
-      "ค่าของใช้",
-      "เงินเดือน",
-      "ฟรีแลนซ์",
-      "โบนัส",
+    const expenseCategories = [
+      {
+        category: "🍜 ค่าอาหาร",
+        notes: [
+          "ข้าวมันไก่",
+          "ก๋วยเตี๋ยว",
+          "ชานม",
+          "กาแฟ",
+        ],
+      },
+  
+      {
+        category: "🛍️ ค่าช็อปปิ้ง",
+        notes: [
+          "ซื้อเสื้อ",
+          "รองเท้า",
+          "กระเป๋า",
+        ],
+      },
+  
+      {
+        category: "⛽ ค่าน้ำมัน",
+        notes: [
+          "เติมน้ำมัน",
+          "แก๊ส",
+        ],
+      },
+  
+      {
+        category: "🚌 ค่าเดินทาง",
+        notes: [
+          "ค่ารถตู้",
+          "BTS",
+          "Grab",
+        ],
+      },
+  
+      {
+        category: "🧴 ค่าของใช้",
+        notes: [
+          "แชมพู",
+          "สบู่",
+          "ทิชชู่",
+        ],
+      },
     ];
-
-    const types = ["income", "expense"];
-
+  
+    const incomeCategories = [
+      {
+        category: "💰 เงินเดือน",
+        notes: [
+          "เงินเดือนประจำ",
+        ],
+      },
+  
+      {
+        category: "🎁 รายได้พิเศษ",
+        notes: [
+          "ฟรีแลนซ์",
+          "ขายของ",
+          "โบนัส",
+        ],
+      },
+    ];
+  
     const mockTransactions = [];
-
+  
     for (let i = 0; i < 200; i++) {
-
+  
       const randomType =
-        types[Math.floor(Math.random() * types.length)];
-
+        Math.random() > 0.7
+          ? "income"
+          : "expense";
+  
+      const source =
+        randomType === "income"
+          ? incomeCategories
+          : expenseCategories;
+  
       const randomCategory =
-        categories[Math.floor(Math.random() * categories.length)];
-
+        source[
+          Math.floor(
+            Math.random() * source.length
+          )
+        ];
+  
+      const randomNote =
+        randomCategory.notes[
+          Math.floor(
+            Math.random() *
+            randomCategory.notes.length
+          )
+        ];
+  
       const randomAmount =
         Math.floor(Math.random() * 5000) + 100;
-
-      // สุ่มวันที่ย้อนหลัง 1 ปี
+  
+      // สุ่มย้อนหลัง 1 ปี
       const randomDate = new Date();
-
+  
       randomDate.setDate(
         randomDate.getDate() -
         Math.floor(Math.random() * 365)
       );
-
+  
       mockTransactions.push({
         type: randomType,
         amount: randomAmount,
-        category: randomCategory,
+        category: randomCategory.category,
+        note: randomNote,
         date: randomDate
           .toLocaleDateString("en-CA"),
       });
     }
-
+  
     localStorage.setItem(
       "transactions",
       JSON.stringify(mockTransactions)
     );
-
+  
     alert("สร้าง Mock Data สำเร็จ 🚀");
   };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-
-      <button
-        onClick={generateMockData}
-        className="
-          px-8
-          py-5
-          bg-blue-600
-          hover:bg-blue-700
-          text-white
-          rounded-3xl
-          text-2xl
-          font-bold
-          shadow-2xl
-          active:scale-95
-          transition
-        "
-      >
-        สร้าง Mock Transactions 🚀
-      </button>
-
-    </div>
-  );
-}
+};
