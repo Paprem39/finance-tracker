@@ -197,6 +197,94 @@ if (!matchSearch) return false;
     },
   ];
 
+  // =========================
+// Category Percentage
+// =========================
+
+const expenseCategoryData =
+Object.values(
+
+  filteredTransactions
+
+    .filter(
+      (item) =>
+        item.type === "expense"
+    )
+
+    .reduce((acc: any, item) => {
+
+      if (!acc[item.category]) {
+
+        acc[item.category] = {
+          name: item.category,
+          amount: 0,
+        };
+      }
+
+      acc[item.category].amount +=
+        item.amount;
+
+      return acc;
+
+    }, {})
+
+).map((item: any) => ({
+
+  ...item,
+
+  percent:
+    totalExpense > 0
+      ? (
+          (item.amount /
+            totalExpense) *
+          100
+        ).toFixed(1)
+      : 0,
+
+}));
+
+const incomeCategoryData =
+Object.values(
+
+  filteredTransactions
+
+    .filter(
+      (item) =>
+        item.type === "income"
+    )
+
+    .reduce((acc: any, item) => {
+
+      if (!acc[item.category]) {
+
+        acc[item.category] = {
+          name: item.category,
+          amount: 0,
+        };
+      }
+
+      acc[item.category].amount +=
+        item.amount;
+
+      return acc;
+
+    }, {})
+
+).map((item: any) => ({
+
+  ...item,
+
+  percent:
+    totalIncome > 0
+      ? (
+          (item.amount /
+            totalIncome) *
+          100
+        ).toFixed(1)
+      : 0,
+
+}));
+
   // Bar Chart
   const barData = [
     {
@@ -764,6 +852,106 @@ const deleteTransaction = (indexToDelete: number) => {
 
                 <Tooltip />
                 <Legend />
+
+                {/* Expense Categories */}
+<div className="mt-6">
+
+<h3 className="font-black text-lg mb-3">
+  💸 สัดส่วนรายจ่าย
+</h3>
+
+<div className="space-y-2">
+
+  {expenseCategoryData.map(
+    (item: any) => (
+
+      <div
+        key={item.name}
+        className="
+          flex
+          items-center
+          justify-between
+          bg-red-50
+          rounded-2xl
+          px-4
+          py-3
+        "
+      >
+
+        <div>
+
+          <p className="font-semibold">
+            {item.name}
+          </p>
+
+          <p className="text-sm text-gray-500">
+            {item.amount.toLocaleString()} ฿
+          </p>
+
+        </div>
+
+        <p className="font-black text-red-600">
+          {item.percent}%
+        </p>
+
+      </div>
+
+    )
+  )}
+
+</div>
+
+</div>
+
+{/* Income Categories */}
+<div className="mt-6">
+
+<h3 className="font-black text-lg mb-3">
+  💰 สัดส่วนรายรับ
+</h3>
+
+<div className="space-y-2">
+
+  {incomeCategoryData.map(
+    (item: any) => (
+
+      <div
+        key={item.name}
+        className="
+          flex
+          items-center
+          justify-between
+          bg-green-50
+          rounded-2xl
+          px-4
+          py-3
+        "
+      >
+
+        <div>
+
+          <p className="font-semibold">
+            {item.name}
+          </p>
+
+          <p className="text-sm text-gray-500">
+            {item.amount.toLocaleString()} ฿
+          </p>
+
+        </div>
+
+        <p className="font-black text-green-600">
+          {item.percent}%
+        </p>
+
+      </div>
+
+    )
+  )}
+
+</div>
+
+</div>
 
               </PieChart>
 
