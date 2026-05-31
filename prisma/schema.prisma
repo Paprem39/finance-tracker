@@ -16,4 +16,21 @@ model User {
   username   String   @unique
   password   String
   createdAt  DateTime @default(now())
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+
+  type      String
+  amount    Float
+  category  String
+  note      String?
+  date      DateTime
+
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

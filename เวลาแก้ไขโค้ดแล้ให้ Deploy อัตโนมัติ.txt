@@ -47,3 +47,15 @@ git commit -m "update UI"
 แต่ถ้าอยากดูโปรขึ้น:
 
 git commit -m "update home and dashboard UI"
+
+*** >> Prisma+Migration อีกเรื่องสำคัญมาก
+
+ตอนนี้คุณเพิ่งเริ่มใช้ Prisma + Migration จริง
+
+ดังนั้นทุกครั้งหลังแก้ schema:
+
+ควรเช็กเสมอว่า
+
+npx prisma studio
+
+หรือ Neon มี table ใหม่จริงไหม
