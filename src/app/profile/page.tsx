@@ -33,12 +33,8 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
-  // ✅ FIX: กัน stale value + stable edit
   const startEdit = (field: string) => {
     setEditField(field);
-
-    // IMPORTANT FIX:
-    // กัน undefined + force string
     setEditValue(String(data?.[field] ?? ""));
   };
 
@@ -52,9 +48,7 @@ export default function ProfilePage() {
 
     await fetch("/api/profile", {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         field: editField,
         value: editValue,
@@ -89,17 +83,18 @@ export default function ProfilePage() {
       >
         <p className="text-gray-500 mb-3">{label}</p>
 
-        {/* TEXT / INPUT FADE */}
         <div className="relative min-h-[40px]">
+
           {/* VIEW MODE */}
           <div
             className={`transition-all duration-300 ${
               isEditing
-                ? "opacity-0 translate-y-2 absolute"
+                ? "opacity-0 absolute"
                 : "opacity-100"
             }`}
           >
-            <h3 className="text-2xl font-black text-gray-800 break-all">
+            {/* 🔥 FIX 2: ไม่ให้ตอน edit แล้ว text กลายเป็นจาง */}
+            <h3 className="text-2xl font-black text-gray-900 break-all">
               {data?.[field] || "-"}
             </h3>
           </div>
@@ -109,19 +104,19 @@ export default function ProfilePage() {
             className={`transition-all duration-300 ${
               isEditing
                 ? "opacity-100"
-                : "opacity-0 translate-y-2 absolute"
+                : "opacity-0 absolute"
             }`}
           >
             <input
               autoFocus
-              className="w-full text-2xl font-black border-b-2 border-blue-500 outline-none bg-transparent"
+              className="w-full text-2xl font-black text-gray-900 border-b-2 border-blue-500 outline-none bg-transparent"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
             />
           </div>
         </div>
 
-        {/* ✏️ BUTTON */}
+        {/* ✏️ BUTTON (ไม่หายแล้ว) */}
         {!isEditing && (
           <button
             onClick={() => startEdit(field)}
@@ -131,7 +126,7 @@ export default function ProfilePage() {
           </button>
         )}
 
-        {/* CANCEL BUTTON (ตอน edit) */}
+        {/* ✖ cancel */}
         {isEditing && (
           <button
             onClick={cancelEdit}
@@ -145,11 +140,11 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen overflow-hidden relative bg-gradient-to-br from-indigo-200 via-blue-100 to-cyan-100 p-6">
+    <div className="min-h-screen relative bg-gradient-to-br from-indigo-200 via-blue-100 to-cyan-100 p-6 overflow-hidden">
 
       {/* glow */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-400/30 blur-3xl rounded-full"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/30 blur-3xl rounded-full"></div>
+      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-400/30 blur-3xl rounded-full" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/30 blur-3xl rounded-full" />
 
       {/* header */}
       <div className="relative z-10 mb-10">
@@ -168,14 +163,21 @@ export default function ProfilePage() {
 
         <div className="px-8 pb-10">
 
-          {/* profile */}
-          <div className="-mt-20 w-40 h-40 rounded-full bg-gradient-to-br from-white to-blue-100 border-[6px] border-white shadow-2xl flex items-center justify-center text-6xl font-black text-blue-700">
-            U
+          {/* PROFILE + CAMERA (FIX 3) */}
+          <div className="relative -mt-20 w-40 h-40 mx-auto">
+            <div className="w-40 h-40 rounded-full bg-gradient-to-br from-white to-blue-100 border-[6px] border-white shadow-2xl flex items-center justify-center text-6xl font-black text-blue-700">
+              U
+            </div>
+
+            {/* 🔥 CAMERA BUTTON กลับมาแล้ว */}
+            <button className="absolute bottom-2 right-2 w-11 h-11 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg border-2 border-white">
+              📷
+            </button>
           </div>
 
-          {/* name locked */}
-          <div className="mt-6">
-            <h2 className="text-4xl font-black text-gray-800">
+          {/* name */}
+          <div className="mt-6 text-center">
+            <h2 className="text-4xl font-black text-gray-900">
               {data?.nickname || "User"}
             </h2>
 
@@ -192,11 +194,12 @@ export default function ProfilePage() {
             <Field label="ชื่อเล่น" field="nickname" />
             <Field label="อีเมลล์" field="email" />
 
+            {/* 🔥 FIX 1: วันที่สมัครไม่จางแล้ว */}
             <div className="md:col-span-2 p-6 rounded-3xl bg-white/70 border border-white/40">
-              <p className="text-gray-500 mb-3">
+              <p className="text-gray-600 mb-3 font-medium">
                 วันที่สมัครใช้งาน
               </p>
-              <h3 className="text-xl font-black">
+              <h3 className="text-xl font-black text-gray-900">
                 {registerDate || "-"}
               </h3>
             </div>
