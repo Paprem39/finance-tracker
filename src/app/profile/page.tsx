@@ -178,14 +178,30 @@ export default function ProfilePage() {
 
           {/* name */}
           <div className="mt-6 text-center">
-            <h2 className="text-4xl font-black text-gray-900">
-              {data?.nickname || "User"}
-            </h2>
 
-            <p className="text-gray-500 mt-2">
-              ผู้ใช้งานทั่วไป
-            </p>
-          </div>
+  {/* คุณ + ชื่อเล่น */}
+  <h2 className="text-4xl font-black text-gray-900">
+    คุณ : {data?.nickname || "-"}
+  </h2>
+
+  {/* สถานะ */}
+  <p className="text-gray-500 mt-2">
+    สถานะ : ผู้ใช้งานทั่วไป
+  </p>
+
+  {/* ONLINE STATUS */}
+  <div className="flex items-center justify-center gap-3 mt-4">
+
+    {/* green dot */}
+    <div className="w-4 h-4 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-400" />
+
+    <p className="text-green-600 font-bold text-lg">
+      ออนไลน์
+    </p>
+
+  </div>
+
+</div>
 
           {/* grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
