@@ -6,14 +6,22 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 type TransactionType = "income" | "expense";
 
 type Transaction = {
+  id?: string;
+
   type: TransactionType;
+
   amount: number;
+
   category: string;
+
   note: string;
+
   date: string;
 };
 
 export default function Dashboard() {
+  const [isPosting, setIsPosting] =
+  useState(false);
   const [nickname] = useState("");
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
@@ -75,6 +83,62 @@ export default function Dashboard() {
     }, 1000);
 
   return () => clearInterval(timer);
+}, []);
+
+useEffect(() => {
+
+  const fetchTransactions = async () => {
+
+    try {
+
+      const response = await fetch(
+        "/api/transactions"
+      );
+
+      const data = await response.json();
+
+      setTransactions(data);
+
+      // คำนวณรายรับรายจ่ายใหม่
+      const totalIncome = data
+        .filter(
+          (item: Transaction) =>
+            item.type === "income"
+        )
+        .reduce(
+          (
+            sum: number,
+            item: Transaction
+          ) => sum + item.amount,
+          0
+        );
+
+      const totalExpense = data
+        .filter(
+          (item: Transaction) =>
+            item.type === "expense"
+        )
+        .reduce(
+          (
+            sum: number,
+            item: Transaction
+          ) => sum + item.amount,
+          0
+        );
+
+      setIncome(totalIncome);
+
+      setExpense(totalExpense);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+  fetchTransactions();
+
 }, []);
 
 useEffect(() => {
@@ -256,6 +320,59 @@ if (value <= 0) {
         (_, index) => index !== indexToDelete
       )
     );
+  };
+
+  const saveToDatabase = async () => {
+
+    if (transactions.length === 0) {
+      alert("ยังไม่มีรายการ");
+      return;
+    }
+  
+    try {
+  
+      setIsPosting(true);
+  
+      const response = await fetch(
+        "/api/transactions",
+        {
+          method: "POST",
+  
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+  
+          body: JSON.stringify({
+            transactions,
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(
+          "บันทึกไม่สำเร็จ"
+        );
+      }
+  
+      alert("บันทึกสำเร็จ 🎉");
+  
+      // reset
+      setTransactions([]);
+  
+      setIncome(0);
+  
+      setExpense(0);
+  
+    } catch (error) {
+  
+      alert("เกิดข้อผิดพลาด");
+  
+    } finally {
+  
+      setIsPosting(false);
+  
+    }
   };
   
   return (
@@ -891,6 +1008,36 @@ if (value <= 0) {
 </div>
 
 )}
+
+{/* Save All */}
+<div className="mt-8">
+
+  <button
+    onClick={saveToDatabase}
+    disabled={isPosting}
+    className="
+      w-full
+      bg-green-600
+      hover:bg-green-700
+      text-white
+      py-5
+      rounded-2xl
+      text-xl
+      font-black
+      shadow-xl
+      transition
+      active:scale-95
+      disabled:opacity-50
+    "
+  >
+
+    {isPosting
+      ? "กำลังบันทึก..."
+      : "บันทึกทั้งหมด 💾"}
+
+  </button>
+
+</div>
 
     </div>
   );

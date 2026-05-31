@@ -1,8 +1,13 @@
 import { prisma } from "@/lib/prisma";
+
 import { NextResponse } from "next/server";
 
+
+// GET
 export async function GET() {
+
   try {
+
     const transactions =
       await prisma.transaction.findMany({
         orderBy: {
@@ -10,12 +15,65 @@ export async function GET() {
         },
       });
 
-    return NextResponse.json(transactions);
+    return NextResponse.json(
+      transactions
+    );
 
   } catch (error) {
 
     return NextResponse.json(
-      { error: "โหลดข้อมูลไม่สำเร็จ" },
+      {
+        error:
+          "โหลดข้อมูลไม่สำเร็จ",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+
+// POST
+export async function POST(
+  req: Request
+) {
+
+  try {
+
+    const body = await req.json();
+
+    const transactions =
+      body.transactions;
+
+    if (
+      !transactions ||
+      transactions.length === 0
+    ) {
+
+      return NextResponse.json(
+        {
+          error:
+            "ไม่มีข้อมูล",
+        },
+        { status: 400 }
+      );
+    }
+
+    const created =
+      await prisma.transaction.createMany({
+        data: transactions,
+      });
+
+    return NextResponse.json(
+      created
+    );
+
+  } catch (error) {
+
+    return NextResponse.json(
+      {
+        error:
+          "บันทึกไม่สำเร็จ",
+      },
       { status: 500 }
     );
   }
