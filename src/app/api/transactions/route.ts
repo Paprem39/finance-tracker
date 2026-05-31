@@ -59,9 +59,15 @@ export async function POST(
     }
 
     const created =
-      await prisma.transaction.createMany({
-        data: transactions,
-      });
+  await prisma.transaction.createMany({
+    data: transactions.map(
+      (item: any) => ({
+        ...item,
+
+        date: new Date(item.date),
+      })
+    ),
+  });
 
     return NextResponse.json(
       created
