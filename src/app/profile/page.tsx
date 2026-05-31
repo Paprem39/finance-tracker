@@ -13,51 +13,59 @@ export default function ProfilePage() {
 
   useEffect(() => {
 
-    setNickname(
-      localStorage.getItem("nickname") || ""
-    );
-
-    setFirstname(
-      localStorage.getItem("firstname") || ""
-    );
-
-    setLastname(
-      localStorage.getItem("lastname") || ""
-    );
-
-    setEmail(
-      localStorage.getItem("email") || ""
-    );
-
-    setUsername(
-      localStorage.getItem("username") || ""
-    );
-
-    // สมัครเมื่อไหร่
-    let savedDate =
-      localStorage.getItem("registerDate");
-
-    // ถ้ายังไม่มี ให้สร้างวันสมัครครั้งแรก
-    if (!savedDate) {
-
-      savedDate =
-        new Date().toLocaleDateString(
-          "th-TH",
-          {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          }
-        );
-
-      localStorage.setItem(
-        "registerDate",
-        savedDate
-      );
-    }
-
-    setRegisterDate(savedDate);
-
+    const fetchProfile =
+      async () => {
+  
+        try {
+  
+          const response =
+            await fetch("/api/profile");
+  
+          const data =
+            await response.json();
+  
+          setNickname(
+            data.nickname || ""
+          );
+  
+          setFirstname(
+            data.firstname || ""
+          );
+  
+          setLastname(
+            data.lastname || ""
+          );
+  
+          setEmail(
+            data.email || ""
+          );
+  
+          setUsername(
+            data.username || ""
+          );
+  
+          setRegisterDate(
+            new Date(
+              data.createdAt
+            ).toLocaleDateString(
+              "th-TH",
+              {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              }
+            )
+          );
+  
+        } catch (error) {
+  
+          console.log(error);
+  
+        }
+      };
+  
+    fetchProfile();
+  
   }, []);
 
   return (

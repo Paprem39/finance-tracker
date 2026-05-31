@@ -1,0 +1,9 @@
+import { NextResponse } from "next/server";
+
+import { getServerSession } from "next-auth";
+
+import { authOptions } from "@/auth";
+
+import { prisma } from "@/lib/prisma";
+
+ตรง "@/auth" ยังขีดแดงอยู่ แต่ทำไม รันแล้วไม่ error ชื่อ ข้อมุล อะไรก็แสดงตรงหมด
