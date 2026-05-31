@@ -6,4 +6,40 @@ import { authOptions } from "@/auth";
 
 import { prisma } from "@/lib/prisma";
 
-ตรง "@/auth" ยังขีดแดงอยู่ แต่ทำไม รันแล้วไม่ error ชื่อ ข้อมุล อะไรก็แสดงตรงหมด
+ตรง "@/auth" ยังขีดแดงอยู่ แต่ทำไม รันแล้วไม่ error ชื่อ ข้อมุล อะไรก็แสดงตรงหมด แต่รันผ่านแค่ npm run dev บน local:3000 นะ
+แต่พิม .add ขึ้น vercel แล้ว ดัน error ไม่ผ่าน
+
+04:11:26.043 
+04:11:26.044 
+./src/app/api/transactions/route.ts:7:1
+04:11:26.044 
+Export authOptions doesn't exist in target module
+04:11:26.044 
+   5 | import { getServerSession }from "next-auth";
+04:11:26.044 
+   6 |
+04:11:26.045 
+>  7 | import { authOptions }from "../auth/[...nextauth]/route";
+04:11:26.045 
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+04:11:26.045 
+   8 |
+04:11:26.045 
+   9 |
+04:11:26.046 
+  10 | // GET
+04:11:26.046 
+04:11:26.048 
+The export authOptions was not found in module [project]/src/app/api/auth/[...nextauth]/route.ts [app-route] (ecmascript).
+04:11:26.048 
+Did you mean to import POST?
+04:11:26.048 
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+04:11:26.049 
+04:11:26.049 
+04:11:26.049 
+    at <unknown> (./src/app/api/test-session/route.ts:3:1)
+04:11:26.050 
+    at <unknown> (./src/app/api/transactions/route.ts:7:1)
+04:11:26.129 
+Error: Command "npm run build" exited with 1
