@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
   const [data, setData] = useState<any>(null);
-
   const [editField, setEditField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [showEmailModal, setShowEmailModal] = useState(false);
-
   const [registerDate, setRegisterDate] = useState("");
 
   useEffect(() => {
@@ -18,6 +18,7 @@ export default function ProfilePage() {
         const result = await response.json();
 
         setData(result);
+        setEmailValue(result.email || "");
 
         setRegisterDate(
           new Date(result.createdAt).toLocaleDateString("th-TH", {
@@ -210,19 +211,29 @@ export default function ProfilePage() {
             <Field label="นามสกุล" field="lastname" />
             <Field label="ชื่อเล่น" field="nickname" />
             <div
-              onClick={() => setShowEmailModal(true)}
-                className="relative p-6 rounded-3xl bg-white/70 border border-white/40 hover:scale-[1.02] transition cursor-pointer"
-                >
-              <p className="text-gray-500 mb-3">อีเมลล์</p>
+  onClick={() => setShowEmailModal(true)}
+  className="relative p-6 rounded-3xl bg-white/70 border border-white/40 hover:scale-[1.02] transition cursor-pointer"
+>
+  <p className="text-gray-500 mb-3">อีเมลล์</p>
 
-              <h3 className="text-xl font-black text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
-                {data?.email || "-"}
-              </h3>
+  <button
+    onClick={(e) => {
+      e.stopPropagation(); // กันไม่ให้เปิด modal
+      startEdit("email");  // ใช้ระบบ edit เดิมของคุณ
+    }}
+    className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
+  >
+    ✏️
+  </button>
 
-              <p className="text-xs text-gray-400 mt-2">
-                คลิกเพื่อดูแบบเต็ม
-              </p>
-            </div>
+  <h3 className="text-xl font-black text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
+    {data?.email || "-"}
+  </h3>
+
+  <p className="text-xs text-gray-400 mt-2">
+    คลิกเพื่อดูแบบเต็ม
+  </p>
+</div>
 
             {/* 🔥 FIX 1: วันที่สมัครไม่จางแล้ว */}
             <div className="md:col-span-2 p-6 rounded-3xl bg-white/70 border border-white/40">
