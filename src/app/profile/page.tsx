@@ -192,7 +192,13 @@ export default function ProfilePage() {
             <Field label="ชื่อจริง" field="firstname" />
             <Field label="นามสกุล" field="lastname" />
             <Field label="ชื่อเล่น" field="nickname" />
-            <Field label="อีเมลล์" field="email" />
+            <div className="relative p-6 rounded-3xl bg-white/70 border border-white/40 hover:scale-[1.02] transition">
+              <p className="text-gray-500 mb-3">อีเมลล์</p>
+
+                  <h3 className="text-xl font-black text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
+                    {data?.email || "-"}
+                  </h3>
+              </div>
 
             {/* 🔥 FIX 1: วันที่สมัครไม่จางแล้ว */}
             <div className="md:col-span-2 p-6 rounded-3xl bg-white/70 border border-white/40">
