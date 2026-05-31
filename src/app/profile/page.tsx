@@ -210,29 +210,73 @@ export default function ProfilePage() {
             <Field label="ชื่อจริง" field="firstname" />
             <Field label="นามสกุล" field="lastname" />
             <Field label="ชื่อเล่น" field="nickname" />
-            <div
-  onClick={() => setShowEmailModal(true)}
-  className="relative p-6 rounded-3xl bg-white/70 border border-white/40 hover:scale-[1.02] transition cursor-pointer"
->
+            <div className="relative p-6 rounded-3xl bg-white/70 border border-white/40 transition">
+
   <p className="text-gray-500 mb-3">อีเมลล์</p>
 
-  <button
-    onClick={(e) => {
-      e.stopPropagation(); // กันไม่ให้เปิด modal
-      startEdit("email");  // ใช้ระบบ edit เดิมของคุณ
-    }}
-    className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
-  >
-    ✏️
-  </button>
+  {/* ✏️ ปุ่มปากกา */}
+  {!isEditingEmail && (
+    <button
+      onClick={() => setIsEditingEmail(true)}
+      className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
+    >
+      ✏️
+    </button>
+  )}
 
-  <h3 className="text-xl font-black text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
-    {data?.email || "-"}
-  </h3>
+  {/* VIEW MODE */}
+  {!isEditingEmail && (
+    <h3 className="text-xl font-black text-gray-900 break-all">
+      {data?.email || "-"}
+    </h3>
+  )}
 
-  <p className="text-xs text-gray-400 mt-2">
-    คลิกเพื่อดูแบบเต็ม
-  </p>
+  {/* EDIT MODE */}
+  {isEditingEmail && (
+    <div className="flex flex-col gap-3">
+      <input
+        autoFocus
+        value={emailValue}
+        onChange={(e) => setEmailValue(e.target.value)}
+        className="w-full text-xl font-black border-b-2 border-blue-500 outline-none bg-transparent"
+      />
+
+      <div className="flex gap-3 mt-2">
+        <button
+          onClick={async () => {
+            await fetch("/api/profile", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                field: "email",
+                value: emailValue,
+              }),
+            });
+
+            const res = await fetch("/api/profile");
+            const updated = await res.json();
+
+            setData(updated);
+            setIsEditingEmail(false);
+          }}
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl"
+        >
+          บันทึก
+        </button>
+
+        <button
+          onClick={() => {
+            setIsEditingEmail(false);
+            setEmailValue(data?.email || "");
+          }}
+          className="bg-gray-300 px-4 py-2 rounded-xl"
+        >
+          ยกเลิก
+        </button>
+      </div>
+    </div>
+  )}
+
 </div>
 
             {/* 🔥 FIX 1: วันที่สมัครไม่จางแล้ว */}
