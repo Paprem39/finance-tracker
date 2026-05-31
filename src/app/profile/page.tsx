@@ -232,6 +232,32 @@ export default function ProfilePage() {
 
         </div>
       </div>
+      {showEmailModal && (
+  <div
+    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    onClick={() => setShowEmailModal(false)}
+  >
+    <div
+      className="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center relative"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="text-2xl font-black text-gray-800 mb-4">
+        อีเมลล์ของคุณ
+      </h2>
+
+      <p className="text-lg text-gray-700 break-all">
+        {data?.email}
+      </p>
+
+      <button
+        onClick={() => setShowEmailModal(false)}
+        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl"
+      >
+        ปิด
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 }
