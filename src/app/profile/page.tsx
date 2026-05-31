@@ -3,45 +3,48 @@
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
   const [data, setData] = useState<any>(null);
-
   const [editField, setEditField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
-
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const [registerDate, setRegisterDate] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await fetch("/api/profile");
-      const result = await res.json();
+      try {
+        const response = await fetch("/api/profile");
+        const result = await response.json();
 
-      setData(result);
+        setData(result);
+        setEmailValue(result.email || "");
 
-      setRegisterDate(
-        new Date(result.createdAt).toLocaleDateString("th-TH", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })
-      );
+        setRegisterDate(
+          new Date(result.createdAt).toLocaleDateString("th-TH", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+        );
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchProfile();
   }, []);
 
-  // เปิด popup
   const startEdit = (field: string) => {
     setEditField(field);
     setEditValue(String(data?.[field] ?? ""));
   };
 
-  // ปิด popup
-  const closeEdit = () => {
+  const cancelEdit = () => {
     setEditField(null);
     setEditValue("");
   };
 
-  // save
   const saveEdit = async () => {
     if (!editField) return;
 
@@ -58,20 +61,101 @@ export default function ProfilePage() {
     const updated = await res.json();
 
     setData(updated);
-    closeEdit();
+    setEditField(null);
+    setEditValue("");
+  };
+
+  const Field = ({
+    label,
+    field,
+  }: {
+    label: string;
+    field: string;
+  }) => {
+    const isEditing = editField === field;
+
+    return (
+      <div
+        className={`relative p-6 rounded-3xl border transition-all duration-300
+        ${
+          isEditing
+            ? "bg-blue-50 border-blue-400 shadow-lg scale-[1.02]"
+            : "bg-white/70 border-white/40 hover:scale-[1.02]"
+        }`}
+      >
+        <p className="text-gray-500 mb-3">{label}</p>
+
+        <div className="relative min-h-[40px]">
+
+          {/* VIEW MODE */}
+          <div
+            className={`transition-all duration-300 ${
+              isEditing
+                ? "opacity-0 absolute"
+                : "opacity-100"
+            }`}
+          >
+            {/* 🔥 FIX 2: ไม่ให้ตอน edit แล้ว text กลายเป็นจาง */}
+            <h3 className="text-2xl font-black text-gray-900 break-all">
+              {data?.[field] || "-"}
+            </h3>
+          </div>
+
+          {/* EDIT MODE */}
+          <div
+            className={`transition-all duration-300 ${
+              isEditing
+                ? "opacity-100"
+                : "opacity-0 absolute"
+            }`}
+          >
+            <input
+              autoFocus
+              className="w-full text-2xl font-black text-gray-900 border-b-2 border-blue-500 outline-none bg-transparent"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* ✏️ BUTTON (ไม่หายแล้ว) */}
+        {!isEditing && (
+          <button
+            onClick={() => startEdit(field)}
+            className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
+          >
+            ✏️
+          </button>
+        )}
+
+        {/* ✖ cancel */}
+        {isEditing && (
+          <button
+            onClick={cancelEdit}
+            className="absolute top-4 right-4 text-red-500 hover:scale-110 transition"
+          >
+            ✖
+          </button>
+        )}
+      </div>
+    );
   };
 
   return (
     <div className="min-h-screen relative bg-gradient-to-br from-indigo-200 via-blue-100 to-cyan-100 p-6 overflow-hidden">
 
-      {/* background glow */}
+      {/* glow */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-blue-400/30 blur-3xl rounded-full" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/30 blur-3xl rounded-full" />
 
       {/* header */}
       <div className="relative z-10 mb-10">
-        <h1 className="text-4xl font-black text-gray-800">ข้อมูลส่วนตัว</h1>
-        <p className="text-gray-600 mt-2">โปรไฟล์ของคุณ</p>
+        <h1 className="text-4xl font-black text-gray-800">
+          ข้อมูลส่วนตัว
+        </h1>
+        <p className="text-gray-600 mt-2">
+          โปรไฟล์ของคุณ
+        </p>
       </div>
 
       {/* card */}
@@ -81,127 +165,126 @@ export default function ProfilePage() {
 
         <div className="px-8 pb-10">
 
-          {/* profile */}
-          <div className="-mt-20 w-40 h-40 mx-auto relative">
-            <div className="w-40 h-40 rounded-full bg-white border-[6px] border-white shadow-2xl flex items-center justify-center text-6xl font-black text-blue-700">
+          {/* PROFILE + CAMERA (FIX 3) */}
+          <div className="relative -mt-20 w-40 h-40 mx-auto">
+            <div className="w-40 h-40 rounded-full bg-gradient-to-br from-white to-blue-100 border-[6px] border-white shadow-2xl flex items-center justify-center text-6xl font-black text-blue-700">
               U
             </div>
 
-            <button className="absolute bottom-2 right-2 w-11 h-11 rounded-full bg-blue-600 text-white">
+            {/* 🔥 CAMERA BUTTON กลับมาแล้ว */}
+            <button className="absolute bottom-2 right-2 w-11 h-11 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg border-2 border-white">
               📷
             </button>
           </div>
 
           {/* name */}
           <div className="mt-6 text-center">
-            <h2 className="text-4xl font-black">
-              คุณ : {data?.nickname || "-"}
-            </h2>
 
-            <p className="text-gray-500 mt-2">
-              สถานะ : ผู้ใช้งานทั่วไป
-            </p>
+  {/* คุณ + ชื่อเล่น */}
+  <h2 className="text-4xl font-black text-gray-900">
+    คุณ : {data?.nickname || "-"}
+  </h2>
 
-            <div className="flex justify-center items-center gap-3 mt-4">
-              <div className="w-4 h-4 bg-green-500 rounded-full animate-pulse" />
-              <p className="text-green-600 font-bold">ออนไลน์</p>
-            </div>
-          </div>
+  {/* สถานะ */}
+  <p className="text-gray-500 mt-2">
+    สถานะ : ผู้ใช้งานทั่วไป
+  </p>
 
-          {/* fields */}
+  {/* ONLINE STATUS */}
+  <div className="flex items-center justify-center gap-3 mt-4">
+
+    {/* green dot */}
+    <div className="w-4 h-4 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-400" />
+
+    <p className="text-green-600 font-bold text-lg">
+      ออนไลน์
+    </p>
+
+  </div>
+
+</div>
+
+          {/* grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
 
-            {["firstname", "lastname", "nickname", "email"].map((field) => (
-              <div
-                key={field}
-                className="relative p-6 rounded-3xl bg-white/70 border border-white/40 hover:scale-[1.02] transition cursor-pointer"
-              >
-                <p className="text-gray-500 mb-3">{field}</p>
+            <Field label="ชื่อจริง" field="firstname" />
+            <Field label="นามสกุล" field="lastname" />
+            <Field label="ชื่อเล่น" field="nickname" />
+            <div
+  onClick={() => setShowEmailModal(true)}
+  className="relative p-6 rounded-3xl bg-white/70 border border-white/40 hover:scale-[1.02] transition cursor-pointer"
+>
+  <p className="text-gray-500 mb-3">อีเมลล์</p>
 
-                <h3 className="text-xl font-black text-gray-900 break-all">
-                  {data?.[field] || "-"}
-                </h3>
+  <button
+    onClick={(e) => {
+      e.stopPropagation(); // กันไม่ให้เปิด modal
+      startEdit("email");  // ใช้ระบบ edit เดิมของคุณ
+    }}
+    className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
+  >
+    ✏️
+  </button>
 
-                <button
-                  onClick={() => startEdit(field)}
-                  className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
-                >
-                  ✏️
-                </button>
-              </div>
-            ))}
+  <h3 className="text-xl font-black text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
+    {data?.email || "-"}
+  </h3>
 
-            {/* date */}
+  <p className="text-xs text-gray-400 mt-2">
+    คลิกเพื่อดูแบบเต็ม
+  </p>
+</div>
+
+            {/* 🔥 FIX 1: วันที่สมัครไม่จางแล้ว */}
             <div className="md:col-span-2 p-6 rounded-3xl bg-white/70 border border-white/40">
-              <p className="text-gray-600 mb-3">วันที่สมัครใช้งาน</p>
-              <h3 className="text-xl font-black">
+              <p className="text-gray-600 mb-3 font-medium">
+                วันที่สมัครใช้งาน
+              </p>
+              <h3 className="text-xl font-black text-gray-900">
                 {registerDate || "-"}
               </h3>
             </div>
+
           </div>
+
+          {/* SAVE */}
+          {editField && (
+            <button
+              onClick={saveEdit}
+              className="mt-10 w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold transition"
+            >
+              💾 บันทึกข้อมูล
+            </button>
+          )}
 
         </div>
       </div>
+      {showEmailModal && (
+  <div
+    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    onClick={() => setShowEmailModal(false)}
+  >
+    <div
+      className="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center relative"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="text-2xl font-black text-gray-800 mb-4">
+        อีเมลล์ของคุณ
+      </h2>
 
-      {/* ================= MODAL (Facebook style) ================= */}
-      {editField && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-          onClick={closeEdit}
-        >
-          <div
-            className="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl
-            transform transition-all duration-300 scale-100 animate-fadeIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-2xl font-black mb-4">
-              แก้ไข {editField}
-            </h2>
+      <p className="text-lg text-gray-700 break-all">
+        {data?.email}
+      </p>
 
-            <input
-              autoFocus
-              className="w-full border-b-2 border-blue-500 text-xl font-bold outline-none py-2"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-            />
-
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={closeEdit}
-                className="w-full py-3 rounded-xl bg-gray-200 hover:bg-gray-300"
-              >
-                ยกเลิก
-              </button>
-
-              <button
-                onClick={saveEdit}
-                className="w-full py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700"
-              >
-                บันทึก
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* simple animation */}
-      <style jsx>{`
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-      `}</style>
-
+      <button
+        onClick={() => setShowEmailModal(false)}
+        className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl"
+      >
+        ปิด
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 }
