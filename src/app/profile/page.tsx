@@ -3,343 +3,218 @@
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
+  const [data, setData] = useState<any>(null);
 
-  const [nickname, setNickname] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [editField, setEditField] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+
   const [registerDate, setRegisterDate] = useState("");
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("/api/profile");
+        const result = await response.json();
 
-    const fetchProfile =
-      async () => {
-  
-        try {
-  
-          const response =
-            await fetch("/api/profile");
-  
-          const data =
-            await response.json();
-  
-          setNickname(
-            data.nickname || ""
-          );
-  
-          setFirstname(
-            data.firstname || ""
-          );
-  
-          setLastname(
-            data.lastname || ""
-          );
-  
-          setEmail(
-            data.email || ""
-          );
-  
-          setUsername(
-            data.username || ""
-          );
-  
-          setRegisterDate(
-            new Date(
-              data.createdAt
-            ).toLocaleDateString(
-              "th-TH",
-              {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              }
-            )
-          );
-  
-        } catch (error) {
-  
-          console.log(error);
-  
-        }
-      };
-  
+        setData(result);
+
+        setRegisterDate(
+          new Date(result.createdAt).toLocaleDateString("th-TH", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchProfile();
-  
   }, []);
 
-  return (
+  // ✅ FIX: กัน stale value + stable edit
+  const startEdit = (field: string) => {
+    setEditField(field);
 
+    // IMPORTANT FIX:
+    // กัน undefined + force string
+    setEditValue(String(data?.[field] ?? ""));
+  };
+
+  const cancelEdit = () => {
+    setEditField(null);
+    setEditValue("");
+  };
+
+  const saveEdit = async () => {
+    if (!editField) return;
+
+    await fetch("/api/profile", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        field: editField,
+        value: editValue,
+      }),
+    });
+
+    const res = await fetch("/api/profile");
+    const updated = await res.json();
+
+    setData(updated);
+    setEditField(null);
+    setEditValue("");
+  };
+
+  const Field = ({
+    label,
+    field,
+  }: {
+    label: string;
+    field: string;
+  }) => {
+    const isEditing = editField === field;
+
+    return (
+      <div
+        className={`relative p-6 rounded-3xl border transition-all duration-300
+        ${
+          isEditing
+            ? "bg-blue-50 border-blue-400 shadow-lg scale-[1.02]"
+            : "bg-white/70 border-white/40 hover:scale-[1.02]"
+        }`}
+      >
+        <p className="text-gray-500 mb-3">{label}</p>
+
+        {/* TEXT / INPUT FADE */}
+        <div className="relative min-h-[40px]">
+          {/* VIEW MODE */}
+          <div
+            className={`transition-all duration-300 ${
+              isEditing
+                ? "opacity-0 translate-y-2 absolute"
+                : "opacity-100"
+            }`}
+          >
+            <h3 className="text-2xl font-black text-gray-800 break-all">
+              {data?.[field] || "-"}
+            </h3>
+          </div>
+
+          {/* EDIT MODE */}
+          <div
+            className={`transition-all duration-300 ${
+              isEditing
+                ? "opacity-100"
+                : "opacity-0 translate-y-2 absolute"
+            }`}
+          >
+            <input
+              autoFocus
+              className="w-full text-2xl font-black border-b-2 border-blue-500 outline-none bg-transparent"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* ✏️ BUTTON */}
+        {!isEditing && (
+          <button
+            onClick={() => startEdit(field)}
+            className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
+          >
+            ✏️
+          </button>
+        )}
+
+        {/* CANCEL BUTTON (ตอน edit) */}
+        {isEditing && (
+          <button
+            onClick={cancelEdit}
+            className="absolute top-4 right-4 text-red-500 hover:scale-110 transition"
+          >
+            ✖
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  return (
     <div className="min-h-screen overflow-hidden relative bg-gradient-to-br from-indigo-200 via-blue-100 to-cyan-100 p-6">
 
-      {/* Glow Background */}
+      {/* glow */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-blue-400/30 blur-3xl rounded-full"></div>
-
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/30 blur-3xl rounded-full"></div>
 
-      {/* Header */}
+      {/* header */}
       <div className="relative z-10 mb-10">
-
-        <div>
-
-          <h1 className="text-3xl md:text-5xl font-black text-gray-800 drop-shadow-sm">
-            ข้อมูลส่วนตัว
-          </h1>
-
-          <p className="text-gray-600 mt-3 text-lg">
-            โปรไฟล์ และข้อมูลส่วนตัวของคุณ
-          </p>
-
-        </div>
-
+        <h1 className="text-4xl font-black text-gray-800">
+          ข้อมูลส่วนตัว
+        </h1>
+        <p className="text-gray-600 mt-2">
+          โปรไฟล์ของคุณ
+        </p>
       </div>
 
-      {/* Main Card */}
-      <div
-        className="
-        relative z-10
-        max-w-5xl
-        mx-auto
-        bg-white/70
-        backdrop-blur-2xl
-        border border-white/40
-        rounded-[40px]
-        shadow-2xl
-        overflow-hidden
-      "
-      >
+      {/* card */}
+      <div className="relative z-10 max-w-5xl mx-auto bg-white/70 backdrop-blur-2xl border border-white/40 rounded-[40px] shadow-2xl overflow-hidden">
 
-        {/* Top Banner */}
-        <div
-          className="
-          h-52
-          bg-gradient-to-r
-          from-blue-600
-          via-indigo-600
-          to-cyan-500
-          relative
-        "
-        >
+        <div className="h-52 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500" />
 
-          {/* Glow */}
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+        <div className="px-8 pb-10">
 
-        </div>
-
-        {/* Profile Section */}
-        <div className="relative px-8 pb-10">
-
-          {/* Profile Circle */}
-          <div className="relative w-fit">
-
-            <div
-              className="
-              -mt-20
-              w-40 h-40
-              rounded-full
-              bg-gradient-to-br from-white to-blue-100
-              border-[6px] border-white
-              shadow-2xl
-              flex items-center justify-center
-              text-6xl font-black text-blue-700
-              overflow-hidden
-            "
-            >
-              U
-            </div>
-
-            {/* Camera Button */}
-            <button
-              className="
-                absolute
-                bottom-2
-                right-2
-                w-12
-                h-12
-                rounded-full
-                bg-blue-600
-                hover:bg-blue-700
-                text-white
-                flex
-                items-center
-                justify-center
-                shadow-xl
-                border-4
-                border-white
-                transition
-                active:scale-95
-              "
-            >
-              📷
-            </button>
-
+          {/* profile */}
+          <div className="-mt-20 w-40 h-40 rounded-full bg-gradient-to-br from-white to-blue-100 border-[6px] border-white shadow-2xl flex items-center justify-center text-6xl font-black text-blue-700">
+            U
           </div>
 
-          {/* Name */}
+          {/* name locked */}
           <div className="mt-6">
-
             <h2 className="text-4xl font-black text-gray-800">
-              {nickname || "User"}
+              {data?.nickname || "User"}
             </h2>
 
-            <p className="text-gray-500 text-lg mt-2">
+            <p className="text-gray-500 mt-2">
               ผู้ใช้งานทั่วไป
             </p>
-
-            {/* Online */}
-            <div className="flex items-center gap-3 mt-4">
-
-              <div
-                className="
-                w-4 h-4
-                rounded-full
-                bg-green-500
-                animate-pulse
-                shadow-lg shadow-green-400
-              "
-              ></div>
-
-              <p className="text-green-600 font-bold text-lg">
-                Online
-              </p>
-
-            </div>
-
           </div>
 
-          {/* Info Grid */}
-          <div
-            className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            gap-6
-            mt-12
-          "
-          >
+          {/* grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
 
-            {/* Firstname */}
-            <div
-              className="
-              bg-white/70
-              backdrop-blur-xl
-              rounded-3xl
-              p-6
-              shadow-lg
-              border border-white/40
-              hover:scale-[1.02]
-              transition
-            "
-            >
-              <p className="text-gray-500 mb-3">
-                ชื่อจริง
-              </p>
+            <Field label="ชื่อจริง" field="firstname" />
+            <Field label="นามสกุล" field="lastname" />
+            <Field label="ชื่อเล่น" field="nickname" />
+            <Field label="อีเมลล์" field="email" />
 
-              <h3 className="text-2xl font-black text-gray-800">
-                {firstname || "-"}
-              </h3>
-
-            </div>
-
-            {/* Lastname */}
-            <div
-              className="
-              bg-white/70
-              backdrop-blur-xl
-              rounded-3xl
-              p-6
-              shadow-lg
-              border border-white/40
-              hover:scale-[1.02]
-              transition
-            "
-            >
-              <p className="text-gray-500 mb-3">
-                นามสกุล
-              </p>
-
-              <h3 className="text-2xl font-black text-gray-800">
-                {lastname || "-"}
-              </h3>
-
-            </div>
-
-            {/* Nickname */}
-            <div
-              className="
-              bg-white/70
-              backdrop-blur-xl
-              rounded-3xl
-              p-6
-              shadow-lg
-              border border-white/40
-              hover:scale-[1.02]
-              transition
-            "
-            >
-              <p className="text-gray-500 mb-3">
-                ชื่อเล่น
-              </p>
-
-              <h3 className="text-xl font-black text-gray-800 break-all">
-                {nickname || "-"}
-              </h3>
-
-            </div>
-
-            {/* Email */}
-            <div
-              className="
-              bg-white/70
-              backdrop-blur-xl
-              rounded-3xl
-              p-6
-              shadow-lg
-              border border-white/40
-              hover:scale-[1.02]
-              transition
-            "
-            >
-              <p className="text-gray-500 mb-3">
-                อีเมลล์
-              </p>
-
-              <h3 className="text-xl font-black text-gray-800 break-all">
-                {email || "-"}
-              </h3>
-
-            </div>
-
-            {/* Register Date */}
-            <div
-              className="
-              bg-white/70
-              backdrop-blur-xl
-              rounded-3xl
-              p-6
-              shadow-lg
-              border border-white/40
-              hover:scale-[1.02]
-              transition
-              md:col-span-2
-            "
-            >
+            <div className="md:col-span-2 p-6 rounded-3xl bg-white/70 border border-white/40">
               <p className="text-gray-500 mb-3">
                 วันที่สมัครใช้งาน
               </p>
-
-              <h3 className="text-xl font-black text-gray-800 break-all">
+              <h3 className="text-xl font-black">
                 {registerDate || "-"}
               </h3>
-
             </div>
 
           </div>
 
+          {/* SAVE */}
+          {editField && (
+            <button
+              onClick={saveEdit}
+              className="mt-10 w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold transition"
+            >
+              💾 บันทึกข้อมูล
+            </button>
+          )}
+
         </div>
-
       </div>
-
     </div>
   );
 }
