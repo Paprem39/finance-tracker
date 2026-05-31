@@ -85,61 +85,6 @@ export default function Dashboard() {
   return () => clearInterval(timer);
 }, []);
 
-useEffect(() => {
-
-  const fetchTransactions = async () => {
-
-    try {
-
-      const response = await fetch(
-        "/api/transactions"
-      );
-
-      const data = await response.json();
-
-      setTransactions(data);
-
-      // คำนวณรายรับรายจ่ายใหม่
-      const totalIncome = data
-        .filter(
-          (item: Transaction) =>
-            item.type === "income"
-        )
-        .reduce(
-          (
-            sum: number,
-            item: Transaction
-          ) => sum + item.amount,
-          0
-        );
-
-      const totalExpense = data
-        .filter(
-          (item: Transaction) =>
-            item.type === "expense"
-        )
-        .reduce(
-          (
-            sum: number,
-            item: Transaction
-          ) => sum + item.amount,
-          0
-        );
-
-      setIncome(totalIncome);
-
-      setExpense(totalExpense);
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
-  };
-
-  fetchTransactions();
-
-}, []);
 
 useEffect(() => {
   if (type === "income") {
