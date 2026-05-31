@@ -2,14 +2,36 @@ import { prisma } from "@/lib/prisma";
 
 import { NextResponse } from "next/server";
 
+import { getServerSession }from "next-auth";
+
+import { authOptions }from "../auth/[...nextauth]/route";
+
 
 // GET
 export async function GET() {
 
   try {
 
+    const session =
+      await getServerSession(
+        authOptions
+      );
+
+    if (!session?.user?.id) {
+
+      return NextResponse.json(
+        [],
+      );
+    }
+
     const transactions =
       await prisma.transaction.findMany({
+
+        where: {
+          userId:
+            session.user.id,
+        },
+
         orderBy: {
           createdAt: "desc",
         },
@@ -39,6 +61,21 @@ export async function POST(
 
   try {
 
+    const session =
+      await getServerSession(
+        authOptions
+      );
+
+    if (!session?.user?.id) {
+
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
 
     const transactions =
@@ -51,29 +88,37 @@ export async function POST(
 
       return NextResponse.json(
         {
-          error:
-            "ไม่มีข้อมูล",
+          error: "ไม่มีข้อมูล",
         },
         { status: 400 }
       );
     }
 
-    const created =
-  await prisma.transaction.createMany({
-    data: transactions.map(
-      (item: any) => ({
-        ...item,
+    const dataWithUser =
+      transactions.map(
+        (item: any) => ({
 
-        date: new Date(item.date),
-      })
-    ),
-  });
+          ...item,
+
+          date: new Date(item.date),
+
+          userId:
+            session.user.id,
+        })
+      );
+
+    const created =
+      await prisma.transaction.createMany({
+        data: dataWithUser,
+      });
 
     return NextResponse.json(
       created
     );
 
   } catch (error) {
+
+    console.log(error);
 
     return NextResponse.json(
       {

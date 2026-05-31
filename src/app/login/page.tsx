@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,31 +11,26 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+
+    const result = await signIn(
+      "credentials",
+      {
         loginInput,
         password,
-      }),
-    });
+        redirect: false,
+      }
+    );
   
-    const data = await response.json();
+    if (result?.error) {
   
-    if (response.ok) {
-      alert("Login สำเร็จ 🎉");
-
-      localStorage.setItem(
-        "nickname",
-        data.user.nickname
-      );
+      alert("Login ไม่สำเร็จ");
   
-      router.push("/menu");
-    } else {
-      alert(data.message);
+      return;
     }
+  
+    alert("Login สำเร็จ 🎉");
+  
+    router.push("/menu");
   };
 
   const handleSignup = () => {

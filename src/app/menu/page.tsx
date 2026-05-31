@@ -2,32 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function MenuPage() {
 
   const router = useRouter();
+  const { data: session } = useSession();
 
-  const [nickname, setNickname] = useState("");
+  const handleLogout = async () => {
 
-  const handleLogout = () => {
-
-    localStorage.removeItem("token");
+    await signOut({
+      redirect: false,
+    });
   
     router.push("/login");
   };
-
-  useEffect(() => {
-
-    const savedNickname =
-      localStorage.getItem("nickname");
-
-    if (savedNickname) {
-
-      setNickname(savedNickname);
-    }
-
-  }, []);
-
 
   return (
 
@@ -69,7 +58,7 @@ export default function MenuPage() {
   <div>
 
     <h2 className="text-xl font-bold text-gray-800">
-      ยินดีต้อนรับคุณ : {nickname}
+      ยินดีต้อนรับคุณ : {session?.user?.nickname}
     </h2>
 
     <p className="text-gray-500">
