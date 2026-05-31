@@ -210,43 +210,61 @@ export default function ProfilePage() {
             <Field label="ชื่อจริง" field="firstname" />
             <Field label="นามสกุล" field="lastname" />
             <Field label="ชื่อเล่น" field="nickname" />
-            <div className="relative p-6 rounded-3xl bg-white/70 border border-white/40 transition">
+            {/* EMAIL FIELD (FIXED FULL VERSION) */}
+<div className="relative p-6 rounded-3xl bg-white/70 border border-white/40 transition">
 
-  <p className="text-gray-500 mb-3">อีเมลล์</p>
+<p className="text-gray-500 mb-3">อีเมลล์</p>
 
-  {/* ✏️ ปุ่มปากกา */}
-  {!isEditingEmail && (
-    <button
-      onClick={() => setIsEditingEmail(true)}
-      className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
-    >
-      ✏️
-    </button>
-  )}
+{/* ✏️ BUTTON */}
+{!isEditingEmail && (
+  <button
+    onClick={() => {
+      setIsEditingEmail(true);
+      setEmailValue(data?.email || "");
+    }}
+    className="absolute top-4 right-4 text-blue-600 hover:scale-110 transition"
+  >
+    ✏️
+  </button>
+)}
 
-  {/* VIEW MODE */}
-  {!isEditingEmail && (
-    <h3 className="text-xl font-black text-gray-900 break-all">
-      {data?.email || "-"}
-    </h3>
-  )}
+{/* VIEW MODE */}
+{!isEditingEmail && (
+  <h3 className="text-xl font-black text-gray-900 break-all">
+    {data?.email || "-"}
+  </h3>
+)}
 
-  {/* EDIT MODE */}
-  {isEditingEmail && (
-    <div className="flex flex-col gap-3">
-      <input
-        autoFocus
-        value={emailValue}
-        onChange={(e) => setEmailValue(e.target.value)}
-        className="w-full text-xl font-black border-b-2 border-blue-500 outline-none bg-transparent"
-      />
+{/* EDIT MODE */}
+{isEditingEmail && (
+  <div className="flex flex-col gap-3">
 
-      <div className="flex gap-3 mt-2">
-        <button
-          onClick={async () => {
+    <input
+      autoFocus
+      value={emailValue}
+      onChange={(e) => setEmailValue(e.target.value)}
+      className="
+        w-full
+        text-xl font-black text-gray-900
+        border-b-2 border-blue-500
+        outline-none
+        bg-white/80
+        px-2 py-1
+        rounded-lg
+      "
+    />
+
+    <div className="flex gap-3 mt-2">
+
+      {/* SAVE */}
+      <button
+        onClick={async () => {
+          try {
             await fetch("/api/profile", {
               method: "PUT",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+              },
               body: JSON.stringify({
                 field: "email",
                 value: emailValue,
@@ -258,25 +276,29 @@ export default function ProfilePage() {
 
             setData(updated);
             setIsEditingEmail(false);
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-xl"
-        >
-          บันทึก
-        </button>
+          } catch (err) {
+            console.log(err);
+          }
+        }}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition"
+      >
+        บันทึก
+      </button>
 
-        <button
-          onClick={() => {
-            setIsEditingEmail(false);
-            setEmailValue(data?.email || "");
-          }}
-          className="bg-gray-300 px-4 py-2 rounded-xl"
-        >
-          ยกเลิก
-        </button>
-      </div>
+      {/* CANCEL */}
+      <button
+        onClick={() => {
+          setIsEditingEmail(false);
+          setEmailValue(data?.email || "");
+        }}
+        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-xl transition"
+      >
+        ยกเลิก
+      </button>
+
     </div>
-  )}
-
+  </div>
+)}
 </div>
 
             {/* 🔥 FIX 1: วันที่สมัครไม่จางแล้ว */}
