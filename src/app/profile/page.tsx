@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useEffect,useState,ChangeEvent,} from "react";
 
 export default function ProfilePage() {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -10,6 +10,7 @@ export default function ProfilePage() {
   const [editValue, setEditValue] = useState("");
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [registerDate, setRegisterDate] = useState("");
+  const [profileImage, setProfileImage] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -33,6 +34,12 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
+
+    const savedImage = localStorage.getItem("profileImage");
+
+    if (savedImage) {
+    setProfileImage(savedImage);
+  }
   }, []);
 
   const startEdit = (field: string) => {
@@ -63,6 +70,34 @@ export default function ProfilePage() {
     setData(updated);
     setEditField(null);
     setEditValue("");
+  };
+
+  const handleImageUpload = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+  
+    const file =
+      e.target.files?.[0];
+  
+    if (!file) return;
+  
+    const reader =
+      new FileReader();
+  
+    reader.onloadend = () => {
+  
+      const image =
+        reader.result as string;
+  
+      setProfileImage(image);
+  
+      localStorage.setItem(
+        "profileImage",
+        image
+      );
+    };
+  
+    reader.readAsDataURL(file);
   };
 
   const Field = ({
@@ -167,14 +202,77 @@ export default function ProfilePage() {
 
           {/* PROFILE + CAMERA (FIX 3) */}
           <div className="relative -mt-20 w-40 h-40 mx-auto">
-            <div className="w-40 h-40 rounded-full bg-gradient-to-br from-white to-blue-100 border-[6px] border-white shadow-2xl flex items-center justify-center text-6xl font-black text-blue-700">
-              U
-            </div>
+          <div
+  className="
+    w-40 h-40
+    rounded-full
+    bg-gradient-to-br
+    from-white
+    to-blue-100
+    border-[6px]
+    border-white
+    shadow-2xl
+    overflow-hidden
+    flex
+    items-center
+    justify-center
+  "
+>
+
+  {profileImage ? (
+
+    <img
+      src={profileImage}
+      alt="profile"
+      className="
+        w-full
+        h-full
+        object-cover
+      "
+    />
+
+  ) : (
+
+    <span className="text-6xl font-black text-blue-700">
+      U
+    </span>
+
+  )}
+
+</div>
 
             {/* 🔥 CAMERA BUTTON กลับมาแล้ว */}
-            <button className="absolute bottom-2 right-2 w-11 h-11 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg border-2 border-white">
-              📷
-            </button>
+            <label
+  className="
+    absolute
+    bottom-2
+    right-2
+    w-11
+    h-11
+    rounded-full
+    bg-blue-600
+    hover:bg-blue-700
+    text-white
+    flex
+    items-center
+    justify-center
+    shadow-lg
+    border-2
+    border-white
+    cursor-pointer
+  "
+>
+
+  📷
+
+  <input
+    type="file"
+    accept="image/*"
+    className="hidden"
+    onChange={handleImageUpload}
+  />
+
+</label>
           </div>
 
           {/* name */}
