@@ -418,14 +418,6 @@ if (value <= 0) {
       {/* Form */}
       <div className="bg-white p-5 rounded-2xl shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-          {/* Amount */}
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="จำนวนเงิน"
-            className="border p-3 rounded-xl"
-          />
 
           {/* Type */}
           <select
@@ -484,21 +476,30 @@ if (value <= 0) {
   </option>
 </select>
 
-          {/* Date */}
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="border border-gray-300 p-4 rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"/>
-
         {/* Note */}
-          <input
+        <input
           type="text"
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="รายละเอียดเพิ่มเติม..."
           className="border border-gray-300 p-4 rounded-2xl w-full"
         />
+
+        {/* Amount */}
+        <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="จำนวนเงิน"
+            className="border p-3 rounded-xl"
+          />
+
+          {/* Date */}
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="border border-gray-300 p-4 rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"/>
 
           {/* Add Button */}
           <button
