@@ -70,20 +70,32 @@ export default function ReportsPage() {
   
   ];
 
-  // โหลด localStorage
-  useEffect(() => {
+  // โหลดข้อมูลจาก database
+useEffect(() => {
 
-    const savedTransactions =
-      localStorage.getItem("transactions");
+  const fetchTransactions = async () => {
 
-    if (savedTransactions) {
+    try {
 
-      setTransactions(
-        JSON.parse(savedTransactions)
+      const res = await fetch(
+        "/api/transactions"
       );
+
+      const data = await res.json();
+
+      setTransactions(data);
+
+    } catch (error) {
+
+      console.log(error);
+
     }
 
-  }, []);
+  };
+
+  fetchTransactions();
+
+}, []);
 
   // Filter Data
 const filteredTransactions = useMemo(() => {
@@ -370,27 +382,39 @@ Object.values(
   };
 
   // Delete Transaction
-const deleteTransaction = (indexToDelete: number) => {
-
-  const confirmDelete = confirm(
-    "คุณต้องการลบรายการนี้ใช่ไหม?"
-  );
-
-  if (!confirmDelete) return;
-
-  const updatedTransactions =
-    transactions.filter(
-      (_, index) =>
-        index !== indexToDelete
+  const deleteTransaction = async (
+    id: string
+  ) => {
+  
+    const confirmDelete = confirm(
+      "คุณต้องการลบรายการนี้ใช่ไหม?"
     );
-
-  setTransactions(updatedTransactions);
-
-  localStorage.setItem(
-    "transactions",
-    JSON.stringify(updatedTransactions)
-  );
-};
+  
+    if (!confirmDelete) return;
+  
+    try {
+  
+      const res = await fetch(
+        `/api/transactions/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+  
+      if (!res.ok) {
+        throw new Error("ลบไม่สำเร็จ");
+      }
+  
+      setTransactions((prev) =>
+        prev.filter((item) => item.id !== id)
+      );
+  
+    } catch (error) {
+  
+      alert("เกิดข้อผิดพลาด");
+  
+    }
+  };
 
   // Export PDF
   const exportPDF = () => {
@@ -778,9 +802,9 @@ const deleteTransaction = (indexToDelete: number) => {
                     <td className="p-4 text-center">
 
                       <button
-                        onClick={() =>
-                        deleteTransaction(index)
-                        }
+                       onClick={() =>
+                        deleteTransaction(item.id)
+                      }
                           className="
                           w-10
                           h-10
