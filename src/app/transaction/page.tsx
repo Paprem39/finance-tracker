@@ -22,7 +22,7 @@ type Transaction = {
 export default function Dashboard() {
   const [isPosting, setIsPosting] =
   useState(false);
-  const [nickname] = useState("");
+  const [nickname, setNickname] = useState("");
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
 
@@ -83,6 +83,33 @@ export default function Dashboard() {
     }, 1000);
 
   return () => clearInterval(timer);
+}, []);
+
+useEffect(() => {
+
+  const fetchProfile = async () => {
+
+    try {
+
+      const response =
+        await fetch("/api/profile");
+
+      const result =
+        await response.json();
+
+      setNickname(
+        result.nickname || ""
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+  fetchProfile();
+
 }, []);
 
 
