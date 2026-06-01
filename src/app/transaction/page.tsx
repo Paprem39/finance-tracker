@@ -278,8 +278,7 @@ if (value <= 0) {
   
       setIsPosting(true);
   
-      const response = await fetch(
-        "/api/transactions",
+      const response = await fetch("/api/transactions",
         {
           method: "POST",
   
