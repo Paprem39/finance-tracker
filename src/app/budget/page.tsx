@@ -1,11 +1,7 @@
 "use client";
 
-import {useState,useMemo,} from "react";
-import {
-  Pencil,
-  Trash2,
-  Wallet,
-} from "lucide-react";
+import {useState,useEffect,} from "react";
+import {Pencil,Trash2,Wallet,} from "lucide-react";
 
 const budgetCategories = [
   "🍜 ค่าอาหาร",
@@ -19,31 +15,13 @@ type BudgetItem = {
   id: number;
   category: string;
   limit: number;
-  used: number;
+  used: number; // ยังมีได้ แต่ไม่เก็บ DB
 };
 
 export default function BudgetPage() {
-  const [budgets, setBudgets] =
-    useState<BudgetItem[]>([
-      {
-        id: 1,
-        category: "🍔 อาหาร",
-        limit: 5000,
-        used: 3200,
-      },
-      {
-        id: 2,
-        category: "⛽ น้ำมัน",
-        limit: 3000,
-        used: 2700,
-      },
-      {
-        id: 3,
-        category: "🛍️ ช้อปปิ้ง",
-        limit: 4000,
-        used: 4500,
-      },
-    ]);
+
+    const [budgets, setBudgets] =
+    useState<BudgetItem[]>([]);
 
     const [showPopup, setShowPopup] =
     useState(false);
@@ -54,21 +32,98 @@ export default function BudgetPage() {
     const [limit, setLimit] =
     useState("");
 
-    const [used, setUsed] =
-    useState("");
-
     const [editId, setEditId] =
     useState<number | null>(null);
 
-  const getPercent = (
-    used: number,
-    limit: number
-  ) => {
-    return Math.min(
-      (used / limit) * 100,
-      100
+    // =========================
+    // Filter
+    // =========================
+    const [filterType, setFilterType] =
+    useState("monthly");
+
+    const [selectedMonth, setSelectedMonth] =
+    useState(
+      new Date()
+      .toISOString()
+      .slice(0, 7)
     );
-  };
+
+    const [selectedYear, setSelectedYear] =
+    useState(
+      new Date()
+      .getFullYear()
+      .toString()
+    );
+
+    const [startDate, setStartDate] =
+    useState("");
+    
+    const [endDate, setEndDate] =
+    useState("");
+
+    // =========================
+    // Fetch Budgets
+    // =========================
+    const fetchBudgets = async () => {
+
+      const params = new URLSearchParams({
+        filterType,
+        selectedMonth,
+        selectedYear,
+        startDate,
+        endDate,
+      });
+  
+      try {
+
+        const res = await fetch(
+          `/api/budgets?${params}`
+        );
+
+        if (!res.ok) {
+          throw new Error("โหลดข้อมูลไม่สำเร็จ");
+        }
+      
+        const data = await res.json();
+      
+        setBudgets(data);
+      
+      } catch (error) {
+      
+        console.error(
+          "โหลด budget ไม่สำเร็จ",
+          error
+        );
+      
+      }
+    };
+
+  // =========================
+  // useEffect
+  // =========================
+
+  useEffect(() => {
+    fetchBudgets();
+  }, [
+    filterType,
+    selectedMonth,
+    selectedYear,
+    startDate,
+    endDate,
+  ]);
+
+    const getPercent = (
+      used: number,
+      limit: number
+    ) => {
+    
+      if (!limit) return 0;
+    
+      return Math.min(
+        (used / limit) * 100,
+        100
+      );
+    };
 
   const getBarColor = (
     percent: number
@@ -83,10 +138,9 @@ export default function BudgetPage() {
   };
 
   // =========================
-// Add Budget
-// =========================
-const addBudget = () => {
-
+  // Add Budget
+  // =========================
+const addBudget = async () => {
   if (
     !category ||
     !limit
@@ -96,53 +150,54 @@ const addBudget = () => {
   // Edit Mode
   if (editId) {
 
-    const updated =
-      budgets.map((item) => {
-
-        if (item.id === editId) {
-
-          return {
-            ...item,
-            category,
-            limit: Number(limit),
-            used: 0,
-          };
-        }
-
-        return item;
+      await fetch(`/api/budgets/${editId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category,
+          limit: Number(limit),
+        }),
       });
 
-    setBudgets(updated);
+      await fetchBudgets();
 
     setEditId(null);
 
   } else {
 
-    // Add Mode
-    const newData = [
-      ...budgets,
-      {
-        id: Date.now(),
+    // =========================
+    // Add mode
+    // =========================
+
+    await fetch("/api/budgets", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         category,
         limit: Number(limit),
-        used: Number(used),
-      },
-    ];
-
-    setBudgets(newData);
+      }),
+    });
   }
 
   setCategory("🍜 ค่าอาหาร");
   setLimit("");
-  setUsed("");
+  setEditId(null);
 
   setShowPopup(false);
+
+  await fetchBudgets();
 };
 
 // =========================
 // Delete Budget
 // =========================
-const deleteBudget = (id: number) => {
+const deleteBudget = async (
+  id:number
+) => {
 
   const confirmDelete = window.confirm(
     "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
@@ -150,12 +205,11 @@ const deleteBudget = (id: number) => {
 
   if (!confirmDelete) return;
 
-  const filtered =
-    budgets.filter(
-      (item) => item.id !== id
-    );
+  await fetch(`/api/budgets/${id}`, {
+    method: "DELETE",
+  });
 
-  setBudgets(filtered);
+  await fetchBudgets();
 };
 
 // =========================
@@ -173,10 +227,6 @@ const editBudget = (
     item.limit.toString()
   );
 
-  setUsed(
-    item.used.toString()
-  );
-
   setShowPopup(true);
 };
 
@@ -189,55 +239,6 @@ const totalSpent = budgets.reduce(
   (sum, item) => sum + item.used,
   0
 );
-
-// =========================
-// Filter
-// =========================
-const [filterType, setFilterType] =
-  useState("monthly");
-
-const [selectedMonth, setSelectedMonth] =
-  useState(
-    new Date()
-      .toISOString()
-      .slice(0, 7)
-  );
-
-const [selectedYear, setSelectedYear] =
-  useState(
-    new Date()
-      .getFullYear()
-      .toString()
-  );
-
-const [startDate, setStartDate] =
-  useState("");
-
-const [endDate, setEndDate] =
-  useState("");
-
-  // =========================
-// Filtered Budgets
-// =========================
-const filteredBudgets = useMemo(() => {
-
-  return budgets.filter((item) => {
-
-    // ตอนนี้ยัง mock อยู่
-    // ยังไม่ได้ filter date จริง
-
-    return true;
-
-  });
-
-}, [
-  budgets,
-  filterType,
-  selectedMonth,
-  selectedYear,
-  startDate,
-  endDate,
-]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-cyan-100 p-6 text-black">
@@ -417,7 +418,7 @@ const filteredBudgets = useMemo(() => {
           onClick={() => {
             setEditId(null);
         
-            setCategory("");
+            setCategory("🍜 ค่าอาหาร");
             setLimit("");
         
             setShowPopup(true);
@@ -460,7 +461,7 @@ const filteredBudgets = useMemo(() => {
             </thead>
 
             <tbody>
-            {filteredBudgets.map((item) => (
+            {budgets.map((item) => (
                 <tr
                   key={item.id}
                   className="
@@ -596,7 +597,7 @@ const filteredBudgets = useMemo(() => {
         </div>
 
         <div className="space-y-6">
-        {filteredBudgets.map((item) => {
+        {budgets.map((item) => {
             const percent =
               getPercent(
                 item.used,
