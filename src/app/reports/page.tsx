@@ -319,7 +319,14 @@ Object.values(
     if (!groupedLineData[item.date]) {
 
       groupedLineData[item.date] = {
-        date: item.date,
+        date: new Date(item.date).toLocaleDateString(
+          "th-TH",
+          {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }
+        ),
         income: 0,
         expense: 0,
       };
