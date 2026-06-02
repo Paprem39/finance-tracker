@@ -738,7 +738,14 @@ Object.values(
                   >
 
                     <td className="p-4">
-                      {item.date}
+                      {new Date(item.date).toLocaleDateString(
+                        "th-TH",
+                        {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }
+                      )}
                     </td>
 
                     <td className="p-4">
