@@ -35,7 +35,7 @@ export default function BudgetPage() {
     useState(false);
 
     const [category, setCategory] =
-    useState("🍜 ค่าอาหาร");
+    useState("ค่าอาหาร");
 
     const [limit, setLimit] =
     useState("");
@@ -191,7 +191,7 @@ const addBudget = async () => {
     });
   }
 
-  setCategory("🍜 ค่าอาหาร");
+  setCategory("ค่าอาหาร");
   setLimit("");
   setEditId(null);
 
@@ -426,7 +426,7 @@ const totalSpent = budgets.reduce(
           onClick={() => {
             setEditId(null);
         
-            setCategory("🍜 ค่าอาหาร");
+            setCategory("ค่าอาหาร");
             setLimit("");
         
             setShowPopup(true);
