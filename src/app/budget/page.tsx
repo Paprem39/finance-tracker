@@ -3,12 +3,20 @@
 import {useState,useEffect,} from "react";
 import {Pencil,Trash2,Wallet,} from "lucide-react";
 
+const categoryIcons: Record<string, string> = {
+  ค่าอาหาร: "🍜",
+  ค่าช็อปปิ้ง: "🛍️",
+  ค่าน้ำมัน: "⛽",
+  ค่าเดินทาง: "🚌",
+  ค่าของใช้: "🧴"
+};
+
 const budgetCategories = [
-  "🍜 ค่าอาหาร",
-  "🛍️ ค่าช็อปปิ้ง",
-  "⛽ ค่าน้ำมัน",
-  "🚌 ค่าเดินทาง",
-  "🧴 ค่าของใช้",
+  "ค่าอาหาร",
+  "ค่าช็อปปิ้ง",
+  "ค่าน้ำมัน",
+  "ค่าเดินทาง",
+  "ค่าของใช้",
 ];
 
 type BudgetItem = {
@@ -470,7 +478,7 @@ const totalSpent = budgets.reduce(
                   "
                 >
                   <td className="py-4 font-semibold">
-                    {item.category}
+                    {categoryIcons[item.category]} {item.category}
                   </td>
 
                   <td className="py-4">
@@ -622,7 +630,7 @@ const totalSpent = budgets.reduce(
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h3 className="text-xl font-black">
-                      {item.category}
+                      {categoryIcons[item.category]} {item.category}
                     </h3>
 
                     <p className="text-gray-500">
@@ -744,7 +752,7 @@ const totalSpent = budgets.reduce(
       key={item}
       value={item}
     >
-      {item}
+      {categoryIcons[item]} {item}
     </option>
   ))}
 </select>
