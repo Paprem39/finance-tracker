@@ -83,20 +83,24 @@ export default function DebtPage() {
       }
     };
 
+    const fetchDebtors = async () => {
+      try {
+        const res =
+          await fetch("/api/debtors");
+    
+        const data =
+          await res.json();
+    
+        setDebtors(data);
+    
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
   // =========================
   // Save Functions
   // =========================
-
-  const saveDebtors = (
-    data: DebtItem[]
-  ) => {
-    setDebtors(data);
-
-    localStorage.setItem(
-      "debtors",
-      JSON.stringify(data)
-    );
-  };
 
   const saveBills = (
     data: BillItem[]
@@ -142,24 +146,31 @@ export default function DebtPage() {
   // =========================
   // Add Debtor
   // =========================
-  const addDebtor = () => {
+  const addDebtor = async () => {
+
     if (!debtorName || !debtorAmount)
       return;
-
-    const newData = [
-      ...debtors,
-      {
-        id: Date.now(),
-        name: debtorName,
-        amount: Number(debtorAmount),
+  
+    await fetch("/api/debtors", {
+      method: "POST",
+  
+      headers: {
+        "Content-Type":
+          "application/json",
       },
-    ];
-
-    saveDebtors(newData);
-
+  
+      body: JSON.stringify({
+        name: debtorName,
+        amount:
+          Number(debtorAmount),
+      }),
+    });
+  
+    await fetchDebtors();
+  
     setDebtorName("");
     setDebtorAmount("");
-
+  
     setShowDebtorPopup(false);
   };
 
@@ -232,7 +243,9 @@ const toggleBillPaid = (id: number) => {
       await fetchCreditors();
   };
 
-  const deleteDebtor = (id: number) => {
+  const deleteDebtor = async (
+    id: number
+  ) => {
 
     const confirmDelete = window.confirm(
       "คุณต้องการลบลูกหนี้รายการนี้ใช่ไหม ?"
@@ -240,12 +253,14 @@ const toggleBillPaid = (id: number) => {
 
     if (!confirmDelete) return;
 
-    const filtered =
-      debtors.filter(
-        (item) => item.id !== id
-      );
-
-    saveDebtors(filtered);
+    await fetch(
+      `/api/debtors/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    
+    await fetchDebtors();
   };
 
   const deleteBill = (id: number) => {
@@ -295,7 +310,7 @@ const toggleBillPaid = (id: number) => {
     await fetchCreditors();
   };
 
-  const editDebtor = (
+  const editDebtor = async (
     id: number
   ) => {
     const amount =
@@ -303,20 +318,24 @@ const toggleBillPaid = (id: number) => {
 
     if (!amount) return;
 
-    const updated = debtors.map(
-      (item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            amount: Number(amount),
-          };
-        }
-
-        return item;
+    await fetch(
+      `/api/debtors/${id}`,
+      {
+        method: "PUT",
+    
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+    
+        body: JSON.stringify({
+          amount:
+            Number(amount),
+        }),
       }
     );
-
-    saveDebtors(updated);
+    
+    await fetchDebtors();
   };
 
   const editBill = (
@@ -345,6 +364,7 @@ const toggleBillPaid = (id: number) => {
 
   useEffect(() => {
     fetchCreditors();
+    fetchDebtors();
   }, []);
 
   return (
