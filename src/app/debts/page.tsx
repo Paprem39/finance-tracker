@@ -59,48 +59,33 @@ export default function DebtPage() {
   const [billName, setBillName] =
     useState("");
 
+  // =========================
+  // Creditors
+  // =========================
   const [billAmount, setBillAmount] =
     useState("");
 
-  // =========================
-  // Load LocalStorage
-  // =========================
-  useEffect(() => {
-    const savedCreditors =
-      localStorage.getItem("creditors");
-
-    const savedDebtors =
-      localStorage.getItem("debtors");
-
-    const savedBills =
-      localStorage.getItem("monthlyBills");
-
-    if (savedCreditors) {
-      setCreditors(JSON.parse(savedCreditors));
-    }
-
-    if (savedDebtors) {
-      setDebtors(JSON.parse(savedDebtors));
-    }
-
-    if (savedBills) {
-      setBills(JSON.parse(savedBills));
-    }
-  }, []);
+    const fetchCreditors = async () => {
+      try {
+    
+        const res =
+          await fetch("/api/creditor");
+    
+        const data =
+          await res.json();
+    
+        setCreditors(data);
+    
+      } catch (error) {
+    
+        console.error(error);
+    
+      }
+    };
 
   // =========================
   // Save Functions
   // =========================
-  const saveCreditors = (
-    data: DebtItem[]
-  ) => {
-    setCreditors(data);
-
-    localStorage.setItem(
-      "creditors",
-      JSON.stringify(data)
-    );
-  };
 
   const saveDebtors = (
     data: DebtItem[]
@@ -127,20 +112,26 @@ export default function DebtPage() {
   // =========================
   // Add Creditor
   // =========================
-  const addCreditor = () => {
+  const addCreditor = async () => {
     if (!creditorName || !creditorAmount)
       return;
 
-    const newData = [
-      ...creditors,
-      {
-        id: Date.now(),
-        name: creditorName,
-        amount: Number(creditorAmount),
+    await fetch("/api/creditor", {
+      method: "POST",
+    
+      headers: {
+        "Content-Type":
+          "application/json",
       },
-    ];
-
-    saveCreditors(newData);
+    
+      body: JSON.stringify({
+        name: creditorName,
+        amount:
+          Number(creditorAmount),
+      }),
+    });
+    
+    await fetchCreditors();
 
     setCreditorName("");
     setCreditorAmount("");
@@ -221,7 +212,9 @@ const toggleBillPaid = (id: number) => {
   // =========================
   // Delete
   // =========================
-  const deleteCreditor = (id: number) => {
+  const deleteCreditor = async (
+    id: number
+  ) => {
 
     const confirmDelete = window.confirm(
       "คุณต้องการลบเจ้าหนี้รายการนี้ใช่ไหม ?"
@@ -229,12 +222,14 @@ const toggleBillPaid = (id: number) => {
   
     if (!confirmDelete) return;
 
-    const filtered =
-      creditors.filter(
-        (item) => item.id !== id
+      await fetch(
+        `/api/creditor/${id}`,
+        {
+          method: "DELETE",
+        }
       );
-
-    saveCreditors(filtered);
+      
+      await fetchCreditors();
   };
 
   const deleteDebtor = (id: number) => {
@@ -272,7 +267,7 @@ const toggleBillPaid = (id: number) => {
   // =========================
   // Edit
   // =========================
-  const editCreditor = (
+  const editCreditor = async (
     id: number
   ) => {
     const amount =
@@ -280,20 +275,24 @@ const toggleBillPaid = (id: number) => {
 
     if (!amount) return;
 
-    const updated = creditors.map(
-      (item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            amount: Number(amount),
-          };
-        }
-
-        return item;
+    await fetch(
+      `/api/creditor/${id}`,
+      {
+        method: "PUT",
+    
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+    
+        body: JSON.stringify({
+          amount:
+            Number(amount),
+        }),
       }
     );
-
-    saveCreditors(updated);
+    
+    await fetchCreditors();
   };
 
   const editDebtor = (
@@ -343,6 +342,10 @@ const toggleBillPaid = (id: number) => {
 
     saveBills(updated);
   };
+
+  useEffect(() => {
+    fetchCreditors();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-blue-100 p-6 text-black">

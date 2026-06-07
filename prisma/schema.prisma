@@ -20,6 +20,10 @@ model User {
 
   transactions Transaction[]
   budgets Budget[]
+
+  creditors    Creditor[]
+  debtors      Debtor[]
+  monthlyBills MonthlyBill[]
 }
 
 model Transaction {
@@ -39,13 +43,49 @@ model Transaction {
 
   user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
 model Budget {
   id        Int      @id @default(autoincrement())
   category  String
   limit     Float
 
   userId    String
-  user      User @relation(fields: [userId], references: [id])
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }
+
+model Creditor {
+  id        Int      @id @default(autoincrement())
+  name      String
+  amount    Float
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Debtor {
+  id        Int      @id @default(autoincrement())
+  name      String
+  amount    Float
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model MonthlyBill {
+  id        Int      @id @default(autoincrement())
+  name      String
+  amount    Float
+  paid      Boolean  @default(false)
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
