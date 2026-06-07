@@ -244,6 +244,7 @@ export async function POST(
         },
       });
 
+      console.log("Budget Created:",budget);
       return NextResponse.json(
         budget
       );
