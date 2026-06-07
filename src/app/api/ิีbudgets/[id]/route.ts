@@ -9,14 +9,14 @@ import { authOptions } from "@/auth";
 // =======================
 // PUT
 // =======================
-export async function PUT(
+export async function PUT( 
   req: Request,
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string;
-    };
+    }>;
   }
 ) {
 
@@ -45,25 +45,30 @@ export async function PUT(
       limit,
     } = body;
 
-    const updatedBudget =
-      await prisma.budget.update({
+    const { id } = await params;
 
-        where: {
-          id: Number(params.id),
-        },
+const result =
+  await prisma.budget.updateMany({
+    where: {
+      id: Number(id),
+      userId: session.user.id,
+    },
+    data: {
+      category,
+      limit: Number(limit),
+    },
+  });
 
-        data: {
+if (result.count === 0) {
+  return NextResponse.json(
+    { error: "Forbidden" },
+    { status: 403 }
+  );
+}
 
-          category,
-
-          limit:
-            Number(limit),
-        },
-      });
-
-    return NextResponse.json(
-      updatedBudget
-    );
+return NextResponse.json({
+  success: true,
+});
 
   } catch (error) {
 
@@ -87,13 +92,15 @@ export async function DELETE(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string;
-    };
+    }>;
   }
 ) {
 
   try {
+    const { id } =
+      await params;
 
     const session =
       await getServerSession(
@@ -110,10 +117,29 @@ export async function DELETE(
       );
     }
 
+    const budget =
+  await prisma.budget.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+
+if (
+  !budget ||
+  budget.userId !== session.user.id
+) {
+  return NextResponse.json(
+    {
+      error: "Forbidden",
+    },
+    { status: 403 }
+  );
+}
+
     await prisma.budget.delete({
 
       where: {
-        id: Number(params.id),
+        id: Number(id),
       },
     });
 
