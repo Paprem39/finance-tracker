@@ -98,20 +98,20 @@ export default function DebtPage() {
       }
     };
 
-  // =========================
-  // Save Functions
-  // =========================
-
-  const saveBills = (
-    data: BillItem[]
-  ) => {
-    setBills(data);
-
-    localStorage.setItem(
-      "monthlyBills",
-      JSON.stringify(data)
-    );
-  };
+    const fetchMonthlyBills = async () => {
+      try {
+        const res =
+          await fetch("/api/monthlybill");
+    
+        const data =
+          await res.json();
+    
+        setBills(data);
+    
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
   // =========================
   // Add Creditor
@@ -177,48 +177,66 @@ export default function DebtPage() {
   // =========================
   // Add Bill
   // =========================
-  const addBill = () => {
+  const addBill = async () => {
+
     if (!billName || !billAmount)
       return;
-
-    const newData = [
-      ...bills,
-      {
-        id: Date.now(),
-        name: billName,
-        amount: Number(billAmount),
-        paid: false,
+  
+    await fetch("/api/monthlybill", {
+      method: "POST",
+  
+      headers: {
+        "Content-Type":
+          "application/json",
       },
-    ];
-
-    saveBills(newData);
-
+  
+      body: JSON.stringify({
+        name: billName,
+        amount:
+          Number(billAmount),
+      }),
+    });
+  
+    await fetchMonthlyBills();
+  
     setBillName("");
     setBillAmount("");
-
+  
     setShowBillPopup(false);
   };
 
   // =========================
 // Toggle Bill Paid
 // =========================
-const toggleBillPaid = (id: number) => {
+const toggleBillPaid = async (
+  id: number
+) => {
 
-    const updated = bills.map((item) => {
-  
-      if (item.id === id) {
-  
-        return {
-          ...item,
-          paid: !item.paid,
-        };
-      }
-  
-      return item;
-    });
-  
-    saveBills(updated);
-  };
+  const bill =
+    bills.find(
+      (item) => item.id === id
+    );
+
+  if (!bill) return;
+
+  await fetch(
+    `/api/monthlybill/${id}`,
+    {
+      method: "PUT",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        paid: !bill.paid,
+      }),
+    }
+  );
+
+  await fetchMonthlyBills();
+};
   
   // =========================
   // Delete
@@ -263,20 +281,26 @@ const toggleBillPaid = (id: number) => {
     await fetchDebtors();
   };
 
-  const deleteBill = (id: number) => {
-    
-    const confirmDelete = window.confirm(
-      "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
+  const deleteBill = async (
+    id: number
+  ) => {
+  
+    const confirmDelete =
+      window.confirm(
+        "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
+      );
+  
+    if (!confirmDelete)
+      return;
+  
+    await fetch(
+      `/api/monthlybill/${id}`,
+      {
+        method: "DELETE",
+      }
     );
   
-    if (!confirmDelete) return;
-
-    const filtered =
-      bills.filter(
-        (item) => item.id !== id
-      );
-
-    saveBills(filtered);
+    await fetchMonthlyBills();
   };
 
   // =========================
@@ -338,33 +362,39 @@ const toggleBillPaid = (id: number) => {
     await fetchDebtors();
   };
 
-  const editBill = (
+  const editBill = async (
     id: number
   ) => {
+  
     const amount =
       prompt("แก้ไขยอดใหม่ ?");
-
+  
     if (!amount) return;
-
-    const updated = bills.map(
-      (item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            amount: Number(amount),
-          };
-        }
-
-        return item;
+  
+    await fetch(
+      `/api/monthlybill/${id}`,
+      {
+        method: "PUT",
+  
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+  
+        body: JSON.stringify({
+          amount:
+            Number(amount),
+        }),
       }
     );
-
-    saveBills(updated);
+  
+    await fetchMonthlyBills();
   };
 
   useEffect(() => {
     fetchCreditors();
     fetchDebtors();
+    fetchMonthlyBills();
   }, []);
 
   return (
