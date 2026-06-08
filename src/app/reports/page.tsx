@@ -426,6 +426,115 @@ const lineData = Object.values(groupedLineData).sort(
     window.print();
   };
 
+  const expenseOtherData =
+  Object.values(
+
+  filteredTransactions
+
+    .filter(
+      (item) =>
+        item.type === "expense" &&
+        item.category === "📦 อื่นๆ"
+    )
+
+    .reduce((acc: any, item) => {
+
+      const key =
+        item.note?.trim() || "ไม่ระบุ";
+
+      if (!acc[key]) {
+
+        acc[key] = {
+          name: key,
+          amount: 0,
+        };
+      }
+
+      acc[key].amount += item.amount;
+
+      return acc;
+
+    }, {})
+
+) as any[];
+
+const otherExpenseTotal =
+expenseOtherData.reduce(
+  (sum: number, item: any) =>
+    sum + item.amount,
+  0
+);
+
+const expenseOtherPercentData =
+expenseOtherData.map(
+  (item: any) => ({
+    ...item,
+    percent:
+      otherExpenseTotal > 0
+        ? (
+            (item.amount /
+              otherExpenseTotal) *
+            100
+          ).toFixed(1)
+        : 0,
+  })
+);
+
+const incomeOtherData =
+Object.values(
+
+  filteredTransactions
+
+    .filter(
+      (item) =>
+        item.type === "income" &&
+        item.category === "📦 อื่นๆ"
+    )
+
+    .reduce((acc: any, item) => {
+
+      const key =
+        item.note?.trim() || "ไม่ระบุ";
+
+      if (!acc[key]) {
+
+        acc[key] = {
+          name: key,
+          amount: 0,
+        };
+
+      }
+
+      acc[key].amount += item.amount;
+
+      return acc;
+
+    }, {})
+
+) as any[];
+
+const otherIncomeTotal =
+incomeOtherData.reduce(
+  (sum: number, item: any) =>
+    sum + item.amount,
+  0
+);
+
+const incomeOtherPercentData =
+incomeOtherData.map(
+  (item: any) => ({
+    ...item,
+    percent:
+      otherIncomeTotal > 0
+        ? (
+            (item.amount /
+              otherIncomeTotal) *
+            100
+          ).toFixed(1)
+        : 0,
+  })  
+);
+
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-blue-100 p-6 text-black">
@@ -903,21 +1012,20 @@ const lineData = Object.values(groupedLineData).sort(
 
 <div className="space-y-2">
 
-  {expenseCategoryData.map(
-    (item: any) => (
+{expenseCategoryData.map(
+  (item: any) => (
 
-      <div
-        key={item.name}
-        className="
-          flex
-          items-center
-          justify-between
-          bg-red-50
-          rounded-2xl
-          px-4
-          py-3
-        "
-      >
+    <div
+      key={item.name}
+      className="
+        bg-red-50
+        rounded-2xl
+        px-4
+        py-3
+      "
+    >
+
+      <div className="flex items-center justify-between">
 
         <div>
 
@@ -937,8 +1045,45 @@ const lineData = Object.values(groupedLineData).sort(
 
       </div>
 
-    )
-  )}
+      {item.name === "📦 อื่นๆ" && (
+
+        <div className="mt-3 pl-4 border-l">
+
+          {expenseOtherPercentData.map(
+            (note: any) => (
+
+              <div
+                key={note.name}
+                className="
+                  flex
+                  justify-between
+                  text-sm
+                  text-gray-600
+                  py-1
+                "
+              >
+
+                <span>
+                {note.amount.toLocaleString()} ฿ ({note.percent}%)
+                </span>
+
+                <span>
+                  {note.percent}%
+                </span>
+
+              </div>
+
+            )
+          )}
+
+        </div>
+
+      )}
+
+    </div>
+
+  )
+)}
 
 </div>
 
@@ -953,21 +1098,20 @@ const lineData = Object.values(groupedLineData).sort(
 
 <div className="space-y-2">
 
-  {incomeCategoryData.map(
-    (item: any) => (
+{incomeCategoryData.map(
+  (item: any) => (
 
-      <div
-        key={item.name}
-        className="
-          flex
-          items-center
-          justify-between
-          bg-green-50
-          rounded-2xl
-          px-4
-          py-3
-        "
-      >
+    <div
+      key={item.name}
+      className="
+        bg-green-50
+        rounded-2xl
+        px-4
+        py-3
+      "
+    >
+
+      <div className="flex items-center justify-between">
 
         <div>
 
@@ -987,8 +1131,45 @@ const lineData = Object.values(groupedLineData).sort(
 
       </div>
 
-    )
-  )}
+      {item.name === "📦 อื่นๆ" && (
+
+        <div className="mt-3 pl-4 border-l">
+
+          {incomeOtherPercentData.map(
+            (note: any) => (
+
+              <div
+                key={note.name}
+                className="
+                  flex
+                  justify-between
+                  text-sm
+                  text-gray-600
+                  py-1
+                "
+              >
+
+                <span>
+                  • {note.name}
+                </span>
+
+                <span>
+                {note.amount.toLocaleString()} ฿ ({note.percent}%)
+                </span>
+
+              </div>
+
+            )
+          )}
+
+        </div>
+
+      )}
+
+    </div>
+
+  )
+)}
 
 </div>
 
