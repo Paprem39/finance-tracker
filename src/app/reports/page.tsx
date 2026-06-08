@@ -314,40 +314,37 @@ Object.values(
   // Line Chart
   const groupedLineData: any = {};
 
-  filteredTransactions.forEach((item) => {
+filteredTransactions.forEach((item) => {
 
-    if (!groupedLineData[item.date]) {
+  if (!groupedLineData[item.date]) {
 
-      groupedLineData[item.date] = {
-        date: new Date(item.date).toLocaleDateString(
-          "th-TH",
-          {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }
-        ),
-        income: 0,
-        expense: 0,
-      };
-    }
+    groupedLineData[item.date] = {
+      rawDate: item.date,
+      date: new Date(item.date).toLocaleDateString(
+        "th-TH",
+        {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }
+      ),
+      income: 0,
+      expense: 0,
+    };
+  }
 
-    if (item.type === "income") {
+  if (item.type === "income") {
+    groupedLineData[item.date].income += item.amount;
+  } else {
+    groupedLineData[item.date].expense += item.amount;
+  }
+});
 
-      groupedLineData[item.date].income += item.amount;
-
-    } else {
-
-      groupedLineData[item.date].expense += item.amount;
-    }
-
-  });
-
-  const lineData = Object.values(groupedLineData).sort(
-    (a: any, b: any) =>
-      new Date(a.date).getTime() -
-      new Date(b.date).getTime()
-  );
+const lineData = Object.values(groupedLineData).sort(
+  (a: any, b: any) =>
+    new Date(a.rawDate).getTime() -
+    new Date(b.rawDate).getTime()
+);
 
   // Export CSV
   const exportCSV = () => {
