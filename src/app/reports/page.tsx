@@ -236,13 +236,11 @@ Object.values(
   ...item,
 
   percent:
-    totalExpense > 0
-      ? (
-          (item.amount /
-            totalExpense) *
-          100
-        ).toFixed(1)
-      : 0,
+  totalExpense > 0
+    ? (
+        (item.amount / totalExpense) * 100
+      ).toFixed(1)
+    : 0
 
 }));
 
@@ -1055,11 +1053,11 @@ incomeOtherData.map(
               >
 
                 <span>
-                {note.amount.toLocaleString()} ฿ ({note.percent}%)
+                  • {note.name}
                 </span>
 
                 <span>
-                  {note.percent}%
+                {note.amount.toLocaleString()} ฿ ({note.percent}%)
                 </span>
 
               </div>
@@ -1122,7 +1120,7 @@ incomeOtherData.map(
 
       </div>
 
-      {item.name === "📦 อื่นๆ" && (
+      {item.name === "อื่นๆ" && (
 
         <div className="mt-3 pl-4 border-l">
 
