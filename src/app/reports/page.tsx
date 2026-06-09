@@ -50,25 +50,16 @@ export default function ReportsPage() {
     "#ec4899",
   ];
 
-  const categoryOptions = [
-
-    "🍜 ค่าอาหาร",
-  
-    "🛍️ ค่าช็อปปิ้ง",
-  
-    "⛽ ค่าน้ำมัน",
-  
-    "🚌 ค่าเดินทาง",
-  
-    "🧴 ค่าของใช้",
-  
-    "💰 เงินเดือน",
-  
-    "🎁 รายได้พิเศษ",
-
-    "📦 อื่นๆ"
-  
-  ];
+  const categoryLabels = {
+    "ค่าอาหาร": "🍜 ค่าอาหาร",
+    "ค่าช็อปปิ้ง": "🛍️ ค่าช็อปปิ้ง",
+    "ค่าน้ำมัน": "⛽ ค่าน้ำมัน",
+    "ค่าเดินทาง": "🚌 ค่าเดินทาง",
+    "ค่าของใช้": "🧴 ค่าของใช้",
+    "เงินเดือน": "💰 เงินเดือน",
+    "รายได้พิเศษ": "🎁 รายได้พิเศษ",
+    "อื่นๆ": "📦 อื่นๆ",
+  };
 
   // โหลดข้อมูลจาก database
 useEffect(() => {
@@ -434,7 +425,7 @@ const lineData = Object.values(groupedLineData).sort(
     .filter(
       (item) =>
         item.type === "expense" &&
-        item.category === "📦 อื่นๆ"
+        item.category === "อื่นๆ"
     )
 
     .reduce((acc: any, item) => {
@@ -488,7 +479,7 @@ Object.values(
     .filter(
       (item) =>
         item.type === "income" &&
-        item.category === "📦 อื่นๆ"
+        item.category === "อื่นๆ"
     )
 
     .reduce((acc: any, item) => {
@@ -696,16 +687,16 @@ incomeOtherData.map(
     ทุกหมวดหมู่
   </option>
 
-  {categoryOptions.map((item) => (
-
+  {Object.entries(categoryLabels).map(
+  ([value, label]) => (
     <option
-      key={item}
-      value={item}
+      key={value}
+      value={value}
     >
-      {item}
+      {label}
     </option>
-
-  ))}
+  )
+)}
 
 </select>
 
@@ -1045,7 +1036,7 @@ incomeOtherData.map(
 
       </div>
 
-      {item.name === "📦 อื่นๆ" && (
+      {item.name === "อื่นๆ" && (
 
         <div className="mt-3 pl-4 border-l">
 
