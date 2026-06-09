@@ -122,7 +122,21 @@ const keyword =
 
   item.note
     ?.toLowerCase()
-    .includes(keyword);
+    .includes(keyword)
+
+  ||
+
+  (
+    item.type === "income" &&
+    "รายรับ".includes(keyword)
+  )
+
+  ||
+
+  (
+    item.type === "expense" &&
+    "รายจ่าย".includes(keyword)
+  );
 
 if (!matchSearch) return false;
 
