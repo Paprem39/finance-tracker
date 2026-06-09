@@ -20,6 +20,12 @@ import {
 
 export default function ReportsPage() {
 
+  const [deleteModalOpen, setDeleteModalOpen] =
+  useState(false);
+
+  const [selectedDeleteId, setSelectedDeleteId] =
+  useState<string | null>(null);
+
   const [transactions, setTransactions] = useState<any[]>([]);
 
   const [filterType, setFilterType] = useState("all");
@@ -392,12 +398,6 @@ const lineData = Object.values(groupedLineData).sort(
   const deleteTransaction = async (
     id: string
   ) => {
-  
-    const confirmDelete = confirm(
-      "คุณต้องการลบรายการนี้ใช่ไหม?"
-    );
-  
-    if (!confirmDelete) return;
   
     try {
   
@@ -925,9 +925,10 @@ incomeOtherData.map(
                     <td className="p-4 text-center">
 
                       <button
-                       onClick={() =>
-                        deleteTransaction(item.id)
-                      }
+                       onClick={() => {
+                        setSelectedDeleteId(item.id);
+                        setDeleteModalOpen(true);
+                      }}
                           className="
                           w-10
                           h-10
@@ -1309,7 +1310,109 @@ incomeOtherData.map(
         </button>
 
       </div>
+      {deleteModalOpen && (
 
+<div
+  className="
+    fixed
+    inset-0
+    bg-black/50
+    flex
+    items-center
+    justify-center
+    z-50
+  "
+>
+
+  <div
+    className="
+      bg-white
+      rounded-[32px]
+      p-8
+      w-[90%]
+      max-w-md
+      shadow-2xl
+    "
+  >
+
+    <div className="text-center">
+
+      <div className="text-6xl mb-4">
+        🗑️
+      </div>
+
+      <h2 className="text-2xl font-black mb-2">
+        ยืนยันการลบ
+      </h2>
+
+      <p className="text-gray-500 mb-6">
+        คุณต้องการลบรายการนี้ใช่หรือไม่?
+      </p>
+
+      <p className="text-red-500 text-sm mb-8">
+        การลบไม่สามารถกู้คืนได้
+      </p>
+
+      <div className="flex gap-3">
+
+        <button
+          onClick={() =>
+            setDeleteModalOpen(false)
+          }
+          className="
+            flex-1
+            py-3
+            rounded-2xl
+            bg-gray-100
+            hover:bg-gray-200
+            font-semibold
+          "
+        >
+          ยกเลิก
+        </button>
+
+        <button
+          onClick={async () => {
+
+            if (
+              selectedDeleteId
+            ) {
+
+              await deleteTransaction(
+                selectedDeleteId
+              );
+
+            }
+
+            setDeleteModalOpen(false);
+
+            setSelectedDeleteId(
+              null
+            );
+
+          }}
+          className="
+            flex-1
+            py-3
+            rounded-2xl
+            bg-red-600
+            hover:bg-red-700
+            text-white
+            font-bold
+          "
+        >
+          ลบรายการ
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+)}              
     </div>
   );
 }
