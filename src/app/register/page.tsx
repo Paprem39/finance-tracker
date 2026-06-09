@@ -4,6 +4,18 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function RegisterPage() {
+  const [popupOpen, setPopupOpen] =
+  useState(false);
+
+  const [popupTitle, setPopupTitle] =
+  useState("");
+
+  const [popupMessage, setPopupMessage] =
+  useState("");
+
+  const [popupType, setPopupType] =
+  useState<"success" | "error">("success");
+
   const router = useRouter();
   const [nickname, setNickname] = useState("");
   const [firstname, setFirstname] = useState("");
@@ -37,26 +49,54 @@ export default function RegisterPage() {
           const data = await response.json();
       
           if (!response.ok) {
-            alert(data.error);
-            return;
-          }
+
+            setPopupType("error");
+
+            setPopupTitle("สมัครสมาชิกไม่สำเร็จ");
+
+            setPopupMessage(
+            data.error || "เกิดข้อผิดพลาด"
+          );
+
+            setPopupOpen(true);
+
+          return;
+        }
       
-          alert("สมัครสมาชิกสำเร็จ 🎉");
-          setNickname("");
-          setFirstname("");
-          setLastname("");
-          setEmail("");
-          setUsername("");
-          setPassword("");
-          setConfirmPassword("");
-          
-          router.push("/login");
+        setPopupType("success");
+
+        setPopupTitle("สมัครสมาชิกสำเร็จ 🎉");
+        
+        setPopupMessage(
+          "ระบบได้สร้างบัญชีของคุณเรียบร้อยแล้ว"
+        );
+        
+        setPopupOpen(true);
+        
+        setNickname("");
+        setFirstname("");
+        setLastname("");
+        setEmail("");
+        setUsername("");
+        setPassword("");
+        setConfirmPassword("");
+
           console.log(data);
       
         } catch (error) {
+
           console.log(error);
-      
-          alert("เกิดข้อผิดพลาด");
+        
+          setPopupType("error");
+        
+          setPopupTitle("เกิดข้อผิดพลาด");
+        
+          setPopupMessage(
+            "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้"
+          );
+        
+          setPopupOpen(true);
+        
         }
       };
 
@@ -225,6 +265,71 @@ export default function RegisterPage() {
         </button>
 
       </div>
+      {popupOpen && (
+  <div
+    className="
+      fixed inset-0
+      bg-black/50
+      flex items-center justify-center
+      z-50
+    "
+  >
+    <div
+      className="
+        bg-white
+        rounded-3xl
+        p-8
+        w-[90%]
+        max-w-md
+        text-center
+        shadow-2xl
+      "
+    >
+
+      <div className="text-6xl mb-4">
+        {popupType === "success"
+          ? "🎉"
+          : "⚠️"}
+      </div>
+
+      <h2 className="text-2xl font-bold text-black mb-2">
+        {popupTitle}
+      </h2>
+
+      <p className="text-gray-600 mb-6">
+        {popupMessage}
+      </p>
+
+      <button
+        onClick={() => {
+
+          setPopupOpen(false);
+
+          if (
+            popupType === "success"
+          ) {
+            router.push("/login");
+          }
+        }}
+        className={`
+          w-full
+          py-3
+          rounded-2xl
+          font-bold
+          text-white
+          ${
+            popupType === "success"
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-red-600 hover:bg-red-700"
+          }
+        `}
+      >
+        ตกลง
+      </button>
+
+    </div>
+  </div>
+)}
     </div>
   );
 }
