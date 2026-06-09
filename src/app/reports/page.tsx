@@ -459,10 +459,10 @@ expenseOtherData.map(
   (item: any) => ({
     ...item,
     percent:
-      otherExpenseTotal > 0
+      totalExpense > 0
         ? (
             (item.amount /
-              otherExpenseTotal) *
+              totalExpense) *
             100
           ).toFixed(1)
         : 0,
@@ -514,10 +514,10 @@ incomeOtherData.map(
   (item: any) => ({
     ...item,
     percent:
-      otherIncomeTotal > 0
+      totalIncome > 0
         ? (
             (item.amount /
-              otherIncomeTotal) *
+              totalIncome) *
             100
           ).toFixed(1)
         : 0,
