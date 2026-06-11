@@ -1,13 +1,14 @@
 "use client";
 
 import {useEffect,useState,ChangeEvent,} from "react";
+import { Pencil } from "lucide-react";
 
 export default function ProfilePage() {
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [emailValue, setEmailValue] = useState("");
-  const [data, setData] = useState<any>(null);
+  const [editOpen, setEditOpen] = useState(false);
   const [editField, setEditField] = useState<string | null>(null);
+  const [editLabel, setEditLabel] = useState("");
   const [editValue, setEditValue] = useState("");
+  const [data, setData] = useState<any>(null);
   const [registerDate, setRegisterDate] = useState("");
   const [profileImage, setProfileImage] = useState("");
 
@@ -18,7 +19,6 @@ export default function ProfilePage() {
         const result = await response.json();
 
         setData(result);
-        setEmailValue(result.email || "");
 
         setRegisterDate(
           new Date(result.createdAt).toLocaleDateString("th-TH", {
@@ -41,13 +41,26 @@ export default function ProfilePage() {
   }
   }, []);
 
-  const startEdit = (field: string) => {
+  const startEdit = (
+    field: string,
+    label: string
+  ) => {
+  
     setEditField(field);
-    setEditValue(String(data?.[field] ?? ""));
+  
+    setEditLabel(label);
+  
+    setEditValue(
+      String(data?.[field] ?? "")
+    );
+  
+    setEditOpen(true);
   };
 
   const cancelEdit = () => {
+    setEditOpen(false);
     setEditField(null);
+    setEditLabel("");
     setEditValue("");
   };
 
@@ -65,10 +78,8 @@ export default function ProfilePage() {
 
     const res = await fetch("/api/profile");
     const updated = await res.json();
-
     setData(updated);
-    setEditField(null);
-    setEditValue("");
+    cancelEdit();
   };
 
   const handleImageUpload = (
@@ -106,81 +117,51 @@ export default function ProfilePage() {
     label: string;
     field: string;
   }) => {
-    const isEditing = editField === field;
-
+  
     return (
       <div
-        className={`relative p-6 rounded-3xl border transition-all duration-300
-        ${
-          isEditing
-            ? "bg-blue-50 border-blue-400 shadow-lg scale-[1.02]"
-            : "bg-white/70 border-white/40 hover:scale-[1.02]"
-        }`}
+        className="
+          relative
+          p-6
+          rounded-3xl
+          bg-white/70
+          border
+          border-white/40
+        "
       >
-        <p className="text-gray-500 mb-3">{label}</p>
-
-        <div className="relative min-h-[40px]">
-
-          {/* VIEW MODE */}
-          <div
-            className={`transition-all duration-300 ${
-              isEditing
-                ? "opacity-0 absolute"
-                : "opacity-100"
-            }`}
-          >
-            {/* 🔥 FIX 2: ไม่ให้ตอน edit แล้ว text กลายเป็นจาง */}
-            <h3 className="text-2xl font-black text-gray-900 break-all">
-              {data?.[field] || "-"}
-            </h3>
-          </div>
-
-          {/* EDIT MODE */}
-          <div
-            className={`transition-all duration-300 ${
-              isEditing
-                ? "opacity-100"
-                : "opacity-0 absolute"
-            }`}
-          >
-            <input
-              autoFocus
-              className="w-full text-2xl font-black text-gray-900 border-b-2 border-blue-500 outline-none bg-transparent"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* ✏️ BUTTON (ไม่หายแล้ว) */}
-        {!isEditing && (
-          <button
-            onClick={() => startEdit(field)}
+  
+        <p className="text-gray-500 mb-3">
+          {label}
+        </p>
+  
+        <h3 className="text-2xl font-black text-gray-900 break-all">
+          {data?.[field] || "-"}
+        </h3>
+  
+        <button
+          onClick={() =>
+          startEdit(field, label)
+          }
             className="
               absolute
               top-4
               right-4
-              text-blue-600
-              hover:scale-110
+              p-2
+              rounded-lg
+              hover:bg-blue-100
               transition
             "
-          >
-            ✏️
-          </button>
-        )}
-
-        {/* ✖ cancel */}
-        {isEditing && (
-          <button
-            onClick={cancelEdit}
-            className="absolute top-4 right-4 text-red-500 hover:scale-110 transition"
-          >
-            ✖
-          </button>
-        )}
+            >
+            <Pencil
+              size={18}
+              className="text-blue-600"
+            />
+        </button>
+  
       </div>
     );
   };
+  
 
   return (
     <div className="min-h-screen relative bg-gradient-to-br from-indigo-200 via-blue-100 to-cyan-100 p-6 overflow-hidden">
@@ -327,19 +308,76 @@ export default function ProfilePage() {
             </div>
 
           </div>
-
-          {/* SAVE */}
-          {editField && (
-            <button
-              onClick={saveEdit}
-              className="mt-10 w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold transition"
-            >
-              💾 บันทึกข้อมูล
-            </button>
-          )}
-
         </div>
       </div>
+
+      {editOpen && (
+
+<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+  <div className="bg-white rounded-[32px] p-8 w-full max-w-md">
+
+    <h2 className="text-3xl font-black mb-6">
+      ✏️ แก้ไข {editLabel}
+    </h2>
+
+    <input
+  autoFocus
+  value={editValue}
+  onChange={(e) =>
+    setEditValue(
+      e.target.value
+    )
+  }
+  className="
+    w-full
+    border
+    border-gray-300
+    rounded-2xl
+    p-4
+    outline-none
+    focus:ring-2
+    focus:ring-blue-500
+  "
+/>
+
+    <div className="flex gap-3 mt-6">
+
+      <button
+        onClick={saveEdit}
+        className="
+          flex-1
+          bg-blue-600
+          text-white
+          py-3
+          rounded-2xl
+          font-bold
+        "
+      >
+        บันทึก
+      </button>
+
+      <button
+        onClick={cancelEdit}
+        className="
+          flex-1
+          bg-gray-300
+          py-3
+          rounded-2xl
+          font-bold
+        "
+      >
+        ยกเลิก
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+)}
+
     </div>
   );
 }
