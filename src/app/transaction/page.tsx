@@ -20,6 +20,20 @@ type Transaction = {
 };
 
 export default function Dashboard() {
+
+  const [popupOpen, setPopupOpen] =
+  useState(false);
+
+  const [popupTitle, setPopupTitle] =
+  useState("");
+
+  const [popupMessage, setPopupMessage] =
+  useState("");
+
+  const [popupType, setPopupType] =
+  useState<"success" | "error">(
+    "success"
+  );
   const [isPosting, setIsPosting] =
   useState(false);
   const [nickname, setNickname] = useState("");
@@ -297,7 +311,22 @@ if (value <= 0) {
   const saveToDatabase = async () => {
 
     if (transactions.length === 0) {
-      alert("ยังไม่มีรายการ");
+
+      setPopupType("error");
+    
+      setPopupTitle(
+        "ไม่พบรายการ"
+      );
+    
+      setPopupMessage(
+        "กรุณาเพิ่มรายการก่อนบันทึก"
+      );
+    
+      setPopupOpen(true);
+      setTimeout(() => {
+        setPopupOpen(false);
+      }, 2000);
+    
       return;
     }
   
@@ -326,7 +355,21 @@ if (value <= 0) {
         );
       }
   
-      alert("บันทึกสำเร็จ 🎉");
+      setPopupType("success");
+
+      setPopupTitle(
+        "บันทึกรายการสำเร็จ 🎉"
+      );
+
+      setPopupMessage(
+        "ระบบได้บันทึกรายการของคุณเรียบร้อยแล้ว"
+      );
+
+      setPopupOpen(true);
+
+      setTimeout(() => {
+      setPopupOpen(false);
+      }, 2000);
   
       // reset
       setTransactions([]);
@@ -337,7 +380,17 @@ if (value <= 0) {
   
     } catch (error) {
   
-      alert("เกิดข้อผิดพลาด");
+      setPopupType("error");
+
+      setPopupTitle(
+        "บันทึกไม่สำเร็จ"
+      );
+
+      setPopupMessage(
+        "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+      );
+
+      setPopupOpen(true);
   
     } finally {
   
@@ -1010,6 +1063,72 @@ if (value <= 0) {
   </button>
 
 </div>
+
+{popupOpen && (
+
+<div
+  className="
+    fixed inset-0
+    bg-black/50
+    flex items-center justify-center
+    z-50
+  "
+>
+
+  <div
+    className="
+      bg-white
+      rounded-[32px]
+      p-8
+      w-[90%]
+      max-w-md
+      text-center
+      shadow-2xl
+    "
+  >
+
+    <div className="text-6xl mb-4">
+
+      {popupType === "success"
+        ? "✅"
+        : "⚠️"}
+
+    </div>
+
+    <h2 className="text-2xl font-black text-gray-800 mb-2">
+      {popupTitle}
+    </h2>
+
+    <p className="text-gray-500 mb-6">
+      {popupMessage}
+    </p>
+
+    {popupType === "error" && (
+
+<button
+  onClick={() =>
+    setPopupOpen(false)
+  }
+  className="
+    w-full
+    py-3
+    rounded-2xl
+    text-white
+    font-bold
+    bg-red-600
+    hover:bg-red-700
+  "
+>
+  ตกลง
+</button>
+
+)}
+
+  </div>
+
+</div>
+
+)}
 
     </div>
   );
