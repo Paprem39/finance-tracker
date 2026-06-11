@@ -40,9 +40,10 @@ export async function PUT(
     const body =
       await req.json();
 
-    const {
-      amount,
-    } = body;
+      const {
+        name,
+        amount,
+      } = body;
 
     const { id } =
       await params;
@@ -54,7 +55,13 @@ export async function PUT(
           userId: session.user.id,
         },
         data: {
-          amount:Number(amount),
+          ...(name !== undefined && {
+            name,
+          }),
+        
+          ...(amount !== undefined && {
+            amount: Number(amount),
+          }),
         },
       });
 

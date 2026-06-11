@@ -41,6 +41,7 @@ export async function PUT(
       await req.json();
 
       const {
+        name,
         amount,
         paid,
       } = body;
@@ -55,6 +56,10 @@ export async function PUT(
           userId: session.user.id,
         },
         data: {
+          ...(name !== undefined && {
+            name,
+          }),
+        
           ...(amount !== undefined && {
             amount: Number(amount),
           }),

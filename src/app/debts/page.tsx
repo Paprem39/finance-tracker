@@ -17,6 +17,23 @@ type BillItem = {
 };
 
 export default function DebtPage() {
+
+  const [editType, setEditType] =
+  useState<
+  "creditor" |
+  "debtor" |
+  "bill" |
+  null
+  >(null);
+
+  const [editItemId, setEditItemId] =
+  useState<number | null>(null);
+
+  const [editName, setEditName] =
+  useState("");
+
+  const [editAmount, setEditAmount] =
+  useState("");
   // =========================
   // Creditor
   // =========================
@@ -306,89 +323,112 @@ const toggleBillPaid = async (
   // =========================
   // Edit
   // =========================
-  const editCreditor = async (
-    id: number
+  const editCreditor = (
+    item: DebtItem
   ) => {
-    const amount =
-      prompt("แก้ไขยอดใหม่ ?");
-
-    if (!amount) return;
-
-    await fetch(
-      `/api/creditor/${id}`,
-      {
-        method: "PUT",
-    
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-    
-        body: JSON.stringify({
-          amount:
-            Number(amount),
-        }),
-      }
+  
+    setEditType("creditor");
+  
+    setEditItemId(item.id);
+  
+    setEditName(item.name);
+  
+    setEditAmount(
+      item.amount.toString()
     );
-    
-    await fetchCreditors();
   };
 
-  const editDebtor = async (
-    id: number
+  const editDebtor = (
+    item: DebtItem
   ) => {
-    const amount =
-      prompt("แก้ไขยอดใหม่ ?");
-
-    if (!amount) return;
-
-    await fetch(
-      `/api/debtors/${id}`,
-      {
-        method: "PUT",
-    
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-    
-        body: JSON.stringify({
-          amount:
-            Number(amount),
-        }),
-      }
+  
+    setEditType("debtor");
+  
+    setEditItemId(item.id);
+  
+    setEditName(item.name);
+  
+    setEditAmount(
+      item.amount.toString()
     );
-    
-    await fetchDebtors();
   };
 
-  const editBill = async (
-    id: number
+  const editBill = (
+    item: BillItem
   ) => {
   
-    const amount =
-      prompt("แก้ไขยอดใหม่ ?");
+    setEditType("bill");
   
-    if (!amount) return;
+    setEditItemId(item.id);
   
-    await fetch(
-      `/api/monthlybill/${id}`,
-      {
-        method: "PUT",
+    setEditName(item.name);
   
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-  
-        body: JSON.stringify({
-          amount:
-            Number(amount),
-        }),
-      }
+    setEditAmount(
+      item.amount.toString()
     );
+  };
+
+  const saveEdit = async () => {
+
+    if (
+      !editItemId ||
+      !editName ||
+      !editAmount
+    ) {
+      return;
+    }
   
-    await fetchMonthlyBills();
+    let endpoint = "";
+  
+    if (editType === "creditor") {
+      endpoint =
+        `/api/creditor/${editItemId}`;
+    }
+  
+    if (editType === "debtor") {
+      endpoint =
+        `/api/debtors/${editItemId}`;
+    }
+  
+    if (editType === "bill") {
+      endpoint =
+        `/api/monthlybill/${editItemId}`;
+    }
+  
+    await fetch(endpoint, {
+      method: "PUT",
+  
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+  
+      body: JSON.stringify({
+        name: editName,
+        amount:
+          Number(editAmount),
+      }),
+    });
+  
+    if (editType === "creditor") {
+      await fetchCreditors();
+    }
+  
+    if (editType === "debtor") {
+      await fetchDebtors();
+    }
+  
+    if (editType === "bill") {
+      await fetchMonthlyBills();
+    }
+  
+    setEditType(null);
+  
+    setEditItemId(null);
+  
+    setEditName("");
+  
+    setEditAmount("");
   };
 
   useEffect(() => {
@@ -489,7 +529,7 @@ const toggleBillPaid = async (
                       <div className="flex justify-end gap-3">
                         <button
                           onClick={() =>
-                            editCreditor(item.id)
+                            editCreditor(item)
                           }
                           className="
                             p-2
@@ -624,7 +664,7 @@ const toggleBillPaid = async (
                       <div className="flex justify-end gap-3">
                         <button
                           onClick={() =>
-                            editDebtor(item.id)
+                            editDebtor(item)
                           }
                           className="
                             p-2
@@ -801,7 +841,7 @@ const toggleBillPaid = async (
 
               <button
                 onClick={() =>
-                  editBill(item.id)
+                  editBill(item)
                 }
                 className="
                   p-2
@@ -1102,6 +1142,110 @@ const toggleBillPaid = async (
           </div>
         </div>
       )}
+
+{editType && (
+
+<div
+  className="
+    fixed inset-0
+    bg-black/40
+    flex items-center
+    justify-center
+    z-50
+  "
+>
+
+  <div
+    className="
+      bg-white
+      rounded-[32px]
+      p-8
+      w-full
+      max-w-md
+    "
+  >
+
+    <h2 className="text-3xl font-black mb-6">
+      ✏️ แก้ไขข้อมูล
+    </h2>
+
+    <div className="space-y-4">
+
+      <input
+        type="text"
+        value={editName}
+        onChange={(e) =>
+          setEditName(
+            e.target.value
+          )
+        }
+        placeholder="ชื่อ"
+        className="
+          w-full
+          border
+          rounded-2xl
+          p-4
+        "
+      />
+
+      <input
+        type="number"
+        value={editAmount}
+        onChange={(e) =>
+          setEditAmount(
+            e.target.value
+          )
+        }
+        placeholder="ยอดเงิน"
+        className="
+          w-full
+          border
+          rounded-2xl
+          p-4
+        "
+      />
+
+    </div>
+
+    <div className="flex gap-3 mt-6">
+
+      <button
+        onClick={saveEdit}
+        className="
+          flex-1
+          bg-blue-600
+          text-white
+          py-3
+          rounded-2xl
+          font-bold
+        "
+      >
+        บันทึก
+      </button>
+
+      <button
+        onClick={() =>
+          setEditType(null)
+        }
+        className="
+          flex-1
+          bg-gray-300
+          py-3
+          rounded-2xl
+          font-bold
+        "
+      >
+        ยกเลิก
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+)}
+
     </div>
   );
 }
