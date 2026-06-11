@@ -338,23 +338,28 @@ export default function ProfilePage() {
   "
 >
   <span className="mr-2">✏️</span>
-  แก้ไข {editLabel}
-</h2>
+    แก้ไข {editLabel}
+  </h2>
 
-    <input
+<input
   autoFocus
   value={editValue}
   onChange={(e) =>
-    setEditValue(
-      e.target.value
-    )
+    setEditValue(e.target.value)
   }
+  style={{
+    color: "#111827"
+  }}
   className="
     w-full
     border
     border-gray-300
     rounded-2xl
     p-4
+    text-gray-900
+    text-xl
+    font-semibold
+    bg-white
     outline-none
     focus:ring-2
     focus:ring-blue-500
@@ -369,9 +374,9 @@ export default function ProfilePage() {
           flex-1
           bg-blue-600
           text-white
+          font-bold
           py-3
           rounded-2xl
-          font-bold
         "
       >
         บันทึก
@@ -382,9 +387,10 @@ export default function ProfilePage() {
         className="
           flex-1
           bg-gray-300
+          text-gray-800
+          font-bold
           py-3
           rounded-2xl
-          font-bold
         "
       >
         ยกเลิก
