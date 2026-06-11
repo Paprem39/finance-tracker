@@ -18,6 +18,26 @@ type BillItem = {
 
 export default function DebtPage() {
 
+  const [deletePopupOpen, setDeletePopupOpen] =
+  useState(false);
+
+  const [deleteTitle, setDeleteTitle] =
+  useState("");
+
+  const [deleteMessage, setDeleteMessage] =
+  useState("");
+
+  const [deleteType, setDeleteType] =
+  useState<
+    "creditor" |
+    "debtor" |
+    "bill" |
+    null
+  >(null);
+
+  const [deleteId, setDeleteId] =
+  useState<number | null>(null);
+
   const [editType, setEditType] =
   useState<
   "creditor" |
@@ -262,62 +282,58 @@ const toggleBillPaid = async (
     id: number
   ) => {
 
-    const confirmDelete = window.confirm(
+    setDeleteType("creditor");
+
+    setDeleteId(id);
+
+    setDeleteTitle(
+      "ลบเจ้าหนี้"
+    );
+
+    setDeleteMessage(
       "คุณต้องการลบเจ้าหนี้รายการนี้ใช่ไหม ?"
     );
-  
-    if (!confirmDelete) return;
 
-      await fetch(
-        `/api/creditor/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      
-      await fetchCreditors();
+    setDeletePopupOpen(true);
   };
 
   const deleteDebtor = async (
     id: number
   ) => {
 
-    const confirmDelete = window.confirm(
+    setDeleteType("debtor");
+
+    setDeleteId(id);
+
+    setDeleteTitle(
+      "ลบลูกหนี้"
+    );
+
+    setDeleteMessage(
       "คุณต้องการลบลูกหนี้รายการนี้ใช่ไหม ?"
     );
 
-    if (!confirmDelete) return;
-
-    await fetch(
-      `/api/debtors/${id}`,
-      {
-        method: "DELETE",
-      }
-    );
-    
-    await fetchDebtors();
+    setDeletePopupOpen(true);
   };
 
   const deleteBill = async (
     id: number
   ) => {
-  
-    const confirmDelete =
-      window.confirm(
-        "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
-      );
-  
-    if (!confirmDelete)
-      return;
-  
-    await fetch(
-      `/api/monthlybill/${id}`,
-      {
-        method: "DELETE",
-      }
-    );
-  
-    await fetchMonthlyBills();
+
+  setDeleteType("bill");
+
+  setDeleteId(id);
+
+  setDeleteTitle(
+    "ลบค่าใช้จ่าย"
+  );
+
+  setDeleteMessage(
+    "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
+  );
+
+  setDeletePopupOpen(true);
+
   };
 
   // =========================
@@ -429,6 +445,55 @@ const toggleBillPaid = async (
     setEditName("");
   
     setEditAmount("");
+  };
+
+  const confirmDelete = async () => {
+
+    if (
+      !deleteType ||
+      !deleteId
+    ) {
+      return;
+    }
+  
+    let endpoint = "";
+  
+    if (deleteType === "creditor") {
+      endpoint =
+        `/api/creditor/${deleteId}`;
+    }
+  
+    if (deleteType === "debtor") {
+      endpoint =
+        `/api/debtors/${deleteId}`;
+    }
+  
+    if (deleteType === "bill") {
+      endpoint =
+        `/api/monthlybill/${deleteId}`;
+    }
+  
+    await fetch(endpoint, {
+      method: "DELETE",
+    });
+  
+    if (deleteType === "creditor") {
+      await fetchCreditors();
+    }
+  
+    if (deleteType === "debtor") {
+      await fetchDebtors();
+    }
+  
+    if (deleteType === "bill") {
+      await fetchMonthlyBills();
+    }
+  
+    setDeletePopupOpen(false);
+  
+    setDeleteId(null);
+  
+    setDeleteType(null);
   };
 
   useEffect(() => {
@@ -1245,7 +1310,80 @@ const toggleBillPaid = async (
 </div>
 
 )}
+    {deletePopupOpen && (
 
+<div
+  className="
+    fixed inset-0
+    bg-black/50
+    flex items-center justify-center
+    z-50
+  "
+>
+
+  <div
+    className="
+      bg-white
+      rounded-[32px]
+      p-8
+      w-[90%]
+      max-w-md
+      text-center
+      shadow-2xl
+    "
+  >
+
+    <div className="text-6xl mb-4">
+      🗑️
+    </div>
+
+    <h2 className="text-2xl font-black text-gray-800 mb-2">
+      {deleteTitle}
+    </h2>
+
+    <p className="text-gray-500 mb-6">
+      {deleteMessage}
+    </p>
+
+    <div className="flex gap-3">
+
+      <button
+        onClick={() =>
+          setDeletePopupOpen(false)
+        }
+        className="
+          flex-1
+          py-3
+          rounded-2xl
+          bg-gray-300
+          font-bold
+        "
+      >
+        ยกเลิก
+      </button>
+
+      <button
+        onClick={confirmDelete}
+        className="
+          flex-1
+          py-3
+          rounded-2xl
+          bg-red-600
+          hover:bg-red-700
+          text-white
+          font-bold
+        "
+      >
+        ลบ
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+)}
     </div>
   );
 }
