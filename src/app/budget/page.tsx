@@ -34,6 +34,12 @@ export default function BudgetPage() {
     const [showPopup, setShowPopup] =
     useState(false);
 
+    const [deletePopupOpen, setDeletePopupOpen] =
+    useState(false);
+
+    const [deleteId, setDeleteId] =
+    useState<number | null>(null);
+
     const [category, setCategory] =
     useState("ค่าอาหาร");
 
@@ -203,21 +209,34 @@ const addBudget = async () => {
 // =========================
 // Delete Budget
 // =========================
-const deleteBudget = async (
-  id:number
+const deleteBudget = (
+  id: number
 ) => {
 
-  const confirmDelete = window.confirm(
-    "คุณต้องการลบค่าใช้จ่ายรายการนี้ใช่ไหม ?"
+  setDeleteId(id);
+
+  setDeletePopupOpen(true);
+
+};
+
+const confirmDeleteBudget =
+async () => {
+
+  if (!deleteId) return;
+
+  await fetch(
+    `/api/budgets/${deleteId}`,
+    {
+      method: "DELETE",
+    }
   );
 
-  if (!confirmDelete) return;
-
-  await fetch(`/api/budgets/${id}`, {
-    method: "DELETE",
-  });
-
   await fetchBudgets();
+
+  setDeletePopupOpen(false);
+
+  setDeleteId(null);
+
 };
 
 // =========================
@@ -815,6 +834,84 @@ const totalSpent = budgets.reduce(
 
 </div>
 )}
+
+{deletePopupOpen && (
+
+<div
+  className="
+    fixed inset-0
+    bg-black/50
+    flex items-center justify-center
+    z-50
+  "
+>
+
+  <div
+    className="
+      bg-white
+      rounded-[32px]
+      p-8
+      w-[90%]
+      max-w-md
+      text-center
+      shadow-2xl
+    "
+  >
+
+    <div className="text-6xl mb-4">
+      🗑️
+    </div>
+
+    <h2 className="text-2xl font-black text-gray-800 mb-2">
+      ลบ Budget
+    </h2>
+
+    <p className="text-gray-500 mb-6">
+      คุณต้องการลบรายการนี้ใช่หรือไม่
+    </p>
+
+    <div className="flex gap-3">
+
+      <button
+        onClick={() => {
+          setDeletePopupOpen(false);
+          setDeleteId(null);
+        }}
+        className="
+          flex-1
+          py-3
+          rounded-2xl
+          bg-gray-200
+          hover:bg-gray-300
+          font-bold
+        "
+      >
+        ยกเลิก
+      </button>
+
+      <button
+        onClick={confirmDeleteBudget}
+        className="
+          flex-1
+          py-3
+          rounded-2xl
+          bg-red-600
+          hover:bg-red-700
+          text-white
+          font-bold
+        "
+      >
+        ลบรายการ
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+)}
+
     </div>
   );
 }
