@@ -123,6 +123,7 @@ export default function ProfilePage() {
         className="
           relative
           p-6
+          min-h-[130px]
           rounded-3xl
           bg-white/70
           border
@@ -134,9 +135,20 @@ export default function ProfilePage() {
           {label}
         </p>
   
-        <h3 className="text-2xl font-black text-gray-900 break-all">
-          {data?.[field] || "-"}
-        </h3>
+        <h3
+          className={`
+            font-black
+            text-gray-900
+            break-all
+          ${
+            field === "email"
+            ? "text-lg"
+            : "text-2xl"
+          }
+        `}
+      >
+  {data?.[field] || "-"}
+</h3>
   
         <button
           onClick={() =>
@@ -317,9 +329,17 @@ export default function ProfilePage() {
 
   <div className="bg-white rounded-[32px] p-8 w-full max-w-md">
 
-    <h2 className="text-3xl font-black mb-6">
-      ✏️ แก้ไข {editLabel}
-    </h2>
+  <h2
+  className="
+    text-3xl
+    font-black
+    text-gray-900
+    mb-6
+  "
+>
+  <span className="mr-2">✏️</span>
+  แก้ไข {editLabel}
+</h2>
 
     <input
   autoFocus
