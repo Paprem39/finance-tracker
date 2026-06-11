@@ -4,11 +4,27 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
+
 export default function LoginPage() {
+  
   const router = useRouter();
 
   const [loginInput, setLoginInput] = useState("");
   const [password, setPassword] = useState("");
+
+  const [popupOpen, setPopupOpen] =
+  useState(false);
+
+  const [popupTitle, setPopupTitle] =
+  useState("");
+
+  const [popupMessage, setPopupMessage] =
+  useState("");
+
+  const [popupType, setPopupType] =
+  useState<"success" | "error">(
+    "success"
+  );
 
   const handleLogin = async () => {
 
@@ -22,15 +38,29 @@ export default function LoginPage() {
     );
   
     if (result?.error) {
-  
-      alert("Login ไม่สำเร็จ");
-  
+
+      setPopupType("error");
+    
+      setPopupTitle("เข้าสู่ระบบไม่สำเร็จ");
+    
+      setPopupMessage(
+        "Username หรือ Password ไม่ถูกต้อง"
+      );
+    
+      setPopupOpen(true);
+    
       return;
     }
-  
-    alert("Login สำเร็จ 🎉");
-  
-    router.push("/menu");
+    
+    setPopupType("success");
+    
+    setPopupTitle("เข้าสู่ระบบสำเร็จ 🎉");
+    
+    setPopupMessage(
+      "ยินดีต้อนรับเข้าสู่ระบบ"
+    );
+    
+    setPopupOpen(true);
   };
 
   const handleSignup = () => {
@@ -157,6 +187,73 @@ export default function LoginPage() {
         </div>
 
       </div>
+
+      {popupOpen && (
+  <div
+    className="
+      fixed inset-0
+      bg-black/50
+      flex items-center justify-center
+      z-50
+    "
+  >
+    <div
+      className="
+        bg-white
+        rounded-3xl
+        p-8
+        w-[90%]
+        max-w-md
+        text-center
+        shadow-2xl
+      "
+    >
+
+      <div className="text-6xl mb-4">
+        {popupType === "success"
+          ? "🎉"
+          : "⚠️"}
+      </div>
+
+      <h2 className="text-2xl font-bold text-black mb-2">
+        {popupTitle}
+      </h2>
+
+      <p className="text-gray-600 mb-6">
+        {popupMessage}
+      </p>
+
+      <button
+        onClick={() => {
+
+          setPopupOpen(false);
+
+          if (
+            popupType === "success"
+          ) {
+            router.push("/menu");
+          }
+
+        }}
+        className={`
+          w-full
+          py-3
+          rounded-2xl
+          font-bold
+          text-white
+          ${
+            popupType === "success"
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-red-600 hover:bg-red-700"
+          }
+        `}
+      >
+        ตกลง
+      </button>
+
+    </div>
+  </div>
+)}
     </div>
   );
 }

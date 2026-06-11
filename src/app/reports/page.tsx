@@ -1032,8 +1032,8 @@ incomeOtherData.map(
       <div className="flex items-center justify-between">
 
         <div>
-
-          <p className="font-semibold">
+className="font-semibold"
+          <p >
             {item.name}
           </p>
 
