@@ -201,7 +201,7 @@ export default function ProfilePage() {
           ข้อมูลส่วนตัว
         </h1>
         <p className="text-gray-600 mt-2">
-          โปรไฟล์ของคุณ
+          โปรไฟล์ข้อมูลของคุณ 
         </p>
       </div>
 
