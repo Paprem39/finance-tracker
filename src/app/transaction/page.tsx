@@ -21,6 +21,15 @@ type Transaction = {
 
 export default function Dashboard() {
 
+  const [calculatorOpen, setCalculatorOpen] =
+  useState(false);
+
+  const [calcExpression, setCalcExpression] =
+  useState("");
+
+  const [calcResult, setCalcResult] =
+  useState("");
+
   const [popupOpen, setPopupOpen] =
   useState(false);
 
@@ -398,6 +407,36 @@ if (value <= 0) {
   
     }
   };
+
+  const calculateResult = () => {
+    try {
+      const result = Function(
+        `"use strict"; return (${calcExpression})`
+      )();
+  
+      setCalcResult(String(result));
+    } catch {
+      setCalcResult("Error");
+    }
+  };
+  
+  const appendCalc = (value: string) => {
+    setCalcExpression((prev) => prev + value);
+  };
+  
+  const clearCalc = () => {
+    setCalcExpression("");
+    setCalcResult("");
+  };
+  
+  const useCalculatorAmount = () => {
+    if (!calcResult || calcResult === "Error")
+      return;
+  
+    setAmount(calcResult);
+  
+    setCalculatorOpen(false);
+  };
   
   return (
     <div className="min-h-screen bg-gray-100 p-6 text-black">
@@ -564,14 +603,30 @@ if (value <= 0) {
           className="border border-gray-300 p-4 rounded-2xl w-full"
         />
 
-        {/* Amount */}
-        <input
+        {/* Amount + Calculator */}
+        <div className="flex gap-2">
+          <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="จำนวนเงิน"
-            className="border p-3 rounded-xl"
+            className="border p-3 rounded-xl flex-1"
           />
+
+        <button
+          onClick={() => setCalculatorOpen(true)}
+            className="
+              px-4
+              rounded-xl
+              bg-blue-600
+              text-white
+              hover:bg-blue-700
+              transition
+            "
+          >
+            🧮
+        </button>
+      </div>
 
           {/* Date */}
           <input
@@ -1032,6 +1087,136 @@ if (value <= 0) {
 
 </div>
 
+)}
+
+{calculatorOpen && (
+  <div
+    className="
+      fixed
+      inset-0
+      bg-black/50
+      flex
+      items-center
+      justify-center
+      z-50
+    "
+  >
+    <div
+      className="
+        bg-white
+        rounded-[32px]
+        p-6
+        w-[95%]
+        max-w-sm
+        shadow-2xl
+      "
+    >
+
+      <h2 className="text-2xl font-black mb-4">
+        🧮 เครื่องคิดเลข
+      </h2>
+
+      <div
+        className="
+          border
+          rounded-2xl
+          p-4
+          mb-4
+          text-right
+        "
+      >
+        <div className="text-gray-500 text-lg">
+          {calcExpression || "0"}
+        </div>
+
+        <div className="text-3xl font-bold">
+          {calcResult}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-2">
+
+        {[
+          "7","8","9","/",
+          "4","5","6","*",
+          "1","2","3","-",
+          "0",".","C","+"
+        ].map((btn) => (
+
+          <button
+            key={btn}
+            onClick={() => {
+
+              if (btn === "C") {
+                clearCalc();
+                return;
+              }
+
+              appendCalc(btn);
+            }}
+            className="
+              h-14
+              rounded-xl
+              bg-gray-100
+              hover:bg-gray-200
+              font-bold
+              text-xl
+            "
+          >
+            {btn}
+          </button>
+        ))}
+
+      </div>
+
+      <button
+        onClick={calculateResult}
+        className="
+          w-full
+          mt-3
+          py-3
+          rounded-xl
+          bg-blue-600
+          text-white
+          font-bold
+        "
+      >
+        =
+      </button>
+
+      <button
+        onClick={useCalculatorAmount}
+        className="
+          w-full
+          mt-3
+          py-3
+          rounded-xl
+          bg-green-600
+          text-white
+          font-bold
+        "
+      >
+        ใช้ยอดนี้
+      </button>
+
+      <button
+        onClick={() =>
+          setCalculatorOpen(false)
+        }
+        className="
+          w-full
+          mt-2
+          py-3
+          rounded-xl
+          bg-gray-300
+          font-bold
+        "
+      >
+        ปิด
+      </button>
+
+    </div>
+  </div>
 )}
 
 {/* Save All */}
