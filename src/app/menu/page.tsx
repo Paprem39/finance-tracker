@@ -6,8 +6,24 @@ import { useSession, signOut } from "next-auth/react";
 
 export default function MenuPage() {
 
+  const [profile, setProfile] = useState<any>(null);
   const router = useRouter();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const res = await fetch("/api/profile");
+        const data = await res.json();
+  
+        setProfile(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  
+    loadProfile();
+  }, []);
 
   const handleLogout = async () => {
 
@@ -42,17 +58,31 @@ export default function MenuPage() {
 
   {/* Profile Circle */}
   <div
-    className="
-      w-16 h-16
-      rounded-full
-      bg-gradient-to-br from-blue-500 to-indigo-600
-      flex items-center justify-center
-      text-white text-2xl font-bold
-      shadow-lg
-    "
-  >
-    U
-  </div>
+  className="
+    w-16 h-16
+    rounded-full
+    overflow-hidden
+    shadow-lg
+    bg-gradient-to-br
+    from-blue-500
+    to-indigo-600
+    flex
+    items-center
+    justify-center
+  "
+>
+  {profile?.avatar ? (
+    <img
+      src={profile.avatar}
+      alt="avatar"
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <span className="text-white text-2xl font-bold">
+      U
+    </span>
+  )}
+</div>
 
   {/* User Info */}
   <div>
