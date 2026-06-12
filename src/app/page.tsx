@@ -13,15 +13,15 @@ export default function Home() {
             Finance Tracker
           </h1>
 
-          <div className="space-x-4">
+          <div className="flex gap-2">
             <button onClick={() => router.push("/login")}
-            className="px-4 py-2 rounded-xl border">
-              Login
+            className="px-3 py-2 rounded-xl border whitespace-nowrap">
+              เข้าสู่ระบบ
             </button>
 
             <button onClick={() => router.push("/register")}
-            className="px-4 py-2 rounded-xl bg-blue-600 text-white">
-              Register
+            className="px-3 py-2 rounded-xl bg-blue-600 text-white whitespace-nowrap">
+              สมัครใช้งาน
             </button>
           </div>
         </div>
