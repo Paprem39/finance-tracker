@@ -20,6 +20,10 @@ export default function ProfilePage() {
 
         setData(result);
 
+        setProfileImage(
+        result.avatar || ""
+      );
+
         setRegisterDate(
           new Date(result.createdAt).toLocaleDateString("th-TH", {
             day: "numeric",
@@ -34,11 +38,6 @@ export default function ProfilePage() {
 
     fetchProfile();
 
-    const savedImage = localStorage.getItem("profileImage");
-
-    if (savedImage) {
-    setProfileImage(savedImage);
-  }
   }, []);
 
   const startEdit = (
@@ -82,7 +81,7 @@ export default function ProfilePage() {
     cancelEdit();
   };
 
-  const handleImageUpload = (
+  const handleImageUpload = async (
     e: ChangeEvent<HTMLInputElement>
   ) => {
   
@@ -91,23 +90,37 @@ export default function ProfilePage() {
   
     if (!file) return;
   
-    const reader =
-      new FileReader();
+    const formData =
+      new FormData();
   
-    reader.onloadend = () => {
+    formData.append(
+      "file",
+      file
+    );
   
-      const image =
-        reader.result as string;
+    try {
   
-      setProfileImage(image);
+      const response =
+        await fetch(
+          "/api/profile/avatar",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
   
-      localStorage.setItem(
-        "profileImage",
-        image
+      const user =
+        await response.json();
+  
+      setProfileImage(
+        user.avatar
       );
-    };
   
-    reader.readAsDataURL(file);
+    } catch (error) {
+  
+      console.log(error);
+  
+    }
   };
 
   const Field = ({
