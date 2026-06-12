@@ -46,6 +46,7 @@ export default function Dashboard() {
   const [isPosting, setIsPosting] =
   useState(false);
   const [nickname, setNickname] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
 
@@ -120,9 +121,9 @@ useEffect(() => {
       const result =
         await response.json();
 
-      setNickname(
-        result.nickname || ""
-      );
+        setNickname(result.nickname || "");
+
+        setAvatar(result.avatar || "");
 
     } catch (error) {
 
@@ -489,9 +490,41 @@ if (value <= 0) {
         <div className="flex items-center gap-3">
   
         {/* Profile */}
-        <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 font-bold text-2xl">
+        <div
+          className="
+            w-14 h-14
+            rounded-full
+            overflow-hidden
+            bg-gray-200
+          "
+        >
+        {avatar ? (
+          <img
+            src={avatar}
+            alt="avatar"
+            className="
+            w-full
+            h-full
+            object-cover
+          "
+        />
+      ) : (
+          <div
+            className="
+            w-full
+            h-full
+            flex
+            items-center
+            justify-center
+            text-gray-700
+            font-bold
+            text-2xl
+          "
+        >
           U
         </div>
+      )}
+  </div>
 
         {/* User Info */}
         <div>
