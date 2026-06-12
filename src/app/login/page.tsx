@@ -181,7 +181,7 @@ export default function LoginPage() {
               text-lg
             "
           >
-            Sign Up
+            Sign up
           </button>
 
         </div>
