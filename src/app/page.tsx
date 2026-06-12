@@ -16,12 +16,12 @@ export default function Home() {
           <div className="space-x-4">
             <button onClick={() => router.push("/login")}
             className="px-4 py-2 rounded-xl border">
-              Login
+              เข้าสู่ะบบ
             </button>
 
             <button onClick={() => router.push("/register")}
             className="px-4 py-2 rounded-xl bg-blue-600 text-white">
-              Register
+              สมัครใช้งาน
             </button>
           </div>
         </div>

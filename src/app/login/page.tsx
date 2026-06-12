@@ -161,7 +161,7 @@ export default function LoginPage() {
               shadow-lg
             "
           >
-            Login
+            เข้าสู่ระบบ
           </button>
 
           {/* Signup */}
@@ -181,7 +181,7 @@ export default function LoginPage() {
               text-lg
             "
           >
-            Sign Up
+            สมัครใช้งาน
           </button>
 
         </div>
